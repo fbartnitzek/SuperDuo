@@ -4,6 +4,7 @@
                 android:layout_height="?android:attr/listPreferredItemHeight"
                 android:padding="6dip" >
 
+    <!-- TODO: fixed size and ... matching ... -->
     <ImageView
         android:id="@+id/fullBookCover"
         android:layout_width="wrap_content"
@@ -11,8 +12,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dip"
-        android:contentDescription="@string/book_cover"
-        android:src="@drawable/ic_launcher" />
+        android:contentDescription="@string/book_cover" />
 
     <TextView
         android:id="@+id/listBookTitle"

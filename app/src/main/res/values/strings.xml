@@ -25,7 +25,11 @@
     <string name="back_button">go back</string>
     <string name="share_text">A must read book: </string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <string name="added_to_list">" added to your list"</string>
+    <string name="no_author_found">no dedicated author</string>
+    <string name="no_category_found">no dedicated category</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
     The original version of this app was built by Sascha Jaschke, and a modified version is given to students in the Udacity Android Nanodegree program. </string>
 </resources>

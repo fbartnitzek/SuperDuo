@@ -1,0 +1,33 @@
+package it.jaschke.alexandria.services;
+
+import android.view.View;
+import android.widget.TextView;
+
+import it.jaschke.alexandria.R;
+
+/**
+ * Created by frank on 24.08.15.
+ */
+public class Utility {
+
+    public static void updateAuthorsView(View rootView, String authors){
+        TextView authorsView = ((TextView) rootView.findViewById(R.id.authors));
+        if (authors != null){
+            String[] authorsArr = authors.split(",");
+            authorsView.setLines(authorsArr.length);
+            authorsView.setText(authors.replace(",", "\n"));
+        } else {
+            authorsView.setLines(1);
+            authorsView.setText(R.string.no_author_found);
+        }
+    }
+
+    public static void updateCategoriesView(View rootView, String categories) {
+        TextView categoriesView = ((TextView) rootView.findViewById(R.id.categories));
+        if (categories != null){
+            categoriesView.setText(categories);
+        } else {
+            categoriesView.setText(R.string.no_category_found);
+        }
+    }
+}

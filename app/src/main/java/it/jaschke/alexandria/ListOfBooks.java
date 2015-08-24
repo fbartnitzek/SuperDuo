@@ -23,6 +23,7 @@ import it.jaschke.alexandria.data.AlexandriaContract;
 public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private BookListAdapter bookListAdapter;
+    private static final String LOG_TAG = ListOfBooks.class.getName();
     private ListView bookList;
     private int position = ListView.INVALID_POSITION;
     private EditText searchText;
@@ -34,12 +35,15 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
         Cursor cursor = getActivity().getContentResolver().query(
                 AlexandriaContract.BookEntry.CONTENT_URI,
                 null, // leaving "columns" null just returns all the columns.
@@ -56,6 +60,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.v(LOG_TAG, "onClick, " + "v = [" + v + "]");
                         ListOfBooks.this.restartLoader();
                     }
                 }
@@ -68,6 +73,8 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Log.v(LOG_TAG, "onItemClick, " + "adapterView = [" + adapterView + "], view = ["
+                        + view + "], position = [" + position + "], l = [" + l + "]");
                 Cursor cursor = bookListAdapter.getCursor();
                 if (cursor != null && cursor.moveToPosition(position)) {
                     ((Callback)getActivity())
@@ -80,12 +87,14 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     }
 
     private void restartLoader(){
+        Log.v(LOG_TAG, "restartLoader, " + "");
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+        Log.v(LOG_TAG, "onCreateLoader, " + "id = [" + id + "], args = [" + args + "]");
         final String selection = AlexandriaContract.BookEntry.TITLE +" LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
         String searchString =searchText.getText().toString();
 
@@ -113,6 +122,8 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        Log.v(LOG_TAG, "onLoadFinished, " + "loader = [" + loader + "], data = [" + data + "]");
         bookListAdapter.swapCursor(data);
         if (position != ListView.INVALID_POSITION) {
             bookList.smoothScrollToPosition(position);
@@ -121,11 +132,14 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
+        Log.v(LOG_TAG, "onLoaderReset, " + "loader = [" + loader + "]");
         bookListAdapter.swapCursor(null);
     }
 
     @Override
     public void onAttach(Activity activity) {
+        Log.v(LOG_TAG, "onAttach, " + "activity = [" + activity + "]");
         super.onAttach(activity);
         activity.setTitle(R.string.books);
     }

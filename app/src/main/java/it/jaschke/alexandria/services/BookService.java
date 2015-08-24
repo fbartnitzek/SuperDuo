@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import it.jaschke.alexandria.MainActivity;
+import it.jaschke.alexandria.Constants;
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.data.AlexandriaContract;
 
@@ -35,7 +35,6 @@ public class BookService extends IntentService {
 
     public static final String FETCH_BOOK = "it.jaschke.alexandria.services.action.FETCH_BOOK";
     public static final String DELETE_BOOK = "it.jaschke.alexandria.services.action.DELETE_BOOK";
-
     public static final String EAN = "it.jaschke.alexandria.services.extra.EAN";
 
     public BookService() {
@@ -62,7 +61,8 @@ public class BookService extends IntentService {
      */
     private void deleteBook(String ean) {
         if(ean!=null) {
-            getContentResolver().delete(AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)), null, null);
+            getContentResolver().delete(
+                    AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)), null, null);
         }
     }
 
@@ -162,8 +162,8 @@ public class BookService extends IntentService {
             if(bookJson.has(ITEMS)){
                 bookArray = bookJson.getJSONArray(ITEMS);
             }else{
-                Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
-                messageIntent.putExtra(MainActivity.MESSAGE_KEY,getResources().getString(R.string.not_found));
+                Intent messageIntent = new Intent(Constants.ACTION_MESSAGE_EVENT);
+                messageIntent.putExtra(Constants.EXTRA_MESSAGE_KEY,getResources().getString(R.string.not_found));
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
                 return;
             }
