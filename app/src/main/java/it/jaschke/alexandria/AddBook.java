@@ -19,11 +19,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 import it.jaschke.alexandria.data.AlexandriaContract;
-import it.jaschke.alexandria.extern.IntentIntegrator;
 import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.services.DownloadImage;
 import it.jaschke.alexandria.services.Utility;
+
+// integrated scanner:
+// https://github.com/journeyapps/zxing-android-embedded
 
 
 public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -43,8 +48,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private View mRootView;
 
 
-    private String mScanFormat = "Format:";
-    private String mScanContents = "Contents:";
+//    private String mScanFormat = "Format:";
+//    private String mScanContents = "Contents:";
     private String mBookTitle;
 
     public AddBook(){
@@ -83,14 +88,16 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             @Override
             public void afterTextChanged(Editable s) {
                 String ean = s.toString();
-                Log.v(LOG_TAG, "afterTextChanged, " + "s = [" + s + "]");
+//                Log.v(LOG_TAG, "afterTextChanged, " + "s = [" + s + "]");
                 //catch isbn10 numbers
                 if (ean.length() == 10 && !ean.startsWith("978")) {
                     ean = "978" + ean;
+//                    Log.v(LOG_TAG, "afterTextChanged - converted isbn10 to " + ean);
                 }
 
                 if (ean.length() < 13) {
-                    clearFields();
+                    // TODO: clean fields on ok ...
+//                    clearFields();
                     return;
                 }
 
@@ -115,8 +122,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 // are using an external app.
                 //when you're done, remove the toast below.
                 Log.v(LOG_TAG, "onClick - scan intent, " + "v = [" + v + "]");
-                IntentIntegrator integrator = new IntentIntegrator(getActivity());
-                integrator.initiateScan();
+                launchEmbeddedScanner();
 
             }
         });
@@ -129,6 +135,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     Toast.makeText(getActivity(),
                             mBookTitle + getString(R.string.added_to_list),
                             Toast.LENGTH_LONG).show();
+                    //  TODO: better?
+                    clearFields();
                 }
 
                 mEanView.setText("");
@@ -154,6 +162,38 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         return mRootView;
     }
+
+    private void launchEmbeddedScanner() {
+        // instead of:
+        //  IntentIntegrator integrator = new IntentIntegrator(getActivity());
+        //  integrator.initiateScan();
+
+        IntentIntegrator.forSupportFragment(this).initiateScan();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.v(LOG_TAG, "onActivityResult, " + "requestCode = [" + requestCode
+                + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(
+                requestCode, resultCode, data);
+        if (scanResult != null) {
+            Log.v(LOG_TAG, "onActivityResult with scanResult, " + "requestCode = ["
+                    + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+            String barCode = scanResult.getContents();
+            if (barCode != null){
+                mEanView.setText(barCode);
+            }
+
+        } else {
+            Log.v(LOG_TAG, "onActivityResult without scanResult, " + "requestCode = [" + requestCode
+                    + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 
     private void restartLoader(){
 

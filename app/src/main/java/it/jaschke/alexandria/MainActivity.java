@@ -19,8 +19,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import it.jaschke.alexandria.api.Callback;
-import it.jaschke.alexandria.extern.IntentIntegrator;
-import it.jaschke.alexandria.extern.IntentResult;
 
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
@@ -185,32 +183,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     public void goBack(View view){
         Log.v(LOG_TAG, "goBack, " + "view = [" + view + "]");
         getSupportFragmentManager().popBackStack();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.v(LOG_TAG, "onActivityResult, " + "requestCode = [" + requestCode
-                + "], resultCode = [" + resultCode + "], data = [" + data + "]");
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(
-                requestCode, resultCode, data);
-        if (scanResult != null) {
-            Log.v(LOG_TAG, "onActivityResult with scanResult, " + "requestCode = ["
-                    + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
-            String barCode = scanResult.getContents();
-            FragmentManager fm = getSupportFragmentManager();
-            AddBook fragment = (AddBook) fm.findFragmentById(R.id.container);
-            if (fragment != null){
-                fragment.setIsbn(barCode);
-            }
-
-        } else {
-            Log.v(LOG_TAG, "onActivityResult without scanResult, " + "requestCode = [" + requestCode
-                    + "], resultCode = [" + resultCode + "], data = [" + data + "]");
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private boolean isTablet() {
