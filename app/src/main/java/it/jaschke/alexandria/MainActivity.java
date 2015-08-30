@@ -3,12 +3,10 @@ package it.jaschke.alexandria;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -21,7 +19,8 @@ import android.widget.Toast;
 import it.jaschke.alexandria.api.Callback;
 
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
+public class MainActivity extends ActionBarActivity implements
+        NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
 
 
     private static final String LOG_TAG = MainActivity.class.getName();
@@ -37,7 +36,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
      */
     private CharSequence title;
     public static boolean IS_TABLET = false;
-    private BroadcastReceiver messageReciever;
+//    private BroadcastReceiver messageReciever;
 
 //    public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
 //    public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
@@ -54,9 +53,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
         }
 
-        messageReciever = new MessageReciever();
-        IntentFilter filter = new IntentFilter(Constants.ACTION_MESSAGE_EVENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever,filter);
+        // IntentFilter and Receiver useless?
+//        messageReciever = new MessageReciever();
+//        IntentFilter filter = new IntentFilter(Constants.ACTION_MESSAGE_EVENT);
+//        LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever,filter);
 
         navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -144,7 +144,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     @Override
     protected void onDestroy() {
         Log.v(LOG_TAG, "onDestroy, " + "");
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReciever);
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReciever);
         super.onDestroy();
     }
 

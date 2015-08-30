@@ -11,6 +11,8 @@ public class Constants {
     public static final String SCAN_FORMAT = "scanFormat";
     public static final String SCAN_CONTENTS = "scanContents";
 
-    public static final String ACTION_MESSAGE_EVENT = "MESSAGE_EVENT";
+//    public static final String ACTION_MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String EXTRA_MESSAGE_KEY = "MESSAGE_EXTRA";
+
+    public static final String PREF_BOOK_STATUS = "PREF_BOOK_STATUS";
 }

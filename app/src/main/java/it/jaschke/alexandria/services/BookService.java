@@ -2,10 +2,13 @@ package it.jaschke.alexandria.services;
 
 import android.app.IntentService;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.content.LocalBroadcastManager;
+import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -16,11 +19,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import it.jaschke.alexandria.Constants;
-import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.data.AlexandriaContract;
 
 
@@ -36,6 +40,18 @@ public class BookService extends IntentService {
     public static final String FETCH_BOOK = "it.jaschke.alexandria.services.action.FETCH_BOOK";
     public static final String DELETE_BOOK = "it.jaschke.alexandria.services.action.DELETE_BOOK";
     public static final String EAN = "it.jaschke.alexandria.services.extra.EAN";
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({BOOK_STATUS_OK, BOOK_STATUS_SERVER_DOWN, BOOK_STATUS_SERVER_INVALID,
+            BOOK_STATUS_UNKNOWN, BOOK_STATUS_NOT_FOUND})
+    public @interface BookStatus {}
+
+    public static final int BOOK_STATUS_OK = 0;
+    public static final int BOOK_STATUS_SERVER_DOWN = 1;
+    public static final int BOOK_STATUS_SERVER_INVALID = 2;
+    public static final int BOOK_STATUS_UNKNOWN = 3;
+//    public static final int BOOK_STATUS_INVALID = 4;
+    public static final int BOOK_STATUS_NOT_FOUND = 5;
 
     public BookService() {
         super("Alexandria");
@@ -97,6 +113,7 @@ public class BookService extends IntentService {
 
         try {
             final String FORECAST_BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
+//            final String FORECAST_BASE_URL = "https://www.google.c?";
             final String QUERY_PARAM = "q";
 
             final String ISBN_PARAM = "isbn:" + ean;
@@ -105,6 +122,7 @@ public class BookService extends IntentService {
                     .appendQueryParameter(QUERY_PARAM, ISBN_PARAM)
                     .build();
 
+//            Log.v(LOG_TAG, "fetchBook, " + "url = [" + builtUri.toString()+ "]");
             URL url = new URL(builtUri.toString());
 
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -125,11 +143,14 @@ public class BookService extends IntentService {
             }
 
             if (buffer.length() == 0) {
+                setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_DOWN);
                 return;
             }
             bookJsonString = buffer.toString();
-        } catch (Exception e) {
+        } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
+            setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_DOWN);
+            return;
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -139,12 +160,14 @@ public class BookService extends IntentService {
                     reader.close();
                 } catch (final IOException e) {
                     Log.e(LOG_TAG, "Error closing stream", e);
+                    // data should be viewable - server not down, just strange
+                    // setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_DOWN);
                 }
             }
-
         }
 
         final String ITEMS = "items";
+        final String TOTAL_ITEMS = "totalItems";
 
         final String VOLUME_INFO = "volumeInfo";
 
@@ -156,16 +179,35 @@ public class BookService extends IntentService {
         final String IMG_URL_PATH = "imageLinks";
         final String IMG_URL = "thumbnail";
 
+        Log.v(LOG_TAG, "fetchBook, " + "bookJsonString= [" + bookJsonString+ "]");
+
         try {
             JSONObject bookJson = new JSONObject(bookJsonString);
             JSONArray bookArray;
             if(bookJson.has(ITEMS)){
                 bookArray = bookJson.getJSONArray(ITEMS);
-            }else{
-                Intent messageIntent = new Intent(Constants.ACTION_MESSAGE_EVENT);
-                messageIntent.putExtra(Constants.EXTRA_MESSAGE_KEY,getResources().getString(R.string.not_found));
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
+            } else {
+                String totalItems = null;
+                if (bookJson.has(TOTAL_ITEMS)) {
+                    totalItems = bookJson.getString(TOTAL_ITEMS);
+                }
+                if (totalItems != null && "0".equals(totalItems)) {
+                    // no book found
+                    Log.v(LOG_TAG, "fetchBook, " + "no book found");
+                    setBookStatus(getApplicationContext(), BOOK_STATUS_NOT_FOUND);
+                } else {
+                    // no valid answer
+                    Log.v(LOG_TAG, "fetchBook, " + "no valid answer");
+                    setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_INVALID);
+                }
                 return;
+//            } else {
+//                Intent messageIntent = new Intent(Constants.ACTION_MESSAGE_EVENT);
+//                messageIntent.putExtra(Constants.EXTRA_MESSAGE_KEY,
+//                                  getResources().getString(R.string.not_found));
+//                LocalBroadcastManager.getInstance(
+//                        getApplicationContext()).sendBroadcast(messageIntent);
+//                return;
             }
 
             JSONObject bookInfo = ((JSONObject) bookArray.get(0)).getJSONObject(VOLUME_INFO);
@@ -195,9 +237,11 @@ public class BookService extends IntentService {
             if(bookInfo.has(CATEGORIES)){
                 writeBackCategories(ean,bookInfo.getJSONArray(CATEGORIES) );
             }
+            setBookStatus(getApplicationContext(), BOOK_STATUS_OK);
 
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "Error ", e);
+//            Log.e(LOG_TAG, "Error ", e);
+            setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_INVALID);
         }
     }
 
@@ -229,5 +273,12 @@ public class BookService extends IntentService {
             getContentResolver().insert(AlexandriaContract.CategoryEntry.CONTENT_URI, values);
             values= new ContentValues();
         }
+    }
+
+    private static void setBookStatus(Context c, @BookStatus int bookStatus) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putInt(Constants.PREF_BOOK_STATUS, bookStatus);
+        spe.commit();
     }
  }

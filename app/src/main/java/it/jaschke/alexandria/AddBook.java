@@ -31,7 +31,7 @@ import it.jaschke.alexandria.services.Utility;
 // https://github.com/journeyapps/zxing-android-embedded
 
 
-public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String LOG_TAG = AddBook.class.getName();
     private EditText mEanView;
@@ -102,6 +102,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 }
 
                 // editText limited to 13 characters
+                clearFields();
 
                 //Once we have an ISBN, start a book intent
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
@@ -130,12 +131,14 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         mRootView.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.v(LOG_TAG, "onClick, " + "view = [" + view + "]");
+                Log.v(LOG_TAG, "conClick, " + "view = [" + view + "]");
                 if (mBookTitle != null) {
                     Toast.makeText(getActivity(),
                             mBookTitle + getString(R.string.added_to_list),
                             Toast.LENGTH_LONG).show();
-                    //  TODO: better?
+                    //  TODO: how to check if list contains item?
+                    // add vs already contains
+                    Utility.resetBookStatus(getActivity());
                     clearFields();
                 }
 
@@ -152,12 +155,13 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 bookIntent.setAction(BookService.DELETE_BOOK);
                 getActivity().startService(bookIntent);
                 mEanView.setText("");
+                clearFields();
             }
         });
 
         if(savedInstanceState!=null){
             mEanView.setText(savedInstanceState.getString(Constants.STATE_EAN_CONTENT));
-            mEanView.setHint("");
+//            mEanView.setHint("");
         }
 
         return mRootView;
@@ -224,7 +228,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
         Log.v(LOG_TAG, "onLoadFinished, " + "loader = [" + loader + "], data = [" + data + "]");
-        if (!data.moveToFirst()) {
+        if (!data.moveToFirst()) {  //empty
+            Log.v(LOG_TAG, "onLoadFinished - empty loader");
+            updateErrorView();
             return;
         }
 
@@ -271,9 +277,56 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         mRootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
     }
 
-    public void setIsbn(String isbn) {
-        if (mEanView != null) {
-            mEanView.setText(isbn);
+    private void updateErrorView() {
+
+        TextView tv = (TextView) getView().findViewById(R.id.bookTitle);
+        TextView subTv = (TextView) getView().findViewById(R.id.bookSubTitle);
+        if (tv != null && subTv != null) {
+            int detailedMessage = R.string.status_empty;
+            boolean errorHappened = false;
+            // first test network
+            if (!Utility.isNetworkAvailable(getActivity())) {
+                Log.v(LOG_TAG, "updateErrorView, " + "no network");
+                detailedMessage = R.string.status_no_network;
+                errorHappened = true;
+            } else {
+                // then check against all sorts of other errors
+                @BookService.BookStatus int status = Utility.getBookStatus(getActivity());
+                switch (status) {
+                    case BookService.BOOK_STATUS_SERVER_DOWN:
+                        detailedMessage = R.string.status_server_down;
+                        errorHappened = true;
+                        Log.v(LOG_TAG, "updateErrorView, " + "server down");
+                        break;
+                    case BookService.BOOK_STATUS_SERVER_INVALID:
+                        detailedMessage = R.string.status_server_error;
+                        errorHappened = true;
+                        Log.v(LOG_TAG, "updateErrorView, " + "server invalid");
+                        break;
+//                    case BookService.BOOK_STATUS_INVALID:
+//                        detailedMessage = R.string.status_invalid_book;
+//                        errorHappened = true;
+//                        break;
+                    case BookService.BOOK_STATUS_NOT_FOUND:
+                        detailedMessage = R.string.status_book_not_found;
+                        errorHappened = true;
+                        Log.v(LOG_TAG, "updateErrorView, " + "no book found");
+                        break;
+                    default:
+                        Log.v(LOG_TAG, "updateErrorView, " + "other case, status=" + status);
+                }
+            }
+
+            if (errorHappened) {
+                tv.setText(R.string.status_no_information);
+                tv.setVisibility(View.VISIBLE);
+                subTv.setText(detailedMessage);
+                subTv.setVisibility(View.VISIBLE);
+                // reset state to unknown?
+                Log.v(LOG_TAG, "updateErrorView, " + "errorHappened, shown, resetting state");
+                Utility.resetBookStatus(getActivity());
+
+            }
         }
     }
 
@@ -283,4 +336,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         super.onAttach(activity);
         activity.setTitle(R.string.scan);
     }
+
+//    @Override
+//    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+//        if (Constants.PREF_BOOK_STATUS.equals(s)) {
+//            updateErrorView();
+//        }
+//    }
 }
