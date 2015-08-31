@@ -38,6 +38,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     // TODO: database handling: 2 books of an author, delete one - does author still exist?
 
     public BookDetail(){
+//        Log.v(LOG_TAG, "BookDetail, " + this.hashCode());
     }
 
     @Override

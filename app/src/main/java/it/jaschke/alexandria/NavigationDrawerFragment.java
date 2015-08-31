@@ -55,11 +55,12 @@ public class NavigationDrawerFragment extends Fragment {
     private ListView mDrawerListView;
     private View mFragmentContainerView;
 
-    private int mCurrentSelectedPosition = 0;
+    private int mCurrentSelectedPosition = ListView.INVALID_POSITION;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
     public NavigationDrawerFragment() {
+//        Log.v(LOG_TAG, "NavigationDrawerFragment, " + this.hashCode());
     }
 
     @Override
@@ -82,8 +83,8 @@ public class NavigationDrawerFragment extends Fragment {
             Log.v(LOG_TAG, "onCreate - new, "
                     + "savedInstanceState = [" + savedInstanceState + "]");
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            mCurrentSelectedPosition = Integer.parseInt(prefs.getString("pref_startFragment","0"));
-            selectItem(mCurrentSelectedPosition);
+            int position = Integer.parseInt(prefs.getString("pref_startFragment","0"));
+            selectItem(position);
         }
 
     }
@@ -209,15 +210,25 @@ public class NavigationDrawerFragment extends Fragment {
 
     private void selectItem(int position) {
         Log.v(LOG_TAG, "selectItem, " + "position = [" + position + "]");
-        mCurrentSelectedPosition = position;
-        if (mDrawerListView != null) {
-            mDrawerListView.setItemChecked(position, true);
-        }
+        // fragments are recreated, even if same fragment is selected in navigation
+
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
-        if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
+
+        if (mCurrentSelectedPosition != position){
+            // other fragment selected
+            mCurrentSelectedPosition = position;
+            if (mDrawerListView != null) {
+                mDrawerListView.setItemChecked(position, true);
+            }
+
+            if (mCallbacks != null) {
+                mCallbacks.onNavigationDrawerItemSelected(position);
+            }
+        } else {
+            // same fragment selected
+            // different hashcode but ean remains - good enough
         }
     }
 

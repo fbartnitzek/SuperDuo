@@ -1,12 +1,16 @@
 package it.jaschke.alexandria;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -35,24 +39,44 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     private static final String LOG_TAG = AddBook.class.getName();
     private EditText mEanView;
-//    private Button mScanButton;
-//    private TextView mTitleView;
-//    private TextView mSubtitleView;
-//    private TextView mAuthorsView;
-//    private ImageView mCoverView;
-//    private TextView mCategoryView;
-//    private Button mDeleteButton;
-//    private Button mSaveButton;
 
     private final int LOADER_ID = 1;
     private View mRootView;
 
-
-//    private String mScanFormat = "Format:";
-//    private String mScanContents = "Contents:";
     private String mBookTitle;
 
     public AddBook(){
+//        Log.v(LOG_TAG, "AddBook, " + this.hashCode());
+    }
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Constants.ACTION_BROADCAST_BOOK_STATUS.equals(intent.getAction())) {
+                int status = intent.getIntExtra(Constants.EXTRA_BOOK_STATUS, -1);
+                Log.v(LOG_TAG, "onReceive, " + "status=" + status);
+                if (status != BookService.BOOK_STATUS_OK) {
+                    updateErrorView(status);
+                } else {
+                    // TODO: update book?
+                }
+            }
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+                mReceiver, new IntentFilter(Constants.ACTION_BROADCAST_BOOK_STATUS));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(
+                mReceiver);
+
     }
 
     @Override
@@ -88,20 +112,18 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             @Override
             public void afterTextChanged(Editable s) {
                 String ean = s.toString();
-//                Log.v(LOG_TAG, "afterTextChanged, " + "s = [" + s + "]");
-                //catch isbn10 numbers
+
+                // convert isbn-10
                 if (ean.length() == 10 && !ean.startsWith("978")) {
                     ean = "978" + ean;
-//                    Log.v(LOG_TAG, "afterTextChanged - converted isbn10 to " + ean);
                 }
 
                 if (ean.length() < 13) {
-                    // TODO: clean fields on ok ...
-//                    clearFields();
                     return;
                 }
 
-                // editText limited to 13 characters
+                // editText limited to 13 characters - no validation needed
+                // maybe except hash-function... :-)
                 clearFields();
 
                 //Once we have an ISBN, start a book intent
@@ -138,7 +160,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                             Toast.LENGTH_LONG).show();
                     //  TODO: how to check if list contains item?
                     // add vs already contains
-                    Utility.resetBookStatus(getActivity());
+//                    Utility.resetBookStatus(getActivity());
                     clearFields();
                 }
 
@@ -230,7 +252,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         Log.v(LOG_TAG, "onLoadFinished, " + "loader = [" + loader + "], data = [" + data + "]");
         if (!data.moveToFirst()) {  //empty
             Log.v(LOG_TAG, "onLoadFinished - empty loader");
-            updateErrorView();
+//            updateErrorView();
             return;
         }
 
@@ -277,10 +299,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         mRootView.findViewById(R.id.delete_button).setVisibility(View.INVISIBLE);
     }
 
-    private void updateErrorView() {
+    private void updateErrorView(int status) {
 
         TextView tv = (TextView) getView().findViewById(R.id.bookTitle);
         TextView subTv = (TextView) getView().findViewById(R.id.bookSubTitle);
+        ImageView imgv = (ImageView) getView().findViewById(R.id.bookCover);
         if (tv != null && subTv != null) {
             int detailedMessage = R.string.status_empty;
             boolean errorHappened = false;
@@ -291,7 +314,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 errorHappened = true;
             } else {
                 // then check against all sorts of other errors
-                @BookService.BookStatus int status = Utility.getBookStatus(getActivity());
                 switch (status) {
                     case BookService.BOOK_STATUS_SERVER_DOWN:
                         detailedMessage = R.string.status_server_down;
@@ -303,10 +325,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                         errorHappened = true;
                         Log.v(LOG_TAG, "updateErrorView, " + "server invalid");
                         break;
-//                    case BookService.BOOK_STATUS_INVALID:
-//                        detailedMessage = R.string.status_invalid_book;
-//                        errorHappened = true;
-//                        break;
+                    case BookService.BOOK_STATUS_UNKNOWN:
+                        detailedMessage = R.string.status_unknown_error;
+                        errorHappened = true;
+                        break;
                     case BookService.BOOK_STATUS_NOT_FOUND:
                         detailedMessage = R.string.status_book_not_found;
                         errorHappened = true;
@@ -318,13 +340,15 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             }
 
             if (errorHappened) {
+                clearFields();
                 tv.setText(R.string.status_no_information);
                 tv.setVisibility(View.VISIBLE);
                 subTv.setText(detailedMessage);
                 subTv.setVisibility(View.VISIBLE);
-                // reset state to unknown?
+                imgv.setImageResource(android.R.drawable.stat_notify_error);
+                imgv.setVisibility(View.VISIBLE);
                 Log.v(LOG_TAG, "updateErrorView, " + "errorHappened, shown, resetting state");
-                Utility.resetBookStatus(getActivity());
+
 
             }
         }

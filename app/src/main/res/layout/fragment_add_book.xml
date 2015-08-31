@@ -27,16 +27,23 @@
                 android:maxLength="@integer/ean_size"
                 android:maxLines="1"
                 android:hint="@string/input_hint"
-                android:paddingRight="20dp"/>
+                android:contentDescription="@string/input_hint"
+                android:paddingRight="20dp"
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="20dp"
+                />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/scan_button"
+                android:contentDescription="@string/content_desc_button_scan"
                 android:id="@+id/scan_button"/>
 
         </LinearLayout>
 
+        <!-- TODO: some contentDescription-prefixes for title / author / ... -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,6 +53,7 @@
             android:textStyle="bold"
             android:layout_marginTop="25dp"
             android:paddingRight="20dp"
+            android:paddingEnd="20dp"
             android:layout_below="@+id/eancontainer"
             android:layout_alignLeft="@+id/eancontainer"
             android:layout_alignStart="@+id/eancontainer"/>
@@ -59,6 +67,7 @@
             android:maxLines="3"
             android:ellipsize="end"
             android:layout_alignLeft="@+id/eancontainer"
+            android:layout_alignStart="@+id/eancontainer"
             />
 
         <TextView
@@ -108,6 +117,8 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:id="@+id/delete_button"
                 android:drawableLeft="@drawable/ic_action_discard"
+                android:drawableStart="@drawable/ic_action_discard"
+                android:contentDescription="@string/content_desc_button_cancel"
                 android:visibility="invisible"
                 />
 
@@ -119,6 +130,8 @@
                 android:layout_weight="1"
                 android:id="@+id/save_button"
                 android:drawableLeft="@drawable/ic_action_accept"
+                android:drawableStart="@drawable/ic_action_accept"
+                android:contentDescription="@string/content_desc_button_next"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_gravity="bottom"
                 />

@@ -4,11 +4,10 @@ import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -100,7 +99,7 @@ public class BookService extends IntentService {
                 null  // sort order
         );
 
-        if(bookEntry.getCount()>0){
+        if(bookEntry.getCount()>0){ //book already in list!
             bookEntry.close();
             return;
         }
@@ -143,13 +142,15 @@ public class BookService extends IntentService {
             }
 
             if (buffer.length() == 0) {
-                setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_DOWN);
+                broadcastBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_DOWN);
+//                setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_DOWN);
                 return;
             }
             bookJsonString = buffer.toString();
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
-            setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_DOWN);
+//            setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_DOWN);
+            broadcastBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_DOWN);
             return;
         } finally {
             if (urlConnection != null) {
@@ -187,22 +188,26 @@ public class BookService extends IntentService {
             if(bookJson.has(ITEMS)){
                 bookArray = bookJson.getJSONArray(ITEMS);
             } else {
+                // not really fluent and reactive - try intent
                 String totalItems = null;
                 if (bookJson.has(TOTAL_ITEMS)) {
                     totalItems = bookJson.getString(TOTAL_ITEMS);
                 }
+
                 if (totalItems != null && "0".equals(totalItems)) {
                     // no book found
                     Log.v(LOG_TAG, "fetchBook, " + "no book found");
-                    setBookStatus(getApplicationContext(), BOOK_STATUS_NOT_FOUND);
+//                    setBookStatus(getApplicationContext(), BOOK_STATUS_NOT_FOUND);
+                    broadcastBookStatus(getApplicationContext(), BOOK_STATUS_NOT_FOUND);
                 } else {
                     // no valid answer
                     Log.v(LOG_TAG, "fetchBook, " + "no valid answer");
-                    setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_INVALID);
+//                    setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_INVALID);
+                    broadcastBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_INVALID);
                 }
                 return;
 //            } else {
-//                Intent messageIntent = new Intent(Constants.ACTION_MESSAGE_EVENT);
+//                Intent messageIntent = new Intent(Constants.ACTION_BROADCAST_BOOK_STATUS);
 //                messageIntent.putExtra(Constants.EXTRA_MESSAGE_KEY,
 //                                  getResources().getString(R.string.not_found));
 //                LocalBroadcastManager.getInstance(
@@ -237,11 +242,12 @@ public class BookService extends IntentService {
             if(bookInfo.has(CATEGORIES)){
                 writeBackCategories(ean,bookInfo.getJSONArray(CATEGORIES) );
             }
-            setBookStatus(getApplicationContext(), BOOK_STATUS_OK);
-
+//            setBookStatus(getApplicationContext(), BOOK_STATUS_OK);
+            broadcastBookStatus(getApplicationContext(), BOOK_STATUS_OK);
         } catch (JSONException e) {
 //            Log.e(LOG_TAG, "Error ", e);
-            setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_INVALID);
+//            setBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_INVALID);
+            broadcastBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_INVALID);
         }
     }
 
@@ -275,10 +281,19 @@ public class BookService extends IntentService {
         }
     }
 
-    private static void setBookStatus(Context c, @BookStatus int bookStatus) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        SharedPreferences.Editor spe = sp.edit();
-        spe.putInt(Constants.PREF_BOOK_STATUS, bookStatus);
-        spe.commit();
+//    private static void setBookStatus(Context c, @BookStatus int bookStatus) {
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+//        SharedPreferences.Editor spe = sp.edit();
+//        spe.putInt(Constants.PREF_BOOK_STATUS, bookStatus);
+//        spe.commit();
+//    }
+
+    private void broadcastBookStatus(Context c, @BookStatus int bookStatus){
+        Intent messageIntent = new Intent(Constants.ACTION_BROADCAST_BOOK_STATUS);
+        messageIntent.putExtra(Constants.EXTRA_BOOK_STATUS, bookStatus);
+//        messageIntent.putExtra(Constants.EXTRA_MESSAGE_KEY,
+//            c.getResources().getString(R.string.not_found));
+        Log.v(LOG_TAG, "broadcastBookStatus, bookStatus = [" + bookStatus + "]");
+        LocalBroadcastManager.getInstance(c).sendBroadcast(messageIntent);
     }
  }

@@ -1,7 +1,5 @@
 package it.jaschke.alexandria;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import it.jaschke.alexandria.api.Callback;
 
@@ -29,17 +26,13 @@ public class MainActivity extends ActionBarActivity implements
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment navigationDrawerFragment;
-//    private static final String LOG_TAG = MainActivity.class.getName();
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence title;
     public static boolean IS_TABLET = false;
-//    private BroadcastReceiver messageReciever;
 
-//    public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
-//    public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +47,6 @@ public class MainActivity extends ActionBarActivity implements
         }
 
         // IntentFilter and Receiver useless?
-//        messageReciever = new MessageReciever();
-//        IntentFilter filter = new IntentFilter(Constants.ACTION_MESSAGE_EVENT);
-//        LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever,filter);
 
         navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -144,7 +134,6 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     protected void onDestroy() {
         Log.v(LOG_TAG, "onDestroy, " + "");
-//        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReciever);
         super.onDestroy();
     }
 
@@ -166,18 +155,6 @@ public class MainActivity extends ActionBarActivity implements
                 .addToBackStack("Book Detail")
                 .commit();
 
-    }
-
-    private class MessageReciever extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // TODO: seems to be shown also on next book-scan ...
-            Log.v(LOG_TAG, "onReceive, " + "context = [" + context + "], intent = [" + intent + "]");
-            if(intent.getStringExtra(Constants.EXTRA_MESSAGE_KEY)!=null){
-                Toast.makeText(MainActivity.this,
-                        intent.getStringExtra(Constants.EXTRA_MESSAGE_KEY), Toast.LENGTH_LONG).show();
-            }
-        }
     }
 
     public void goBack(View view){
