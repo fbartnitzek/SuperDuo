@@ -55,10 +55,15 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             if (Constants.ACTION_BROADCAST_BOOK_STATUS.equals(intent.getAction())) {
                 int status = intent.getIntExtra(Constants.EXTRA_BOOK_STATUS, -1);
                 Log.v(LOG_TAG, "onReceive, " + "status=" + status);
-                if (status != BookService.BOOK_STATUS_OK) {
+
+                if (status == BookService.BOOK_STATUS_ALREADY_STORED){
+
+                    Toast.makeText(getActivity(), getString(R.string.book_already_stored),
+                            Toast.LENGTH_LONG).show();
+
+                } else if (status != BookService.BOOK_STATUS_OK) {
+
                     updateErrorView(status);
-                } else {
-                    // TODO: update book?
                 }
             }
         }
@@ -158,9 +163,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     Toast.makeText(getActivity(),
                             mBookTitle + getString(R.string.added_to_list),
                             Toast.LENGTH_LONG).show();
-                    //  TODO: how to check if list contains item?
-                    // add vs already contains
-//                    Utility.resetBookStatus(getActivity());
                     clearFields();
                 }
 
@@ -252,7 +254,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         Log.v(LOG_TAG, "onLoadFinished, " + "loader = [" + loader + "], data = [" + data + "]");
         if (!data.moveToFirst()) {  //empty
             Log.v(LOG_TAG, "onLoadFinished - empty loader");
-//            updateErrorView();
             return;
         }
 
@@ -348,8 +349,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 imgv.setImageResource(android.R.drawable.stat_notify_error);
                 imgv.setVisibility(View.VISIBLE);
                 Log.v(LOG_TAG, "updateErrorView, " + "errorHappened, shown, resetting state");
-
-
             }
         }
     }
@@ -361,10 +360,4 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         activity.setTitle(R.string.scan);
     }
 
-//    @Override
-//    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-//        if (Constants.PREF_BOOK_STATUS.equals(s)) {
-//            updateErrorView();
-//        }
-//    }
 }

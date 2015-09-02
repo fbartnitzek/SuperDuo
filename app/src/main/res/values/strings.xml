@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Alexandria</string>
 
     <!-- Menu Items -->
@@ -37,6 +37,7 @@
     <string name="status_server_down">The server is not returning data.</string>
     <string name="status_server_error">The server is not returning valid data. Please check for an updated version of alexandria.</string>
     <string name="status_book_not_found">The ISBN is not recognized by the book server.</string>
+    <string name="book_already_stored">The list contains the book already!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
