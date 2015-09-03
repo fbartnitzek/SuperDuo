@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.data.AlexandriaContract;
-import it.jaschke.alexandria.services.DownloadImage;
+import it.jaschke.alexandria.services.Utility;
 
 /**
  * Created by saj on 11/01/15.
@@ -21,6 +21,8 @@ import it.jaschke.alexandria.services.DownloadImage;
 public class BookListAdapter extends CursorAdapter {
 
     private static final String LOG_TAG = BookListAdapter.class.getName();
+//    private static DownloadImage downloadImage;
+//    private Context mContext;
 
 
     public static class ViewHolder {
@@ -36,6 +38,7 @@ public class BookListAdapter extends CursorAdapter {
     }
 
     public BookListAdapter(Context context, Cursor c, int flags) {
+//        mContext = context;
         super(context, c, flags);
         Log.v(LOG_TAG, "BookListAdapter, " + "context = [" + context + "], c = [" + c
                 + "], flags = [" + flags + "]");
@@ -48,7 +51,18 @@ public class BookListAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         String imgUrl = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        new DownloadImage(viewHolder.bookCover).execute(imgUrl);
+        Utility.insertImage(mContext, imgUrl, viewHolder.bookCover);
+//        Glide.with(mContext)
+//                .load(imgUrl)
+//                .asBitmap()
+//                .error(R.drawable.ic_launcher)
+//                .fitCenter()
+//                .into(viewHolder.bookCover);
+
+        //to slow
+//        downloadImage.download(ge);
+
+//        new DownloadImage(viewHolder.bookCover).execute(imgUrl);
 
         String bookTitle = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         viewHolder.bookTitle.setText(bookTitle);

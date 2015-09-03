@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
-import it.jaschke.alexandria.services.DownloadImage;
 import it.jaschke.alexandria.services.Utility;
 
 
@@ -33,7 +32,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     private View mRootView;
     private String ean;
     private String mBookTitle;
-    private ShareActionProvider shareActionProvider;
+    private ShareActionProvider mShareActionProvider;
 
     // TODO: database handling: 2 books of an author, delete one - does author still exist?
 
@@ -83,7 +82,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         Log.v(LOG_TAG, "onCreateOptionsMenu, " + "menu = [" + menu + "], inflater = [" + inflater + "]");
 
         MenuItem menuItem = menu.findItem(R.id.action_share);
-        shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
     }
 
     @Override
@@ -109,12 +108,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         mBookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         ((TextView) mRootView.findViewById(R.id.fullBookTitle)).setText(mBookTitle);
 
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + mBookTitle);
-        shareActionProvider.setShareIntent(shareIntent);
-
         String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
         ((TextView) mRootView.findViewById(R.id.fullBookSubTitle)).setText(bookSubTitle);
 
@@ -130,8 +123,11 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
-            new DownloadImage((ImageView) mRootView.findViewById(R.id.fullBookCover)).execute(imgUrl);
-            mRootView.findViewById(R.id.fullBookCover).setVisibility(View.VISIBLE);
+
+            ImageView bookCover = (ImageView) mRootView.findViewById(R.id.fullBookCover);
+            Utility.insertImage(getActivity(), imgUrl, bookCover);
+            // new DownloadImage((ImageView) mRootView.findViewById(R.id.fullBookCover)).execute(imgUrl);
+            bookCover.setVisibility(View.VISIBLE);
         }
 
         String categories = data.getString(
@@ -142,6 +138,18 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
             mRootView.findViewById(R.id.backButton).setVisibility(View.INVISIBLE);
         }
 
+        if (mShareActionProvider != null){
+            shareBook();
+        }
+
+    }
+
+    private void shareBook() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + mBookTitle);
+        mShareActionProvider.setShareIntent(shareIntent);
     }
 
     @Override

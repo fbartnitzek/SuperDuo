@@ -28,7 +28,6 @@ import com.google.zxing.integration.android.IntentResult;
 
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
-import it.jaschke.alexandria.services.DownloadImage;
 import it.jaschke.alexandria.services.Utility;
 
 // integrated scanner:
@@ -272,8 +271,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
-            new DownloadImage((ImageView) mRootView.findViewById(R.id.bookCover)).execute(imgUrl);
-            mRootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
+            ImageView bookCover = (ImageView) mRootView.findViewById(R.id.bookCover);
+            Utility.insertImage(getActivity(), imgUrl, bookCover);
+//            new DownloadImage(bookCover).execute(imgUrl);
+            bookCover.setVisibility(View.VISIBLE);
         }
 
         String categories = data.getString(

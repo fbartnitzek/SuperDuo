@@ -25,7 +25,7 @@ public class MainActivity extends ActionBarActivity implements
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
-    private NavigationDrawerFragment navigationDrawerFragment;
+    private NavigationDrawerFragment mNavigationDrawerFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -48,12 +48,12 @@ public class MainActivity extends ActionBarActivity implements
 
         // IntentFilter and Receiver useless?
 
-        navigationDrawerFragment = (NavigationDrawerFragment)
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         title = getTitle();
 
         // Set up the drawer.
-        navigationDrawerFragment.setUp(R.id.navigation_drawer,
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
@@ -62,26 +62,49 @@ public class MainActivity extends ActionBarActivity implements
 
         Log.v(LOG_TAG, "onNavigationDrawerItemSelected, position " + position);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment nextFragment;
+        Fragment nextFragment = positionToFragment(position);
 
-        switch (position) {
-            default:
-            case 0:
-                nextFragment = new ListOfBooks();
-                break;
-            case 1:
-                nextFragment = new AddBook();
-                break;
-            case 2:
-                nextFragment = new About();
-                break;
+//        hideKeyboard();   //seems to do something wrong...
 
+        if (nextFragment != null){
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, nextFragment)
+                    .addToBackStack(nextFragment.getClass().getSimpleName())
+                    .commit();
         }
+    }
 
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, nextFragment)
-                .addToBackStack((String) title)
-                .commit();
+//    void hideKeyboard(){
+//        //http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        if (getCurrentFocus()!=null){
+//            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+//        }
+//    }
+
+    private Fragment positionToFragment (int position){
+        switch (position) {
+            case 0:
+                return new ListOfBooks();
+            case 1:
+                return new AddBook();
+            case 2:
+                return new About();
+            default:
+                return null;
+        }
+    }
+
+    private int fragmentToPosition (String name){
+        if (ListOfBooks.class.getSimpleName().equals(name)){
+            return 0;
+        } else if (AddBook.class.getSimpleName().equals(name)){
+            return 1;
+        } else if (About.class.getSimpleName().equals(name)){
+            return 2;
+        } else {
+            return -1;
+        }
     }
 
     public void setTitle(int titleId) {
@@ -105,7 +128,7 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.v(LOG_TAG, "onCreateOptionsMenu, " + "menu = [" + menu + "]");
-        if (!navigationDrawerFragment.isDrawerOpen()) {
+        if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
@@ -171,11 +194,29 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public void onBackPressed() {
-        Log.v(LOG_TAG, "onBackPressed, " + "");
-        if(getSupportFragmentManager().getBackStackEntryCount()<2){
+        FragmentManager fm = getSupportFragmentManager();
+        logBackStack(fm);
+        if(fm.getBackStackEntryCount()<2){
             finish();
+        } else if (mNavigationDrawerFragment != null){
+            int i = fragmentToPosition(
+                        fm.getBackStackEntryAt(fm.getBackStackEntryCount() -2).getName());
+            if (i>=0){
+                mNavigationDrawerFragment.setSelectedItem(i);
+            }
         }
+
         super.onBackPressed();
+    }
+
+    private void logBackStack(FragmentManager fm) {
+        for (int i=0; i<fm.getBackStackEntryCount();++i){
+            Log.v(LOG_TAG, "logBackStack, position " + i + ": "
+                    + fm.getBackStackEntryAt(i).getName());
+        }
+        if (fm.getBackStackEntryCount()==0){
+            Log.v(LOG_TAG, "logBackStack, no backstack");
+        }
     }
 
 

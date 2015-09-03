@@ -13,4 +13,5 @@ public class Constants {
 
     public static final String EXTRA_BOOK_STATUS = "EXTRA_BOOK_STATUS";
 
+    public static final String STATE_SEARCH_TEXT = "STATE_SEARCH_TEXT";
 }

@@ -45,4 +45,9 @@
     <string name="content_desc_button_next">button next</string>
     <string name="content_desc_button_cancel">button cancel</string>
     <string name="content_desc_button_scan">button scan</string>
+    <string name="sample_title">some medium long title</string>
+    <string name="sample_subtitle">longer than usual subtitle - seems to be expressive</string>
+    <string name="sample_description">a bit of description here, not really long, but long enough for same carriage returns and line feeds - i hope</string>
+    <string name="sample_categories">some categories, might be longer than 1 line</string>
+    <string name="sample_authors">not just one author, more are better</string>
 </resources>

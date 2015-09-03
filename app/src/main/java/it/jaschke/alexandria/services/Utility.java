@@ -4,7 +4,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import it.jaschke.alexandria.R;
 
@@ -50,6 +53,15 @@ public class Utility {
 //                BookService.BOOK_STATUS_UNKNOWN);
 //        spe.apply();
 //    }
+
+    public static void insertImage(Context context, String imgUrl, ImageView imgView){
+        Glide.with(context)
+                .load(imgUrl)
+                .asBitmap()
+                .error(R.drawable.ic_launcher)
+                .fitCenter()
+                .into(imgView);
+    }
 
     static public boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(

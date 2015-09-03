@@ -178,6 +178,8 @@ public class NavigationDrawerFragment extends Fragment {
                     return;
                 }
 
+//                hideKeyboard();
+
                 if (!mUserLearnedDrawer) {
                     // The user manually opened the drawer; store this flag to prevent auto-showing
                     // the navigation drawer automatically in the future.
@@ -210,7 +212,6 @@ public class NavigationDrawerFragment extends Fragment {
 
     private void selectItem(int position) {
         Log.v(LOG_TAG, "selectItem, " + "position = [" + position + "]");
-        // fragments are recreated, even if same fragment is selected in navigation
 
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
@@ -218,10 +219,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         if (mCurrentSelectedPosition != position){
             // other fragment selected
-            mCurrentSelectedPosition = position;
-            if (mDrawerListView != null) {
-                mDrawerListView.setItemChecked(position, true);
-            }
+            setSelectedItem(position);
 
             if (mCallbacks != null) {
                 mCallbacks.onNavigationDrawerItemSelected(position);
@@ -231,6 +229,13 @@ public class NavigationDrawerFragment extends Fragment {
             // different hashcode but ean remains - good enough
         }
     }
+
+//    private void hideKeyboard(){
+//        //http://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+//        InputMethodManager imm = (InputMethodManager)getActivity().
+//                getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+//    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -305,10 +310,18 @@ public class NavigationDrawerFragment extends Fragment {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 
+    public void setSelectedItem(int position) {
+        mCurrentSelectedPosition = position;
+        if (mDrawerListView != null) {
+            mDrawerListView.setItemChecked(position, true);
+        }
+
+    }
+
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-    public static interface NavigationDrawerCallbacks {
+    public interface NavigationDrawerCallbacks {
         /**
          * Called when an item in the navigation drawer is selected.
          */

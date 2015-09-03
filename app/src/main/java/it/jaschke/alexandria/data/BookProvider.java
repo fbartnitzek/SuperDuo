@@ -30,6 +30,8 @@ public class BookProvider extends ContentProvider {
 
     private DbHelper dbHelper;
 
+    private static final String LOG_TAG = BookProvider.class.getName();
+
     private static final SQLiteQueryBuilder bookFull;
 
     static{
@@ -80,6 +82,9 @@ public class BookProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
         Cursor retCursor;
+//        Log.v(LOG_TAG, "query, " + "uri = [" + uri + "], projection = [" + projection
+//                + "], selection = [" + selection + "], selectionArgs = [" + log(selectionArgs)
+//                + "], sortOrder = [" + sortOrder + "]");
         switch (uriMatcher.match(uri)) {
             case BOOK:
                 retCursor=dbHelper.getReadableDatabase().query(
@@ -207,6 +212,15 @@ public class BookProvider extends ContentProvider {
         return retCursor;
     }
 
+//    private String log(String[] selectionArgs) {
+//        String result = "";
+//        if (selectionArgs != null){
+//            for (int i = 0 ; i < selectionArgs.length ; ++i){
+//                result += selectionArgs[i];
+//            }
+//        }
+//        return result;
+//    }
 
 
     @Override

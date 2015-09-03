@@ -13,6 +13,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dip"
         android:layout_marginEnd="6dip"
+        android:src="@drawable/ic_launcher"
         android:contentDescription="@string/book_cover" />
 
     <TextView
