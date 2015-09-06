@@ -3,15 +3,18 @@ package barqsoft.footballscores;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 
 public class AboutActivity extends ActionBarActivity {
+    private static final String LOG_TAG = AboutActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         if (savedInstanceState == null) {
@@ -51,11 +54,13 @@ public class AboutActivity extends ActionBarActivity {
     public static class PlaceholderFragment extends Fragment {
 
         public PlaceholderFragment() {
+            Log.v(LOG_TAG, "PlaceholderFragment, " + "");
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
             return inflater.inflate(R.layout.fragment_about, container, false);
         }
     }
