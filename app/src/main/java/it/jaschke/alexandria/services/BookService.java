@@ -42,14 +42,15 @@ public class BookService extends IntentService {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({BOOK_STATUS_OK, BOOK_STATUS_SERVER_DOWN, BOOK_STATUS_SERVER_INVALID,
-            BOOK_STATUS_UNKNOWN, BOOK_STATUS_NOT_FOUND, BOOK_STATUS_ALREADY_STORED})
+            BOOK_STATUS_UNKNOWN, BOOK_STATUS_INVALID_ISBN, BOOK_STATUS_NOT_FOUND,
+            BOOK_STATUS_ALREADY_STORED})
     public @interface BookStatus {}
 
     public static final int BOOK_STATUS_OK = 0;
     public static final int BOOK_STATUS_SERVER_DOWN = 1;
     public static final int BOOK_STATUS_SERVER_INVALID = 2;
     public static final int BOOK_STATUS_UNKNOWN = 3;
-//    public static final int BOOK_STATUS_INVALID = 4;
+    public static final int BOOK_STATUS_INVALID_ISBN = 4;
     public static final int BOOK_STATUS_NOT_FOUND = 5;
     public static final int BOOK_STATUS_ALREADY_STORED = 6;
 
@@ -97,6 +98,7 @@ public class BookService extends IntentService {
             return;
 
         } else if (Utility.isNetworkAvailable(getApplicationContext())){
+
             String jsonBook = fetchJsonBook(ean);
 
             if (jsonBook != null){
@@ -208,6 +210,12 @@ public class BookService extends IntentService {
             if(bookJson.has(ITEMS)){
                 bookArray = bookJson.getJSONArray(ITEMS);
             } else {
+
+                if (!Utility.isValidISBN13(ean)){
+                    Log.v(LOG_TAG, "parseJsonAndStoreBook, invalid isbn");
+                    broadcastBookStatus(getApplicationContext(), BOOK_STATUS_INVALID_ISBN);
+                    return;
+                }
 
                 String totalItems = null;
                 if (bookJson.has(TOTAL_ITEMS)) {

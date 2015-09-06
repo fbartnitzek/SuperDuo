@@ -271,6 +271,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
+            //TODO: horrible size
             ImageView bookCover = (ImageView) mRootView.findViewById(R.id.bookCover);
             Utility.insertImage(getActivity(), imgUrl, bookCover);
 //            new DownloadImage(bookCover).execute(imgUrl);
@@ -326,6 +327,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                         detailedMessage = R.string.status_server_error;
                         errorHappened = true;
                         Log.v(LOG_TAG, "updateErrorView, " + "server invalid");
+                        break;
+                    case BookService.BOOK_STATUS_INVALID_ISBN:
+                        detailedMessage = R.string.status_invalid_isbn;
+                        errorHappened = true;
+                        Log.v(LOG_TAG, "updateErrorView, " + "isbn invalid");
                         break;
                     case BookService.BOOK_STATUS_UNKNOWN:
                         detailedMessage = R.string.status_unknown_error;

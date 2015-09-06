@@ -50,4 +50,5 @@
     <string name="sample_description">a bit of description here, not really long, but long enough for same carriage returns and line feeds - i hope</string>
     <string name="sample_categories">some categories, might be longer than 1 line</string>
     <string name="sample_authors">not just one author, more are better</string>
+    <string name="status_invalid_isbn">The entered ISBN seems to be invalid and is therefore not recognized by the book server.</string>
 </resources>
