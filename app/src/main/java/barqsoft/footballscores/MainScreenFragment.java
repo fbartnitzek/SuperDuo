@@ -14,17 +14,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import barqsoft.footballscores.service.myFetchService;
+import barqsoft.footballscores.data.DatabaseContract;
+import barqsoft.footballscores.service.FetchService;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainScreenFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    public scoresAdapter mAdapter;
+    public ScoresAdapter mAdapter;
     public static final int SCORES_LOADER = 0;
-    private String[] fragmentdate = new String[1];
+    private String[] fragmentDate = new String[1];
     private static final String LOG_TAG = MainScreenFragment.class.getName();
-    private int last_selected_item = -1;
+    private int lastSelectedItem = -1;
 
     public MainScreenFragment() {
         Log.v(LOG_TAG, "MainScreenFragment, " + "");
@@ -32,13 +33,13 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 
     private void updateScores() {
         Log.v(LOG_TAG, "updateScores, " + "");
-        Intent service_start = new Intent(getActivity(), myFetchService.class);
-        getActivity().startService(service_start);
+        Intent serviceStart = new Intent(getActivity(), FetchService.class);
+        getActivity().startService(serviceStart);
     }
 
     public void setFragmentDate(String date) {
         Log.v(LOG_TAG, "setFragmentDate, " + "date = [" + date + "]");
-        fragmentdate[0] = date;
+        fragmentDate[0] = date;
     }
 
     @Override
@@ -49,16 +50,16 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         updateScores();
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final ListView score_list = (ListView) rootView.findViewById(R.id.scores_list);
-        mAdapter = new scoresAdapter(getActivity(), null, 0);
+        mAdapter = new ScoresAdapter(getActivity(), null, 0);
         score_list.setAdapter(mAdapter);
         getLoaderManager().initLoader(SCORES_LOADER, null, this);
-        mAdapter.detail_match_id = MainActivity.selected_match_id;
+        mAdapter.detail_match_id = MainActivity.selectedMatchId;
         score_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ViewHolder selected = (ViewHolder) view.getTag();
                 mAdapter.detail_match_id = selected.matchId;
-                MainActivity.selected_match_id = (int) selected.matchId;
+                MainActivity.selectedMatchId = (int) selected.matchId;
                 mAdapter.notifyDataSetChanged();
             }
         });
@@ -69,7 +70,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         Log.v(LOG_TAG, "onCreateLoader, " + "i = [" + i + "], bundle = [" + bundle + "]");
         return new CursorLoader(getActivity(), DatabaseContract.scores_table.buildScoreWithDate(),
-                null, null, fragmentdate, null);
+                null, null, fragmentDate, null);
     }
 
     @Override

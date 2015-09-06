@@ -1,4 +1,4 @@
-package barqsoft.footballscores;
+package barqsoft.footballscores.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -39,8 +39,8 @@ public class ScoresProvider extends ContentProvider {
         return matcher;
     }
 
-    private int match_uri(Uri uri) {
-        Log.v(LOG_TAG, "match_uri, " + "uri = [" + uri + "]");
+    private int matchUri(Uri uri) {
+        Log.v(LOG_TAG, "matchUri, " + "uri = [" + uri + "]");
         String link = uri.toString();
         {
             if (link.contentEquals(DatabaseContract.BASE_CONTENT_URI.toString())) {
@@ -95,7 +95,7 @@ public class ScoresProvider extends ContentProvider {
                 + "], sortOrder = [" + sortOrder + "]");
         Cursor retCursor;
         //Log.v(FetchScoreTask.LOG_TAG,uri.getPathSegments().toString());
-        int match = match_uri(uri);
+        int match = matchUri(uri);
         //Log.v(FetchScoreTask.LOG_TAG,SCORES_BY_LEAGUE);
         //Log.v(FetchScoreTask.LOG_TAG,selectionArgs[0]);
         //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(match));
@@ -137,20 +137,20 @@ public class ScoresProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
-        Log.v(LOG_TAG, "bulkInsert, " + "uri = [" + uri + "], values = [" + values + "]");
+        Log.v(LOG_TAG, "bulkInsert, " + "uri = [" + uri + "], values = [" + splitValues(values) + "]");
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         //db.delete(DatabaseContract.SCORES_TABLE,null,null);
         //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(muriMatcher.match(uri)));
-        switch (match_uri(uri)) {
+        switch (matchUri(uri)) {
             case MATCHES:
                 db.beginTransaction();
-                int returncount = 0;
+                int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
                         long _id = db.insertWithOnConflict(DatabaseContract.SCORES_TABLE, null, value,
                                 SQLiteDatabase.CONFLICT_REPLACE);
                         if (_id != -1) {
-                            returncount++;
+                            returnCount++;
                         }
                     }
                     db.setTransactionSuccessful();
@@ -158,10 +158,19 @@ public class ScoresProvider extends ContentProvider {
                     db.endTransaction();
                 }
                 getContext().getContentResolver().notifyChange(uri, null);
-                return returncount;
+                return returnCount;
             default:
                 return super.bulkInsert(uri, values);
         }
+    }
+
+    private String splitValues(ContentValues[] values) {
+        String result = "";
+
+        for (ContentValues value : values){
+            result += value.toString() + ", ";
+        }
+        return result;
     }
 
     @Override

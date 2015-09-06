@@ -6,26 +6,30 @@ import android.util.Log;
  * Created by yehya khaled on 3/3/2015.
  */
 public class Utilies {
-    public static final int SERIE_A = 357;
-    public static final int PREMIER_LEGAUE = 354;
-    public static final int CHAMPIONS_LEAGUE = 362;
-    public static final int PRIMERA_DIVISION = 358;
-    public static final int BUNDESLIGA = 351;
+//    public static final int SERIE_A = 357;
+//    public static final int PREMIER_LEGAUE = 354;
+//    public static final int CHAMPIONS_LEAGUE = 362;
+//    public static final int PRIMERA_DIVISION = 358;
+//    public static final int BUNDESLIGA = 351;
     private static final String LOG_TAG = Utilies.class.getName();
 
     public static String getLeague(int league_num) {
         Log.v(LOG_TAG, "getLeague, " + "league_num = [" + league_num + "]");
         switch (league_num) {
-            case SERIE_A:
+            case Constants.SERIE_A:
                 return "Seria A";
-            case PREMIER_LEGAUE:
+            case Constants.PREMIER_LEAGUE:
                 return "Premier League";
-            case CHAMPIONS_LEAGUE:
+            case Constants.CHAMPIONS_LEAGUE:
                 return "UEFA Champions League";
-            case PRIMERA_DIVISION:
+            case Constants.PRIMERA_DIVISION:
                 return "Primera Division";
-            case BUNDESLIGA:
-                return "Bundesliga";
+            case Constants.BUNDESLIGA1:
+                return "1. Bundesliga";
+            case Constants.BUNDESLIGA2:
+                return "2. Bundesliga";
+            case Constants.BUNDESLIGA3:
+                return "3. Bundesliga";
             default:
                 return "Not known League Please report";
         }
@@ -33,7 +37,7 @@ public class Utilies {
 
     public static String getMatchDay(int match_day, int league_num) {
         Log.v(LOG_TAG, "getMatchDay, " + "match_day = [" + match_day + "], league_num = [" + league_num + "]");
-        if (league_num == CHAMPIONS_LEAGUE) {
+        if (league_num == Constants.CHAMPIONS_LEAGUE) {
             if (match_day <= 6) {
                 return "Group Stages, Matchday : 6";
             } else if (match_day == 7 || match_day == 8) {
@@ -53,7 +57,7 @@ public class Utilies {
     public static String getScores(int home_goals, int awaygoals) {
         Log.v(LOG_TAG, "getScores, " + "home_goals = [" + home_goals + "], awaygoals = [" + awaygoals + "]");
         if (home_goals < 0 || awaygoals < 0) {
-            return " - ";
+            return "?? - ??";
         } else {
             return String.valueOf(home_goals) + " - " + String.valueOf(awaygoals);
         }
@@ -88,6 +92,19 @@ public class Utilies {
                 return R.drawable.stoke_city;
             default:
                 return R.drawable.no_icon;
+        }
+    }
+
+    public static boolean isSupportedLeague(int league) {
+        if (league == Constants.PREMIER_LEAGUE ||
+                league == Constants.SERIE_A ||
+                league == Constants.BUNDESLIGA1 ||
+                league == Constants.BUNDESLIGA2 ||
+                league == Constants.PRIMERA_DIVISION ||
+                league == Constants.BUNDESLIGA3) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

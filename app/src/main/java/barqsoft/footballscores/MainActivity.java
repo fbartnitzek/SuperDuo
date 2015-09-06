@@ -8,8 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity {
-    public static int selected_match_id;
-    public static int current_fragment = 2;
+    public static int selectedMatchId;
+    public static int currentFragment = 2;
     private static final String LOG_TAG = MainActivity.class.getName();
     private final String save_tag = "Save Test";
     private PagerFragment my_main;
@@ -60,9 +60,9 @@ public class MainActivity extends ActionBarActivity {
         Log.v(LOG_TAG, "onSaveInstanceState, " + "outState = [" + outState + "]");
         Log.v(save_tag, "will save");
         Log.v(save_tag, "fragment: " + String.valueOf(my_main.mPagerHandler.getCurrentItem()));
-        Log.v(save_tag, "selected id: " + selected_match_id);
+        Log.v(save_tag, "selected id: " + selectedMatchId);
         outState.putInt("Pager_Current", my_main.mPagerHandler.getCurrentItem());
-        outState.putInt("Selected_match", selected_match_id);
+        outState.putInt("Selected_match", selectedMatchId);
         getSupportFragmentManager().putFragment(outState, "my_main", my_main);
         super.onSaveInstanceState(outState);
     }
@@ -73,8 +73,8 @@ public class MainActivity extends ActionBarActivity {
         Log.v(save_tag, "will retrive");
         Log.v(save_tag, "fragment: " + String.valueOf(savedInstanceState.getInt("Pager_Current")));
         Log.v(save_tag, "selected id: " + savedInstanceState.getInt("Selected_match"));
-        current_fragment = savedInstanceState.getInt("Pager_Current");
-        selected_match_id = savedInstanceState.getInt("Selected_match");
+        currentFragment = savedInstanceState.getInt("Pager_Current");
+        selectedMatchId = savedInstanceState.getInt("Selected_match");
         my_main = (PagerFragment) getSupportFragmentManager().getFragment(savedInstanceState, "my_main");
         super.onRestoreInstanceState(savedInstanceState);
     }
