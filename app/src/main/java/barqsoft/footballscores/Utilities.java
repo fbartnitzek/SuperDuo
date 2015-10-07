@@ -5,13 +5,13 @@ import android.util.Log;
 /**
  * Created by yehya khaled on 3/3/2015.
  */
-public class Utilies {
+public class Utilities {
 //    public static final int SERIE_A = 357;
 //    public static final int PREMIER_LEGAUE = 354;
 //    public static final int CHAMPIONS_LEAGUE = 362;
 //    public static final int PRIMERA_DIVISION = 358;
 //    public static final int BUNDESLIGA = 351;
-    private static final String LOG_TAG = Utilies.class.getName();
+    private static final String LOG_TAG = Utilities.class.getName();
 
     public static String getLeague(int league_num) {
         Log.v(LOG_TAG, "getLeague, " + "league_num = [" + league_num + "]");
@@ -95,16 +95,30 @@ public class Utilies {
         }
     }
 
-    public static boolean isSupportedLeague(int league) {
-        if (league == Constants.PREMIER_LEAGUE ||
-                league == Constants.SERIE_A ||
-                league == Constants.BUNDESLIGA1 ||
-                league == Constants.BUNDESLIGA2 ||
-                league == Constants.PRIMERA_DIVISION ||
-                league == Constants.BUNDESLIGA3) {
-            return true;
-        } else {
-            return false;
+    public static String extractTeamIdFromLink(String teamLink) {
+        //example: "http://api.football-data.org/alpha/teams/254"
+
+        if (teamLink != null) {
+            int pos = teamLink.lastIndexOf("/");
+            if (pos > 0) {
+                return teamLink.substring(pos + 1);
+            }
         }
+
+        return null;
+    }
+
+    public static boolean isSupportedLeague(int league) {
+//        if (league == Constants.PREMIER_LEAGUE ||
+//                league == Constants.SERIE_A ||
+//                league == Constants.BUNDESLIGA1 ||
+//                league == Constants.BUNDESLIGA2 ||
+//                league == Constants.PRIMERA_DIVISION ||
+//                league == Constants.BUNDESLIGA3) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+        return true;
     }
 }

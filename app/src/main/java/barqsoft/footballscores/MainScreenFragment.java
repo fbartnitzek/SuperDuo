@@ -1,6 +1,5 @@
 package barqsoft.footballscores;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import barqsoft.footballscores.data.DatabaseContract;
-import barqsoft.footballscores.service.FetchService;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -31,11 +29,11 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         Log.v(LOG_TAG, "MainScreenFragment, " + "");
     }
 
-    private void updateScores() {
-        Log.v(LOG_TAG, "updateScores, " + "");
-        Intent serviceStart = new Intent(getActivity(), FetchService.class);
-        getActivity().startService(serviceStart);
-    }
+//    private void updateScores() {
+//        Log.v(LOG_TAG, "updateScores, " + "");
+//        Intent serviceStart = new Intent(getActivity(), FetchService.class);
+//        getActivity().startService(serviceStart);
+//    }
 
     public void setFragmentDate(String date) {
         Log.v(LOG_TAG, "setFragmentDate, " + "date = [" + date + "]");
@@ -47,7 +45,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
                              final Bundle savedInstanceState) {
         Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = ["
                 + container + "], savedInstanceState = [" + savedInstanceState + "]");
-        updateScores();
+//        updateScores();
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final ListView score_list = (ListView) rootView.findViewById(R.id.scores_list);
         mAdapter = new ScoresAdapter(getActivity(), null, 0);
@@ -69,7 +67,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         Log.v(LOG_TAG, "onCreateLoader, " + "i = [" + i + "], bundle = [" + bundle + "]");
-        return new CursorLoader(getActivity(), DatabaseContract.scores_table.buildScoreWithDate(),
+        return new CursorLoader(getActivity(), DatabaseContract.ScoreEntry.buildScoreWithDate(),
                 null, null, fragmentDate, null);
     }
 
@@ -86,10 +84,19 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         }
         */
 
-        int i = 0;
+
         cursor.moveToFirst();
+        if (cursor.getCount() > 0) {
+            getView().findViewById(R.id.scores_list).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.scores_list_empty).setVisibility(View.GONE);
+        } else {
+            getView().findViewById(R.id.scores_list).setVisibility(View.GONE);
+            getView().findViewById(R.id.scores_list_empty).setVisibility(View.VISIBLE);
+        }
+
+//        int i = 0;
         while (!cursor.isAfterLast()) {
-            i++;
+//            i++;
             cursor.moveToNext();
         }
         //Log.v(FetchScoreTask.LOG_TAG,"Loader query: " + String.valueOf(i));

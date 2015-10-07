@@ -19,13 +19,10 @@ public class ScoresProvider extends ContentProvider {
     private static final int MATCHES_WITH_ID = 102;
     private static final int MATCHES_WITH_DATE = 103;
     private UriMatcher muriMatcher = buildUriMatcher();
-    private static final SQLiteQueryBuilder ScoreQuery =
-            new SQLiteQueryBuilder();
-    private static final String SCORES_BY_LEAGUE = DatabaseContract.scores_table.LEAGUE_COL + " = ?";
-    private static final String SCORES_BY_DATE =
-            DatabaseContract.scores_table.DATE_COL + " LIKE ?";
-    private static final String SCORES_BY_ID =
-            DatabaseContract.scores_table.MATCH_ID + " = ?";
+    private static final SQLiteQueryBuilder ScoreQuery = new SQLiteQueryBuilder();
+    private static final String SCORES_BY_LEAGUE = DatabaseContract.ScoreEntry.LEAGUE_COL + " = ?";
+    private static final String SCORES_BY_DATE = DatabaseContract.ScoreEntry.DATE_COL + " LIKE ?";
+    private static final String SCORES_BY_ID = DatabaseContract.ScoreEntry.MATCH_ID_COL + " = ?";
     private static final String LOG_TAG = ScoresProvider.class.getName();
 
     static UriMatcher buildUriMatcher() {
@@ -41,18 +38,19 @@ public class ScoresProvider extends ContentProvider {
 
     private int matchUri(Uri uri) {
         Log.v(LOG_TAG, "matchUri, " + "uri = [" + uri + "]");
-        String link = uri.toString();
-        {
+        if (uri != null){
+            String link = uri.toString();
             if (link.contentEquals(DatabaseContract.BASE_CONTENT_URI.toString())) {
                 return MATCHES;
-            } else if (link.contentEquals(DatabaseContract.scores_table.buildScoreWithDate().toString())) {
+            } else if (link.contentEquals(DatabaseContract.ScoreEntry.buildScoreWithDate().toString())) {
                 return MATCHES_WITH_DATE;
-            } else if (link.contentEquals(DatabaseContract.scores_table.buildScoreWithId().toString())) {
+            } else if (link.contentEquals(DatabaseContract.ScoreEntry.buildScoreWithId().toString())) {
                 return MATCHES_WITH_ID;
-            } else if (link.contentEquals(DatabaseContract.scores_table.buildScoreWithLeague().toString())) {
+            } else if (link.contentEquals(DatabaseContract.ScoreEntry.buildScoreWithLeague().toString())) {
                 return MATCHES_WITH_LEAGUE;
             }
         }
+
         return -1;
     }
 
@@ -76,13 +74,13 @@ public class ScoresProvider extends ContentProvider {
         final int match = muriMatcher.match(uri);
         switch (match) {
             case MATCHES:
-                return DatabaseContract.scores_table.CONTENT_TYPE;
+                return DatabaseContract.ScoreEntry.CONTENT_TYPE;
             case MATCHES_WITH_LEAGUE:
-                return DatabaseContract.scores_table.CONTENT_TYPE;
+                return DatabaseContract.ScoreEntry.CONTENT_TYPE;
             case MATCHES_WITH_ID:
-                return DatabaseContract.scores_table.CONTENT_ITEM_TYPE;
+                return DatabaseContract.ScoreEntry.CONTENT_ITEM_TYPE;
             case MATCHES_WITH_DATE:
-                return DatabaseContract.scores_table.CONTENT_TYPE;
+                return DatabaseContract.ScoreEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri :" + uri);
         }
@@ -167,7 +165,7 @@ public class ScoresProvider extends ContentProvider {
     private String splitValues(ContentValues[] values) {
         String result = "";
 
-        for (ContentValues value : values){
+        for (ContentValues value : values) {
             result += value.toString() + ", ";
         }
         return result;

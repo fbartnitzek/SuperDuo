@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import barqsoft.footballscores.service.FetchService;
+
 public class MainActivity extends ActionBarActivity {
     public static int selectedMatchId;
     public static int currentFragment = 2;
@@ -26,6 +28,13 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, my_main)
                     .commit();
         }
+        updateScores();
+    }
+
+    private void updateScores() {
+        Log.v(LOG_TAG, "updateScores, " + "");
+        Intent serviceStart = new Intent(this, FetchService.class);
+        this.startService(serviceStart);
     }
 
 

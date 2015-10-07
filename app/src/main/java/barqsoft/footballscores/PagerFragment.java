@@ -20,10 +20,10 @@ import java.util.Date;
  * Created by yehya khaled on 2/27/2015.
  */
 public class PagerFragment extends Fragment {
-    public static final int NUM_PAGES = 5;
+    public static final int NUM_PAGES = Constants.PAST_DAYS + 1 + Constants.FUTURE_DAYS;
     public ViewPager mPagerHandler;
     private myPageAdapter mPagerAdapter;
-    private MainScreenFragment[] viewFragments = new MainScreenFragment[5];
+    private MainScreenFragment[] viewFragments = new MainScreenFragment[NUM_PAGES];
     private static final String LOG_TAG = PagerFragment.class.getName();
 
     @Override
@@ -34,10 +34,11 @@ public class PagerFragment extends Fragment {
         mPagerAdapter = new myPageAdapter(getChildFragmentManager());
         for (int i = 0; i < NUM_PAGES; i++) {
             // 2 days past
-            Date fragmentdate = new Date(System.currentTimeMillis() + ((i - 2) * Constants.DAY_IN_MILLIS));
-            SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
+            Date fragmentDate = new Date(System.currentTimeMillis() +
+                    ((i - Constants.PAST_DAYS) * Constants.DAY_IN_MILLIS));
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             viewFragments[i] = new MainScreenFragment();
-            viewFragments[i].setFragmentDate(mformat.format(fragmentdate));
+            viewFragments[i].setFragmentDate(dateFormat.format(fragmentDate));
         }
         mPagerHandler.setAdapter(mPagerAdapter);
         mPagerHandler.setCurrentItem(MainActivity.currentFragment);
@@ -47,13 +48,13 @@ public class PagerFragment extends Fragment {
     private class myPageAdapter extends FragmentStatePagerAdapter {
         @Override
         public Fragment getItem(int i) {
-            Log.v(LOG_TAG, "getItem, " + "i = [" + i + "]");
+//            Log.v(LOG_TAG, "getItem, " + "i = [" + i + "]");
             return viewFragments[i];
         }
 
         @Override
         public int getCount() {
-            Log.v(LOG_TAG, "getCount, " + "");
+//            Log.v(LOG_TAG, "getCount, " + "");
             return NUM_PAGES;
         }
 

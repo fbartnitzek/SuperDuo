@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import barqsoft.footballscores.data.DatabaseContract.scores_table;
+import barqsoft.footballscores.data.DatabaseContract.ScoreEntry;
 
 /**
  * Created by yehya khaled on 2/25/2015.
@@ -13,6 +13,20 @@ import barqsoft.footballscores.data.DatabaseContract.scores_table;
 public class ScoresDBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Scores.db";
     private static final int DATABASE_VERSION = 2;
+
+    public static final int COL_DATE = 1;
+    public static final int COL_MATCHTIME = 2;
+    public static final int COL_HOME = 3;
+    public static final int COL_AWAY = 4;
+    public static final int COL_HOME_ID = 5;
+    public static final int COL_AWAY_ID = 6;
+    public static final int COL_LEAGUE = 7;
+    public static final int COL_HOME_GOALS = 8;
+    public static final int COL_AWAY_GOALS = 9;
+    public static final int COL_ID = 10;
+    public static final int COL_MATCHDAY = 11;
+
+
     private static final String LOG_TAG = ScoresDBHelper.class.getName();
 
     public ScoresDBHelper(Context context) {
@@ -24,17 +38,19 @@ public class ScoresDBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.v(LOG_TAG, "onCreate, " + "db = [" + db + "]");
         final String CreateScoresTable = "CREATE TABLE " + DatabaseContract.SCORES_TABLE + " ("
-                + scores_table._ID + " INTEGER PRIMARY KEY,"
-                + scores_table.DATE_COL + " TEXT NOT NULL,"
-                + scores_table.TIME_COL + " INTEGER NOT NULL,"
-                + scores_table.HOME_COL + " TEXT NOT NULL,"
-                + scores_table.AWAY_COL + " TEXT NOT NULL,"
-                + scores_table.LEAGUE_COL + " INTEGER NOT NULL,"
-                + scores_table.HOME_GOALS_COL + " TEXT NOT NULL,"
-                + scores_table.AWAY_GOALS_COL + " TEXT NOT NULL,"
-                + scores_table.MATCH_ID + " INTEGER NOT NULL,"
-                + scores_table.MATCH_DAY + " INTEGER NOT NULL,"
-                + " UNIQUE (" + scores_table.MATCH_ID + ") ON CONFLICT REPLACE"
+                + ScoreEntry._ID + " INTEGER PRIMARY KEY,"
+                + ScoreEntry.DATE_COL + " TEXT NOT NULL,"
+                + ScoreEntry.TIME_COL + " INTEGER NOT NULL,"
+                + ScoreEntry.HOME_COL + " TEXT NOT NULL,"
+                + ScoreEntry.AWAY_COL + " TEXT NOT NULL,"
+                + ScoreEntry.HOME_ID_COL + " TEXT NOT NULL,"
+                + ScoreEntry.AWAY_ID_COL + " TEXT NOT NULL,"
+                + ScoreEntry.LEAGUE_COL + " INTEGER NOT NULL,"
+                + ScoreEntry.HOME_GOALS_COL + " TEXT NOT NULL,"
+                + ScoreEntry.AWAY_GOALS_COL + " TEXT NOT NULL,"
+                + ScoreEntry.MATCH_ID_COL + " INTEGER NOT NULL,"
+                + ScoreEntry.MATCH_DAY_COL + " INTEGER NOT NULL,"
+                + " UNIQUE (" + ScoreEntry.MATCH_ID_COL + ") ON CONFLICT REPLACE"
                 + " );";
         db.execSQL(CreateScoresTable);
     }
