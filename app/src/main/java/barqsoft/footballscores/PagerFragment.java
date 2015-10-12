@@ -32,13 +32,20 @@ public class PagerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.pager_fragment, container, false);
         mPagerHandler = (ViewPager) rootView.findViewById(R.id.pager);
         mPagerAdapter = new myPageAdapter(getChildFragmentManager());
+
+        //TODO: use default format - but matching with queries...
+//            DateFormat defaultFormat = android.text.format.DateFormat.getDateFormat(getActivity());
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
         for (int i = 0; i < NUM_PAGES; i++) {
-            // 2 days past
+
             Date fragmentDate = new Date(System.currentTimeMillis() +
                     ((i - Constants.PAST_DAYS) * Constants.DAY_IN_MILLIS));
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+
             viewFragments[i] = new MainScreenFragment();
-            viewFragments[i].setFragmentDate(dateFormat.format(fragmentDate));
+//            viewFragments[i].setFragmentDate(dateFormat.format(fragmentDate));
+            viewFragments[i].setFragmentDate(Utilities.formatDate(fragmentDate));
         }
         mPagerHandler.setAdapter(mPagerAdapter);
         mPagerHandler.setCurrentItem(MainActivity.currentFragment);

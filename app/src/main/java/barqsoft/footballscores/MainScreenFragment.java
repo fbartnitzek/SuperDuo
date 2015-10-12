@@ -35,9 +35,9 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 //        getActivity().startService(serviceStart);
 //    }
 
-    public void setFragmentDate(String date) {
-        Log.v(LOG_TAG, "setFragmentDate, " + "date = [" + date + "]");
-        fragmentDate[0] = date;
+    public void setFragmentDate(String[] date) {
+        Log.v(LOG_TAG, "setFragmentDate, " + "date = [" + date[0] + "]");
+        fragmentDate = date;
     }
 
     @Override

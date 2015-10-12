@@ -2,6 +2,9 @@ package barqsoft.footballscores;
 
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by yehya khaled on 3/3/2015.
  */
@@ -12,6 +15,7 @@ public class Utilities {
 //    public static final int PRIMERA_DIVISION = 358;
 //    public static final int BUNDESLIGA = 351;
     private static final String LOG_TAG = Utilities.class.getName();
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public static String getLeague(int league_num) {
         Log.v(LOG_TAG, "getLeague, " + "league_num = [" + league_num + "]");
@@ -120,5 +124,11 @@ public class Utilities {
 //            return false;
 //        }
         return true;
+    }
+
+    public static String[] formatDate(Date date) {
+        String[] result = new String[1];
+        result[0] = dateFormat.format(date);
+        return result;
     }
 }

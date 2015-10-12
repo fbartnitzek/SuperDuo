@@ -81,6 +81,12 @@ public class DatabaseContract {
             Log.v(LOG_TAG, "buildScoreWithDate, " + "");
             return BASE_CONTENT_URI.buildUpon().appendPath("date").build();
         }
+
+        // TODO: explicitly query with date for opening corresponding tab from widget
+//        public static Uri buildScoreWithDate(String date) {
+//            Log.v(LOG_TAG, "buildScoreWithDate, " + "");
+//            return BASE_CONTENT_URI.buildUpon().appendPath("date").build();
+//        }
     }
 
     //URI data

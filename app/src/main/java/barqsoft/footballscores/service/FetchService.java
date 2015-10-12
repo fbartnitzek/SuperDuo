@@ -37,7 +37,7 @@ public class FetchService extends IntentService {
     private static final String BASE_URL = "http://api.football-data.org/alpha/fixtures"; //Base URL
     private static final String QUERY_TIME_FRAME = "timeFrame"; //Time Frame parameter to determine days
 
-
+    public static final String ACTION_DATA_UPDATED = "barqsoft.footballscores.service.ACTION_DATA_UPDATED";
 
     public FetchService() {
         super(FetchService.class.getSimpleName());
@@ -46,9 +46,8 @@ public class FetchService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.v(LOG_TAG, "onHandleIntent, " + "intent = [" + intent + "]");
-//        getData("n2");  // next 2 days
+
         getData("n" + Constants.FUTURE_DAYS);
-//        getData("p2");  // past 2 days
         getData("p" + Constants.PAST_DAYS);
     }
 
@@ -151,6 +150,8 @@ public class FetchService extends IntentService {
                                 DatabaseContract.BASE_CONTENT_URI, insert_data);
 
                         Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
+
+                        updateWidgets(appContext);
                     } else {
                         // TODO: no matches in that time ...?
                     }
@@ -163,6 +164,13 @@ public class FetchService extends IntentService {
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
         }
+    }
+
+    private void updateWidgets(Context context) {
+        Log.v(LOG_TAG, "updateWidgets, " + "context = [" + context + "]");
+        // only soccer app can receive broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED).setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
     }
 
     private static final String SEASON_LINK = "http://api.football-data.org/alpha/soccerseasons/";
@@ -186,8 +194,8 @@ public class FetchService extends IntentService {
 
         //Match data
         String league = null;
-        String mDate = null;
-        String mTime = null;
+        String date = null;
+        String time = null;
         String home = null;
         String away = null;
         String homeGoals = null;
@@ -217,10 +225,6 @@ public class FetchService extends IntentService {
                     matchId = links.getJSONObject(SELF).
                             getString(HREF);
                     matchId = matchId.replace(MATCH_LINK, "");
-//                    if (!isReal) {
-//                        //This if statement changes the match ID of the dummy data so that it all goes into the database
-//                        matchId = matchId + Integer.toString(i);
-//                    }
 
                     // both teams
                     String awayLink = links.getJSONObject(AWAY_TEAM_OBJ).getString(HREF);
@@ -229,25 +233,19 @@ public class FetchService extends IntentService {
                     String homeId = Utilities.extractTeamIdFromLink(homeLink);
 
 
-                    mDate = matchData.getString(MATCH_DATE);
-                    mTime = mDate.substring(mDate.indexOf("T") + 1, mDate.indexOf("Z"));
-                    mDate = mDate.substring(0, mDate.indexOf("T"));
-                    SimpleDateFormat match_date = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
-                    match_date.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    date = matchData.getString(MATCH_DATE);
+                    time = date.substring(date.indexOf("T") + 1, date.indexOf("Z"));
+                    date = date.substring(0, date.indexOf("T"));
+                    SimpleDateFormat utcDate = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
+                    utcDate.setTimeZone(TimeZone.getTimeZone("UTC"));
                     try {
-                        Date parseddate = match_date.parse(mDate + mTime);
-                        SimpleDateFormat new_date = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
-                        new_date.setTimeZone(TimeZone.getDefault());
-                        mDate = new_date.format(parseddate);
-                        mTime = mDate.substring(mDate.indexOf(":") + 1);
-                        mDate = mDate.substring(0, mDate.indexOf(":"));
+                        Date parsedDate = utcDate.parse(date + time);
+                        SimpleDateFormat newDate = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
+                        newDate.setTimeZone(TimeZone.getDefault());
+                        date = newDate.format(parsedDate);
+                        time = date.substring(date.indexOf(":") + 1);
+                        date = date.substring(0, date.indexOf(":"));
 
-//                        if (!isReal) {
-//                            //This if statement changes the dummy data's date to match our current date range.
-//                            Date fragmentdate = new Date(System.currentTimeMillis() + ((i - 2) * Constants.DAY_IN_MILLIS));
-//                            SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
-//                            mDate = mformat.format(fragmentdate);
-//                        }
                     } catch (Exception e) {
                         Log.d(LOG_TAG, "error here!");
                         Log.e(LOG_TAG, e.getMessage());
@@ -256,16 +254,8 @@ public class FetchService extends IntentService {
                     away = matchData.getString(AWAY_TEAM);
 
                     homeGoals = matchData.getJSONObject(RESULT).getString(HOME_GOALS);
-//                    Log.v(LOG_TAG,homeGoals);
-//                    if (homeGoals == null || Constants.GOALS_UNKNOWN.equals(homeGoals)) {
-//                        homeGoals = mContext.getString(R.string.unknown_goals);
-//                    }
 
                     awayGoals = matchData.getJSONObject(RESULT).getString(AWAY_GOALS);
-//                    Log.v(LOG_TAG,awayGoals);
-//                    if (awayGoals == null || Constants.GOALS_UNKNOWN.equals(awayGoals)){
-//                        awayGoals = mContext.getString(R.string.unknown_goals);
-//                    }
 
                     Log.v(LOG_TAG, "processJSONdata, homeId: " + homeId + ", awayId: " + awayId
                             + ", homeGoals: " + homeGoals + ", awayGoals: " + awayGoals);
@@ -273,8 +263,8 @@ public class FetchService extends IntentService {
                     matchDay = matchData.getString(MATCH_DAY);
                     ContentValues matchValues = new ContentValues();
 
-                    matchValues.put(DatabaseContract.ScoreEntry.DATE_COL, mDate);
-                    matchValues.put(DatabaseContract.ScoreEntry.TIME_COL, mTime);
+                    matchValues.put(DatabaseContract.ScoreEntry.DATE_COL, date);
+                    matchValues.put(DatabaseContract.ScoreEntry.TIME_COL, time);
                     matchValues.put(DatabaseContract.ScoreEntry.HOME_COL, home);
                     matchValues.put(DatabaseContract.ScoreEntry.AWAY_COL, away);
                     matchValues.put(DatabaseContract.ScoreEntry.HOME_ID_COL, homeId);
@@ -285,26 +275,11 @@ public class FetchService extends IntentService {
                     matchValues.put(DatabaseContract.ScoreEntry.MATCH_ID_COL, matchId);
                     matchValues.put(DatabaseContract.ScoreEntry.MATCH_DAY_COL, matchDay);
 
-                    //log spam
-
-                    //Log.v(LOG_TAG,matchId);
-                    //Log.v(LOG_TAG,mDate);
-                    //Log.v(LOG_TAG,mTime);
-                    //Log.v(LOG_TAG,Home);
-                    //Log.v(LOG_TAG,Away);
-
                     values.add(matchValues);
 
                 }
             }
 
-//            int inserted_data = 0;
-//            ContentValues[] insert_data = new ContentValues[values.size()];
-//            values.toArray(insert_data);
-//            inserted_data = mContext.getContentResolver().bulkInsert(
-//                    DatabaseContract.BASE_CONTENT_URI, insert_data);
-//
-//            //Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage());
         }

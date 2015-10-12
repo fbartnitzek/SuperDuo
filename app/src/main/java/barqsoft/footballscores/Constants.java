@@ -7,7 +7,6 @@ public class Constants {
     public static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
     public static final int PAST_DAYS = 2;
     public static final int FUTURE_DAYS = 5;
-    public static final String GOALS_UNKNOWN = "-1";
 
     // This set of league codes is for the 2015/2016 season. In fall of 2016, they will need to
     // be updated. Feel free to use the codes

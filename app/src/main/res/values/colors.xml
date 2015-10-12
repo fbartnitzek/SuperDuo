@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="white">#FFFFFF</color>
+    <color name="activated">#E0E0E0</color>
+
+
     <color name="blue01">#0099CC</color>
     <color name="blue02">#079DD0</color>
     <color name="blue03">#0FA1D3</color>
@@ -60,6 +64,9 @@
     <color name="orange12">#FFE3A0</color>
     <color name="orange13">#FFECC0</color>
     <color name="orange14">#FFF6DF</color>
+    <color name="orange500">#FF9800</color>
+    <color name="orange400">#FFA726</color>
+    <color name="orange100">#FFE0B2</color>
 
     <color name="red01">#CC0000</color>
     <color name="red02">#D30A0A</color>
@@ -75,6 +82,5 @@
     <color name="red12">#FFAFAF</color>
     <color name="red13">#FFCACA</color>
     <color name="red14">#FFE4E4</color>
-
 
 </resources>
