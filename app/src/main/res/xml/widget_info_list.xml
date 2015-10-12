@@ -9,7 +9,7 @@
     android:minWidth="@dimen/widget_list_default_width"
     android:previewImage="@drawable/ic_launcher"
     android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="5000"
+    android:updatePeriodMillis="10800000"
     android:widgetCategory="home_screen|keyguard"
     tools:ignore="UnusedAttribute" />
 

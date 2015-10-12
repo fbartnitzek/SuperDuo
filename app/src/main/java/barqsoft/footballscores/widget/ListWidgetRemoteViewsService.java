@@ -148,9 +148,9 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 //                }
 
                 views.setTextViewText(R.id.widget_team_home, home);
-                views.setTextViewText(R.id.widget_team_away, away);
-                views.setTextViewText(R.id.widget_time, time);
-                views.setTextViewText(R.id.widget_score, score);
+//                views.setTextViewText(R.id.widget_team_away, away);
+//                views.setTextViewText(R.id.widget_time, time);
+//                views.setTextViewText(R.id.widget_score, score);
 //                mHolder.homeCrest.setImageResource(Utilities.getTeamCrestByTeamName(
 //                        cursor.getString(ScoresDBHelper.COL_HOME)));
 //                mHolder.awayCrest.setImageResource(Utilities.getTeamCrestByTeamName(

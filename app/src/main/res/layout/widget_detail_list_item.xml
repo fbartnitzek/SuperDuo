@@ -1,81 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
     android:id="@+id/widget_list_item"
-    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/touch_selector_white">
+    xmlns:android="http://schemas.android.com/apk/res/android"  android:layout_width="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/widget_team_home"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeight"
-        android:orientation="horizontal"><!--padding-constant @dimen/abc_list_item_padding_horizontal_material not found -->
+        android:layout_width="wrap_content"
+        android:text="@string/sample_name_home" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <!--<ImageView-->
-                <!--android:id="@+id/widget_icon_home"-->
-                <!--android:layout_width="@dimen/list_icon"-->
-                <!--android:layout_height="@dimen/list_icon"-->
+</LinearLayout>
+
+
+<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:id="@+id/widget_list_item"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/touch_selector_white">-->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:minHeight="?android:attr/listPreferredItemHeight"-->
+        <!--android:orientation="horizontal">&lt;!&ndash;padding-constant @dimen/abc_list_item_padding_horizontal_material not found &ndash;&gt;-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="2"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical">-->
+            <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/widget_icon_home"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="@dimen/list_icon"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="@dimen/list_icon"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_gravity="center"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:src="@drawable/ic_launcher" />&ndash;&gt;-->
+            <!--<TextView-->
+                <!--android:id="@+id/widget_team_home"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
                 <!--android:layout_gravity="center"-->
-                <!--android:src="@drawable/ic_launcher" />-->
-            <TextView
-                android:id="@+id/widget_team_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:text="@string/sample_name_home"
-                android:contentDescription="@string/sample_name_home"/>
-        </LinearLayout>
+                <!--android:text="@string/sample_name_home"-->
+                <!--android:contentDescription="@string/sample_name_home"/>-->
+        <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/widget_score"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="@string/widget_score_size"
-                android:text="@string/sample_score"/>
-            <TextView
-                android:id="@+id/widget_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@string/widget_time_size"
-                android:text="@string/sample_time"
-                android:gravity="center"/>
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical">-->
+            <!--<TextView-->
+                <!--android:id="@+id/widget_score"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
+                <!--android:textSize="@string/widget_score_size"-->
+                <!--android:text="@string/sample_score"/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/widget_time"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="@string/widget_time_size"-->
+                <!--android:text="@string/sample_time"-->
+                <!--android:gravity="center"/>-->
+        <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <!--<ImageView-->
-                <!--android:id="@+id/widget_icon_away"-->
-                <!--android:layout_width="@dimen/list_icon"-->
-                <!--android:layout_height="@dimen/list_icon"-->
+        <!--<LinearLayout-->
+            <!--android:layout_weight="2"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical">-->
+            <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/widget_icon_away"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="@dimen/list_icon"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="@dimen/list_icon"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_gravity="center"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:src="@drawable/ic_launcher" />&ndash;&gt;-->
+            <!--<TextView-->
+                <!--android:id="@+id/widget_team_away"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
                 <!--android:layout_gravity="center"-->
-                <!--android:src="@drawable/ic_launcher" />-->
-            <TextView
-                android:id="@+id/widget_team_away"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:text="@string/sample_name_away"
-                android:contentDescription="@string/sample_name_away"/>
+                <!--android:text="@string/sample_name_away"-->
+                <!--android:contentDescription="@string/sample_name_away"/>-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
-    </LinearLayout>
-</FrameLayout>
+    <!--</LinearLayout>-->
+<!--</FrameLayout>-->
