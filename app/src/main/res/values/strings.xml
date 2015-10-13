@@ -8,12 +8,13 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="tomorrow">Tomorrow</string>
-    <string name="champions_league">UEFA Champions League</string>
-    <string name="bundesliga">Bundesliga</string>
-    <string name="premierleague">Premier League</string>
-    <string name="primeradivison">Primera Division</string>
-    <string name="seriaa">Serie A</string>
+    <!--<string name="champions_league">UEFA Champions League</string>-->
+    <!--<string name="bundesliga">Bundesliga</string>-->
+
+    <!--<string name="primeradivison">Primera Division</string>-->
+
     <string name="matchday_text">Match day</string>
+
     <string name="group_stage_text">Group stages</string>
     <string name="first_knockout_round">First knockout round</string>
     <string name="quarter_final">Quarter Final</string>
@@ -33,7 +34,7 @@
         During the off season, fake data will be added to the app.
     </string>
     <string name="widget_text">This is a widget probably.</string>
-    <string name="api_key">fb7b308235244d839b3996aa6494eebf</string>
+    <string name="api_key" translatable="false">fb7b308235244d839b3996aa6494eebf</string>
     <!-- TODO -->
     <!--string name="api_key" translatable="false">"This is where you insert your API key"</string-->
 
@@ -48,4 +49,28 @@
     <string name="widget_time_size">16dp</string>
     <string name="sample_time">14:00</string>
     <string name="sample_name_away">sample team away</string>
+
+    <string name="unknown_league">Unknown league, please report</string>
+    <string name="league_premier_league">Premier League</string>
+    <string name="league_seria_a">Serie A</string>
+    <string name="league_champions_league">UEFA Champions League</string>
+    <string name="league_primera_division">Primera Division</string>
+    <string name="league_1_bundesliga">1. Bundesliga</string>
+    <string name="league_2_bundesliga">2. Bundesliga</string>
+    <string name="league_3_bundesliga">3. Bundesliga</string>
+    <string name="champions_league_group_stage">Group Stages, Matchday : 6</string>
+    <string name="champions_league_first_knockout_round">First Knockout round</string>
+    <string name="champions_league_quarter_final">QuarterFinal</string>
+    <string name="champions_league_semi_final">SemiFinal</string>
+    <string name="champions_league_final">Final</string>
+    <string name="matchday">Matchday : </string>
+    <string name="sample_next_match_day">next match day</string>
+
+    <string name="a11_homename">Hometeam: <xliff:g id="home">%1$s</xliff:g></string>
+    <string name="a11_awayname">Awayteam: <xliff:g id="away">%1$s</xliff:g></string>
+    <string name="a11_date">Date: <xliff:g id="date">%1$s</xliff:g></string>
+    <string name="a11_time">Time: <xliff:g id="time">%1$s</xliff:g></string>
+    <string name="a11_score">Score: <xliff:g id="time">%1$s</xliff:g></string>
+
+    <string name="empty_score_list_no_network" >No Score Information Available. The network is not available to fetch score data.</string>
 </resources>

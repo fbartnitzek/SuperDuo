@@ -2,13 +2,61 @@
 <LinearLayout
     android:id="@+id/widget_list_item"
     android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"  android:layout_width="wrap_content">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/touch_selector_white"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/widget_team_home"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:text="@string/sample_name_home" />
+        android:paddingStart="8dp"
+        android:paddingLeft="8dp"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:gravity="center_horizontal"
+        android:text="@string/sample_name_home"
+        android:contentDescription="@string/sample_name_home"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingStart="8dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/widget_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/sample_time"
+            android:contentDescription="@string/sample_time"/>
+
+        <TextView
+            android:id="@+id/widget_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/sample_score"
+            android:contentDescription="@string/sample_score"/>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/widget_team_away"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:paddingLeft="8dp"
+        android:paddingStart="8dp"
+        android:gravity="center_horizontal"
+        android:text="@string/sample_name_away"
+        android:contentDescription="@string/sample_name_away"/>
 
 </LinearLayout>
 

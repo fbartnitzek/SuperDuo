@@ -1,5 +1,8 @@
 package barqsoft.footballscores;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -17,51 +20,51 @@ public class Utilities {
     private static final String LOG_TAG = Utilities.class.getName();
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    public static String getLeague(int league_num) {
+    public static String getLeague(int league_num, Context context) {
         Log.v(LOG_TAG, "getLeague, " + "league_num = [" + league_num + "]");
         switch (league_num) {
             case Constants.SERIE_A:
-                return "Seria A";
+                return context.getString(R.string.league_seria_a);
             case Constants.PREMIER_LEAGUE:
-                return "Premier League";
+                return context.getString(R.string.league_premier_league);
             case Constants.CHAMPIONS_LEAGUE:
-                return "UEFA Champions League";
+                return context.getString(R.string.league_champions_league);
             case Constants.PRIMERA_DIVISION:
-                return "Primera Division";
+                return context.getString(R.string.league_primera_division);
             case Constants.BUNDESLIGA1:
-                return "1. Bundesliga";
+                return context.getString(R.string.league_1_bundesliga);
             case Constants.BUNDESLIGA2:
-                return "2. Bundesliga";
+                return context.getString(R.string.league_2_bundesliga);
             case Constants.BUNDESLIGA3:
-                return "3. Bundesliga";
+                return context.getString(R.string.league_3_bundesliga);
             default:
-                return "Not known League Please report";
+                return context.getString(R.string.unknown_league);
         }
     }
 
-    public static String getMatchDay(int match_day, int league_num) {
+    public static String getMatchDay(int match_day, int league_num, Context context) {
         Log.v(LOG_TAG, "getMatchDay, " + "match_day = [" + match_day + "], league_num = [" + league_num + "]");
         if (league_num == Constants.CHAMPIONS_LEAGUE) {
             if (match_day <= 6) {
-                return "Group Stages, Matchday : 6";
+                return context.getString(R.string.champions_league_group_stage);
             } else if (match_day == 7 || match_day == 8) {
-                return "First Knockout round";
+                return context.getString(R.string.champions_league_first_knockout_round);
             } else if (match_day == 9 || match_day == 10) {
-                return "QuarterFinal";
+                return context.getString(R.string.champions_league_quarter_final);
             } else if (match_day == 11 || match_day == 12) {
-                return "SemiFinal";
+                return context.getString(R.string.champions_league_semi_final);
             } else {
-                return "Final";
+                return context.getString(R.string.champions_league_final);
             }
         } else {
-            return "Matchday : " + String.valueOf(match_day);
+            return context.getString(R.string.matchday) + String.valueOf(match_day);
         }
     }
 
     public static String getScores(int home_goals, int awaygoals) {
         Log.v(LOG_TAG, "getScores, " + "home_goals = [" + home_goals + "], awaygoals = [" + awaygoals + "]");
         if (home_goals < 0 || awaygoals < 0) {
-            return "?? - ??";
+            return "";
         } else {
             return String.valueOf(home_goals) + " - " + String.valueOf(awaygoals);
         }
@@ -74,28 +77,17 @@ public class Utilities {
         }
         switch (teamname) { //This is the set of icons that are currently in the app. Feel free to find and add more
             //as you go.
-            case "Arsenal London FC":
-                return R.drawable.arsenal;
-            case "Manchester United FC":
-                return R.drawable.manchester_united;
-            case "Swansea City":
-                return R.drawable.swansea_city_afc;
-            case "Leicester City":
-                return R.drawable.leicester_city_fc_hd_logo;
-            case "Everton FC":
-                return R.drawable.everton_fc_logo1;
-            case "West Ham United FC":
-                return R.drawable.west_ham;
-            case "Tottenham Hotspur FC":
-                return R.drawable.tottenham_hotspur;
-            case "West Bromwich Albion":
-                return R.drawable.west_bromwich_albion_hd_logo;
-            case "Sunderland AFC":
-                return R.drawable.sunderland;
-            case "Stoke City FC":
-                return R.drawable.stoke_city;
-            default:
-                return R.drawable.no_icon;
+            case "Arsenal London FC": return R.drawable.arsenal;
+            case "Manchester United FC": return R.drawable.manchester_united;
+            case "Swansea City": return R.drawable.swansea_city_afc;
+            case "Leicester City": return R.drawable.leicester_city_fc_hd_logo;
+            case "Everton FC": return R.drawable.everton_fc_logo1;
+            case "West Ham United FC": return R.drawable.west_ham;
+            case "Tottenham Hotspur FC": return R.drawable.tottenham_hotspur;
+            case "West Bromwich Albion": return R.drawable.west_bromwich_albion_hd_logo;
+            case "Sunderland AFC": return R.drawable.sunderland;
+            case "Stoke City FC": return R.drawable.stoke_city;
+            default: return R.drawable.no_icon;
         }
     }
 
@@ -124,6 +116,12 @@ public class Utilities {
 //            return false;
 //        }
         return true;
+    }
+
+    static public boolean isNetworkAvailable(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     public static String[] formatDate(Date date) {

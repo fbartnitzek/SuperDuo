@@ -1,6 +1,8 @@
 package barqsoft.footballscores.widget;
 
 import android.annotation.TargetApi;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -70,12 +72,30 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                 data = getNextMatchDay();
                 if (data.getCount()>0){
                     Log.v(LOG_TAG, "onDataSetChanged, " + "matchDate: " + date + ", matches: " + data.getCount());
+                    updateWidgetDate(date);
                 } else {
                     Log.v(LOG_TAG, "onDataSetChanged, " + "no matches... ");
+                    updateWidgetDate(date);
                 }
 
 
                 Binder.restoreCallingIdentity(identityToken);
+            }
+
+            private void updateWidgetDate(String[] date) {
+                Log.v(LOG_TAG, "updateWidgetDate, " + "date = [" + date[0] + "]");
+
+
+//                views.setTextViewText(R.id.widget_next_match_day, date[0]);
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+                int appWidgetIds[] = appWidgetManager.getAppWidgetIds(
+                        new ComponentName(mContext, ListWidgetProvider.class));
+                for (int appWidgetId : appWidgetIds) {
+                    RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list);
+                    views.setTextViewText(R.id.widget_next_match_day, date[0]);
+                    appWidgetManager.updateAppWidget(appWidgetId, views);
+                }
+
             }
 
             private Cursor getNextMatchDay() {
@@ -148,9 +168,9 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 //                }
 
                 views.setTextViewText(R.id.widget_team_home, home);
-//                views.setTextViewText(R.id.widget_team_away, away);
-//                views.setTextViewText(R.id.widget_time, time);
-//                views.setTextViewText(R.id.widget_score, score);
+                views.setTextViewText(R.id.widget_team_away, away);
+                views.setTextViewText(R.id.widget_time, time);
+                views.setTextViewText(R.id.widget_score, score);
 //                mHolder.homeCrest.setImageResource(Utilities.getTeamCrestByTeamName(
 //                        cursor.getString(ScoresDBHelper.COL_HOME)));
 //                mHolder.awayCrest.setImageResource(Utilities.getTeamCrestByTeamName(

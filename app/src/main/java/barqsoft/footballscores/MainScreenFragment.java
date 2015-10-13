@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import barqsoft.footballscores.data.DatabaseContract;
 
@@ -92,6 +93,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         } else {
             getView().findViewById(R.id.scores_list).setVisibility(View.GONE);
             getView().findViewById(R.id.scores_list_empty).setVisibility(View.VISIBLE);
+            updateEmptyView();
         }
 
 //        int i = 0;
@@ -102,6 +104,17 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         //Log.v(FetchScoreTask.LOG_TAG,"Loader query: " + String.valueOf(i));
         mAdapter.swapCursor(cursor);
         //mAdapter.notifyDataSetChanged();
+    }
+
+    private void updateEmptyView() {
+        TextView tv = (TextView) getView().findViewById(R.id.scores_list_empty);
+        if (null != tv) {
+            if (!Utilities.isNetworkAvailable(getActivity())) {
+                tv.setText(R.string.empty_score_list_no_network);
+            } else {
+                tv.setText(R.string.no_match_day);
+            }
+        }
     }
 
     @Override

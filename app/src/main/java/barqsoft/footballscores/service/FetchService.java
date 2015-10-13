@@ -133,6 +133,7 @@ public class FetchService extends IntentService {
                     //if there is no data, call the function on dummy data
                     //this is expected behavior during the off season.
 //                    Log.w(LOG_TAG, "getData, just showing dummy data...");
+                    Log.v(LOG_TAG, "getData, " + "ERROR_NO_MATCH timeFrame = [" + timeFrame + "]");
                     // TODO: show error message - no jsonData / matches found...
 //                    values = processJSONdata(getString(R.string.dummy_data), appContext, false);
                     return;
@@ -154,12 +155,14 @@ public class FetchService extends IntentService {
                         updateWidgets(appContext);
                     } else {
                         // TODO: no matches in that time ...?
+                        Log.v(LOG_TAG, "getData, " + "ALSO ERROR_NO_MATCH timeFrame = [" + timeFrame + "]");
                     }
                 }
 
             } else {
                 //Could not Connect
                 Log.d(LOG_TAG, "Could not connect to server.");
+                Log.v(LOG_TAG, "getData, " + "ANOTHER ERROR_NO_MATCH timeFrame = [" + timeFrame + "]");
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
