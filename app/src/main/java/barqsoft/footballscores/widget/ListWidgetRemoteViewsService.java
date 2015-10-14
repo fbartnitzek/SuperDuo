@@ -92,7 +92,9 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                         new ComponentName(mContext, ListWidgetProvider.class));
                 for (int appWidgetId : appWidgetIds) {
                     RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list);
-                    views.setTextViewText(R.id.widget_next_match_day, date[0]);
+                    views.setTextViewText(R.id.widget_next_match_day,
+                            Utilities.getReadableDayName(mContext, 0, date[0]));
+//                            date[0]);
                     appWidgetManager.updateAppWidget(appWidgetId, views);
                 }
 

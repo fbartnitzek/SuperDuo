@@ -3,8 +3,10 @@ package barqsoft.footballscores;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.format.Time;
 import android.util.Log;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -19,6 +21,7 @@ public class Utilities {
 //    public static final int BUNDESLIGA = 351;
     private static final String LOG_TAG = Utilities.class.getName();
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat readableDayFormat = new SimpleDateFormat("EEEE");
 
     public static String getLeague(int league_num, Context context) {
         Log.v(LOG_TAG, "getLeague, " + "league_num = [" + league_num + "]");
@@ -128,5 +131,38 @@ public class Utilities {
         String[] result = new String[1];
         result[0] = dateFormat.format(date);
         return result;
+    }
+
+    public static String getReadableDayName(Context context, long dateInMillis, String dateString) {
+        // If the date is today, return the localized version of "Today" instead of the actual
+        // day name.
+        Log.v(LOG_TAG, "getDayName, " + "context = [" + context + "], dateInMillis = [" + dateInMillis + "]");
+        Time t = new Time();
+        t.setToNow();
+        int julianDay = 0;
+        int currentJulianDay = Time.getJulianDay(System.currentTimeMillis(), t.gmtoff);
+
+        if (dateInMillis <= 0 && dateString != null){
+            try {
+                Date date = dateFormat.parse(dateString);
+                dateInMillis = date.getTime();
+            } catch (ParseException e) {
+                dateInMillis = 0;
+            }
+        }
+        julianDay = Time.getJulianDay(dateInMillis, t.gmtoff);
+
+        if (julianDay == currentJulianDay) {
+            return context.getString(R.string.today);
+        } else if (julianDay == currentJulianDay + 1) {
+            return context.getString(R.string.tomorrow);
+        } else if (julianDay == currentJulianDay - 1) {
+            return context.getString(R.string.yesterday);
+        } else {
+//            Time time = new Time();
+//            time.setToNow();
+            // Otherwise, the format is just the day of the week (e.g "Wednesday".
+            return readableDayFormat.format(dateInMillis);
+        }
     }
 }
