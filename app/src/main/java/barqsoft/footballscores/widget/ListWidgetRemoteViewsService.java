@@ -52,7 +52,8 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
         return new RemoteViewsFactory() {
             private Context mContext = getApplicationContext();
             private Cursor data = null;
-            private String[] date = null;
+//            private String[] date = null;
+            private String date = null;
 
             @Override
             public void onCreate() {
@@ -82,8 +83,8 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                 Binder.restoreCallingIdentity(identityToken);
             }
 
-            private void updateWidgetDate(String[] date) {
-                Log.v(LOG_TAG, "updateWidgetDate, " + "date = [" + date[0] + "]");
+            private void updateWidgetDate(String date) {
+                Log.v(LOG_TAG, "updateWidgetDate, " + "date = [" + date + "]");
 
 
 //                views.setTextViewText(R.id.widget_next_match_day, date[0]);
@@ -93,7 +94,7 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                 for (int appWidgetId : appWidgetIds) {
                     RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list);
                     views.setTextViewText(R.id.widget_next_match_day,
-                            Utilities.getReadableDayName(mContext, 0, date[0]));
+                            Utilities.getReadableDayName(mContext, 0, date));
 //                            date[0]);
                     appWidgetManager.updateAppWidget(appWidgetId, views);
                 }
@@ -101,15 +102,19 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
             }
 
             private Cursor getNextMatchDay() {
-                Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate();
-                for (int i=0 ; i<=Constants.FUTURE_DAYS; ++i){
+//                Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate();
 
+                for (int i=0 ; i<=Constants.FUTURE_DAYS; ++i){
+                    Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate(
+                            Utilities.formatDate(
+                                    new Date(System.currentTimeMillis() + i * Constants.DAY_IN_MILLIS)));
                     data = getContentResolver().query(uri,
                             SCORE_COLUMNS,
                             null,
                             // next day
-                            Utilities.formatDate(new Date(System.currentTimeMillis() +
-                                    i * Constants.DAY_IN_MILLIS)),
+                            null,
+//                            Utilities.formatDate(new Date(System.currentTimeMillis() +
+//                                    i * Constants.DAY_IN_MILLIS)),
                             null);
 
                     Log.v(LOG_TAG, "getNextMatchDay, " + "data: " + data.getCount());
@@ -174,9 +179,9 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                 views.setTextViewText(R.id.widget_time, time);
                 views.setTextViewText(R.id.widget_score, score);
 //                mHolder.homeCrest.setImageResource(Utilities.getTeamCrestByTeamName(
-//                        cursor.getString(ScoresDBHelper.COL_HOME)));
+//                        cursor.getString(DatabaseHelper.COL_MATCH_HOME)));
 //                mHolder.awayCrest.setImageResource(Utilities.getTeamCrestByTeamName(
-//                        cursor.getString(ScoresDBHelper.COL_AWAY)
+//                        cursor.getString(DatabaseHelper.COL_AWAY)
 
 
 //                final Intent fillIntent = new Intent();

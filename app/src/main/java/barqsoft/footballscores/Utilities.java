@@ -127,10 +127,11 @@ public class Utilities {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    public static String[] formatDate(Date date) {
-        String[] result = new String[1];
-        result[0] = dateFormat.format(date);
-        return result;
+    public static String formatDate(Date date) {
+//        String[] result = new String[1];
+//        result[0] = dateFormat.format(date);
+//        return result;
+        return dateFormat.format(date);
     }
 
     public static String getReadableDayName(Context context, long dateInMillis, String dateString) {

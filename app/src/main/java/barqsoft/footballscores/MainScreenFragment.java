@@ -1,6 +1,7 @@
 package barqsoft.footballscores;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -22,7 +23,7 @@ import barqsoft.footballscores.data.DatabaseContract;
 public class MainScreenFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public ScoresAdapter mAdapter;
     public static final int SCORES_LOADER = 0;
-    private String[] fragmentDate = new String[1];
+    private String fragmentDate;
     private static final String LOG_TAG = MainScreenFragment.class.getName();
     private int lastSelectedItem = -1;
 
@@ -36,8 +37,8 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 //        getActivity().startService(serviceStart);
 //    }
 
-    public void setFragmentDate(String[] date) {
-        Log.v(LOG_TAG, "setFragmentDate, " + "date = [" + date[0] + "]");
+    public void setFragmentDate(String date) {
+        Log.v(LOG_TAG, "setFragmentDate, " + "date = [" + date + "]");
         fragmentDate = date;
     }
 
@@ -68,8 +69,14 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         Log.v(LOG_TAG, "onCreateLoader, " + "i = [" + i + "], bundle = [" + bundle + "]");
-        return new CursorLoader(getActivity(), DatabaseContract.ScoreEntry.buildScoreWithDate(),
-                null, null, fragmentDate, null);
+//        return new CursorLoader(getActivity(), DatabaseContract.ScoreEntry.buildScoreWithDate(),
+//                null, null, fragmentDate, null);
+        Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate(fragmentDate);
+//        Uri uri = DatabaseContract.ScoreEntry.CONTENT_URI;
+        Log.v(LOG_TAG, "onCreateLoader, " + "i = [" + i + "], uri = [" + uri.toString()+ "]");
+        return new CursorLoader(getActivity(),
+                uri,
+                null, null, null, null);
     }
 
     @Override
@@ -87,6 +94,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 
 
         cursor.moveToFirst();
+        Log.v(LOG_TAG, "onLoadFinished, " + " cursor-entries = [" + cursor.getCount() + "]");
         if (cursor.getCount() > 0) {
             getView().findViewById(R.id.scores_list).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.scores_list_empty).setVisibility(View.GONE);

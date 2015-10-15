@@ -20,6 +20,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 import java.util.TimeZone;
 
 import barqsoft.footballscores.Constants;
@@ -144,13 +145,14 @@ public class FetchService extends IntentService {
 
                 if (values != null) {
                     if (values.size() > 0) {
-                        int inserted_data = 0;
-                        ContentValues[] insert_data = new ContentValues[values.size()];
-                        values.toArray(insert_data);
-                        inserted_data = appContext.getContentResolver().bulkInsert(
-                                DatabaseContract.BASE_CONTENT_URI, insert_data);
 
-                        Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
+                        ContentValues[] insertData = new ContentValues[values.size()];
+                        values.toArray(insertData);
+//                        Log.v(LOG_TAG, "getData, " + "insert_data: " + print(insertData) + "]");
+                        int insertedData = appContext.getContentResolver().bulkInsert(
+                                DatabaseContract.ScoreEntry.CONTENT_URI, insertData);
+
+                        Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(insertedData));
 
                         updateWidgets(appContext);
                     } else {
@@ -167,6 +169,18 @@ public class FetchService extends IntentService {
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
         }
+    }
+
+    private String print(ContentValues[] insertData) {
+        String all = "";
+        for (ContentValues data : insertData){
+            String row = "";
+            for( Map.Entry<String, Object> entry : data.valueSet()) {
+                row += entry.getKey() + "=" + entry.getValue() + ",";
+            }
+            all += row + ";";
+        }
+        return all;
     }
 
     private void updateWidgets(Context context) {
@@ -206,12 +220,14 @@ public class FetchService extends IntentService {
         String matchId = null;
         String matchDay = null;
         ArrayList<ContentValues> values = null;
+//        ContentValues[] values = null;
 
         try {
             JSONArray matches = new JSONObject(jsonData).getJSONArray(FIXTURES);
 
             //ContentValues to be inserted
             values = new ArrayList<>(matches.length());
+//            values = new ContentValues[matches.length()];
             for (int i = 0; i < matches.length(); i++) {
 
                 JSONObject matchData = matches.getJSONObject(i);
@@ -235,7 +251,7 @@ public class FetchService extends IntentService {
                     String awayId = Utilities.extractTeamIdFromLink(awayLink);
                     String homeId = Utilities.extractTeamIdFromLink(homeLink);
 
-
+                    // TODO: looks quite wrong ...
                     date = matchData.getString(MATCH_DATE);
                     time = date.substring(date.indexOf("T") + 1, date.indexOf("Z"));
                     date = date.substring(0, date.indexOf("T"));
@@ -264,6 +280,7 @@ public class FetchService extends IntentService {
                             + ", homeGoals: " + homeGoals + ", awayGoals: " + awayGoals);
 
                     matchDay = matchData.getString(MATCH_DAY);
+
                     ContentValues matchValues = new ContentValues();
 
                     matchValues.put(DatabaseContract.ScoreEntry.DATE_COL, date);
@@ -280,6 +297,8 @@ public class FetchService extends IntentService {
 
                     values.add(matchValues);
 
+//                    values.add(DatabaseHelper.buildMatchCVs(date, time, homeId, home, awayId, away,
+//                            league, homeGoals, awayGoals, matchId, matchDay));
                 }
             }
 
