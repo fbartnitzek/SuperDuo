@@ -61,9 +61,9 @@ public class TestDb extends AndroidTestCase {
         locationColumnHashSet.add(DatabaseContract.ScoreEntry.DATE_COL);
         locationColumnHashSet.add(DatabaseContract.ScoreEntry.TIME_COL);
         locationColumnHashSet.add(DatabaseContract.ScoreEntry.HOME_ID_COL);
-        locationColumnHashSet.add(DatabaseContract.ScoreEntry.HOME_COL);
+//        locationColumnHashSet.add(DatabaseContract.ScoreEntry.HOME_COL);
         locationColumnHashSet.add(DatabaseContract.ScoreEntry.AWAY_ID_COL);
-        locationColumnHashSet.add(DatabaseContract.ScoreEntry.AWAY_COL);
+//        locationColumnHashSet.add(DatabaseContract.ScoreEntry.AWAY_COL);
         locationColumnHashSet.add(DatabaseContract.ScoreEntry.LEAGUE_COL);
         locationColumnHashSet.add(DatabaseContract.ScoreEntry.HOME_GOALS_COL);
         locationColumnHashSet.add(DatabaseContract.ScoreEntry.AWAY_GOALS_COL);

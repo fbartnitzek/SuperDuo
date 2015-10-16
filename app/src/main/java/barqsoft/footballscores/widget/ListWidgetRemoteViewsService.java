@@ -21,6 +21,7 @@ import barqsoft.footballscores.MainActivity;
 import barqsoft.footballscores.R;
 import barqsoft.footballscores.Utilities;
 import barqsoft.footballscores.data.DatabaseContract;
+import barqsoft.footballscores.data.DatabaseContract.*;
 
 /**
  * Created by frank on 08.10.15.
@@ -30,22 +31,35 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 
     private static final String LOG_TAG = ListWidgetRemoteViewsService.class.getName();
     private static final String[] SCORE_COLUMNS = {
-            DatabaseContract.ScoreEntry.TABLE_NAME+ "." + DatabaseContract.ScoreEntry._ID,
-            DatabaseContract.ScoreEntry.LEAGUE_COL,
-            DatabaseContract.ScoreEntry.HOME_COL,
-            DatabaseContract.ScoreEntry.AWAY_COL,
-            DatabaseContract.ScoreEntry.HOME_GOALS_COL,
-            DatabaseContract.ScoreEntry.AWAY_GOALS_COL,
-            DatabaseContract.ScoreEntry.TIME_COL
+            ScoreEntry.TABLE_NAME+ "." + ScoreEntry._ID,
+            ScoreEntry.LEAGUE_COL,
+//            DatabaseContract.ScoreEntry.HOME_COL,
+//            DatabaseContract.ScoreEntry.AWAY_COL,
+            ScoreEntry.HOME_GOALS_COL,
+            ScoreEntry.AWAY_GOALS_COL,
+            ScoreEntry.TIME_COL,
+
+            // inner join home team
+            TeamEntry.ALIAS_HOME + "." + TeamEntry.TEAM_NAME_COL,
+            TeamEntry.ALIAS_HOME + "." + TeamEntry.TEAM_ICON_COL,
+
+            // inner join away team
+            TeamEntry.ALIAS_AWAY + "." + TeamEntry.TEAM_NAME_COL,
+            TeamEntry.ALIAS_AWAY + "." + TeamEntry.TEAM_ICON_COL
+
     };
     // these indices must match the projection
     static final int INDEX_SCORE_ID = 0;
     static final int INDEX_SCORE_LEAGUE = 1;
-    static final int INDEX_SCORE_HOME = 2;
-    static final int INDEX_SCORE_AWAY= 3;
-    static final int INDEX_SCORE_HOME_GOALS= 4;
-    static final int INDEX_SCORE_AWAY_GOALS= 5;
-    static final int INDEX_SCORE_TIME= 6;
+//    static final int INDEX_SCORE_HOME = 2;
+//    static final int INDEX_SCORE_AWAY= 3;
+    static final int INDEX_SCORE_HOME_GOALS= 3;
+    static final int INDEX_SCORE_AWAY_GOALS= 4;
+    static final int INDEX_SCORE_TIME= 5;
+    static final int INDEX_TEAM_HOME_NAME= 6;
+    static final int INDEX_TEAM_HOME_ICON= 7;
+    static final int INDEX_TEAM_AWAY_NAME= 8;
+    static final int INDEX_TEAM_AWAY_ICON= 9;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -105,7 +119,8 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 //                Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate();
 
                 for (int i=0 ; i<=Constants.FUTURE_DAYS; ++i){
-                    Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate(
+//                    Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate(
+                    Uri uri = DatabaseContract.ScoreEntry.buildScoreAndTeamsUri(
                             Utilities.formatDate(
                                     new Date(System.currentTimeMillis() + i * Constants.DAY_IN_MILLIS)));
                     data = getContentResolver().query(uri,
@@ -162,8 +177,8 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 //                views.setTextViewText(R.id.widget_description, desc);
 //                views.setTextViewText(R.id.widget_high_temperature, formattedMaxTemp);
 //                views.setTextViewText(R.id.widget_low_temperature, formattedMinTemp);
-                String home = data.getString(INDEX_SCORE_HOME);
-                String away = data.getString(INDEX_SCORE_AWAY);
+                String home = data.getString(INDEX_TEAM_HOME_NAME);
+                String away = data.getString(INDEX_TEAM_AWAY_NAME);
                 String time = data.getString(INDEX_SCORE_TIME);
                 String score = Utilities.getScores(data.getInt(INDEX_SCORE_HOME_GOALS),
                         data.getInt(INDEX_SCORE_AWAY_GOALS));
@@ -178,6 +193,10 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                 views.setTextViewText(R.id.widget_team_away, away);
                 views.setTextViewText(R.id.widget_time, time);
                 views.setTextViewText(R.id.widget_score, score);
+
+                String urlHomeIcon = data.getString(INDEX_TEAM_HOME_ICON);
+                String urlAwayIcon = data.getString(INDEX_TEAM_AWAY_ICON);
+                // TODO: get pics and use them
 //                mHolder.homeCrest.setImageResource(Utilities.getTeamCrestByTeamName(
 //                        cursor.getString(DatabaseHelper.COL_MATCH_HOME)));
 //                mHolder.awayCrest.setImageResource(Utilities.getTeamCrestByTeamName(

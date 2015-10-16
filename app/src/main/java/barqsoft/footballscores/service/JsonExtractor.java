@@ -128,8 +128,8 @@ public class JsonExtractor {
                         Log.d(LOG_TAG, "error here!");
                         Log.e(LOG_TAG, e.getMessage());
                     }
-                    String home = matchData.getString(HOME_TEAM);
-                    String away = matchData.getString(AWAY_TEAM);
+//                    String home = matchData.getString(HOME_TEAM);
+//                    String away = matchData.getString(AWAY_TEAM);
 
                     String homeGoals = matchData.getJSONObject(RESULT).getString(HOME_GOALS);
                     String awayGoals = matchData.getJSONObject(RESULT).getString(AWAY_GOALS);
@@ -137,7 +137,7 @@ public class JsonExtractor {
                     String matchDay = matchData.getString(MATCH_DAY);
 
 
-                    values.add(DatabaseHelper.buildMatchCVs(date, time, homeId, home, awayId, away,
+                    values.add(DatabaseHelper.buildMatchCVs(date, time, homeId, awayId,
                             league, homeGoals, awayGoals, matchId, matchDay));
                 }
             }

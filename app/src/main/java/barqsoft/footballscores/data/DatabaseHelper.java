@@ -14,7 +14,7 @@ import barqsoft.footballscores.data.DatabaseContract.*;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "FootballScores.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private static final String LOG_TAG = DatabaseHelper.class.getName();
 
@@ -23,21 +23,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.v(LOG_TAG, "DatabaseHelper, " + "context = [" + context + "]");
     }
 
-    public static final int COL_MATCH_DATE = 1;
-    public static final int COL_MATCH_TIME = 2;
-    public static final int COL_MATCH_HOME_ID = 3;
-    public static final int COL_MATCH_HOME = 4;
-    public static final int COL_MATCH_AWAY_ID = 5;
-    public static final int COL_MATCH_AWAY = 6;
-    public static final int COL_MATCH_LEAGUE = 7;
-    public static final int COL_HOME_GOALS = 8;
-    public static final int COL_AWAY_GOALS = 9;
-    public static final int COL_MATCH_ID = 10;
-    public static final int COL_MATCH_DAY = 11;
-
-    public static final int COL_TEAM_ID = 1;
-    public static final int COL_TEAM_NAME = 2;
-    public static final int COL_TEAM_ICON = 3;
+//    public static final int COL_MATCH_DATE = 1;
+//    public static final int COL_MATCH_TIME = 2;
+//    public static final int COL_MATCH_HOME_ID = 3;
+////    public static final int COL_MATCH_HOME = 4;
+//    public static final int COL_MATCH_AWAY_ID = 4;
+////    public static final int COL_MATCH_AWAY = 6;
+//    public static final int COL_MATCH_LEAGUE = 5;
+//    public static final int COL_HOME_GOALS = 6;
+//    public static final int COL_AWAY_GOALS = 7;
+//    public static final int COL_MATCH_ID = 8;
+//    public static final int COL_MATCH_DAY = 9;
+//
+//    public static final int COL_TEAM_ID = 1;
+//    public static final int COL_TEAM_NAME = 2;
+//    public static final int COL_TEAM_ICON = 3;
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -47,12 +47,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         final String createScoresTable = "CREATE TABLE " + ScoreEntry.TABLE_NAME + " ("
                 + ScoreEntry._ID + " INTEGER PRIMARY KEY,"
 
-        + ScoreEntry.DATE_COL + " TEXT NOT NULL,"
+                + ScoreEntry.DATE_COL + " TEXT NOT NULL,"
                 + ScoreEntry.TIME_COL + " INTEGER NOT NULL," //+ " TEXT NOT NULL,"
                 + ScoreEntry.HOME_ID_COL + " TEXT NOT NULL,"
-                + ScoreEntry.HOME_COL + " TEXT NOT NULL,"
+//                + ScoreEntry.HOME_COL + " TEXT NOT NULL,"
                 + ScoreEntry.AWAY_ID_COL + " TEXT NOT NULL,"
-                + ScoreEntry.AWAY_COL + " TEXT NOT NULL,"
+//                + ScoreEntry.AWAY_COL + " TEXT NOT NULL,"
                 + ScoreEntry.LEAGUE_COL + " INTEGER NOT NULL," //+ " TEXT NOT NULL,"
                 + ScoreEntry.HOME_GOALS_COL + " TEXT NOT NULL,"
                 + ScoreEntry.AWAY_GOALS_COL + " TEXT NOT NULL,"
@@ -103,17 +103,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return teamValues;
     }
 
-    public static ContentValues buildMatchCVs(String date, String time, String homeId, String homeName,
-                                              String awayId, String awayName, String league, String homeGoals,
+    public static ContentValues buildMatchCVs(String date, String time, String homeId,
+                                              String awayId, String league, String homeGoals,
                                               String awayGoals, String matchId, String matchDay) {
         ContentValues matchValues = new ContentValues();
         matchValues.put(ScoreEntry.DATE_COL, date);
         matchValues.put(ScoreEntry.TIME_COL, time);
         matchValues.put(ScoreEntry.HOME_ID_COL, homeId);
-        matchValues.put(ScoreEntry.HOME_COL, homeName);
+//        matchValues.put(ScoreEntry.HOME_COL, homeName);
         matchValues.put(ScoreEntry.HOME_GOALS_COL, homeGoals);
         matchValues.put(ScoreEntry.AWAY_ID_COL, awayId);
-        matchValues.put(ScoreEntry.AWAY_COL, awayName);
+//        matchValues.put(ScoreEntry.AWAY_COL, awayName);
         matchValues.put(ScoreEntry.AWAY_GOALS_COL, awayGoals);
         matchValues.put(ScoreEntry.LEAGUE_COL, league);
         matchValues.put(ScoreEntry.MATCH_ID_COL, matchId);

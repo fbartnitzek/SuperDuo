@@ -59,9 +59,9 @@ public class DatabaseContract {
         public static final String DATE_COL = "date";
         public static final String TIME_COL = "time";
         public static final String HOME_ID_COL = "home_id";
-        public static final String HOME_COL = "home";
+//        public static final String HOME_COL = "home";
         public static final String AWAY_ID_COL = "away_id";
-        public static final String AWAY_COL = "away";
+//        public static final String AWAY_COL = "away";
         public static final String HOME_GOALS_COL = "home_goals";
         public static final String AWAY_GOALS_COL = "away_goals";
         public static final String MATCH_ID_COL = "matchId";
@@ -105,6 +105,10 @@ public class DatabaseContract {
 
         public static Uri buildScoreAndTeamsUri(long id) {
             return CONTENT_URI_WITH_TEAMS.buildUpon().appendPath(Long.toString(id)).build();
+        }
+
+        public static Uri buildScoreAndTeamsUri(String fragmentDate) {
+            return CONTENT_URI_WITH_TEAMS.buildUpon().appendPath(fragmentDate).build();
         }
     }
 

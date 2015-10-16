@@ -33,6 +33,7 @@ public class ScoresProvider extends ContentProvider {
     private static final int TEAMS = 200;
     private static final int MATCHES_AND_TEAMS = 300;
     private static final int MATCHES_AND_TEAMS_WITH_ID = 301;
+    private static final int MATCHES_AND_TEAMS_WITH_DATE = 303;
 
     private UriMatcher mUriMatcher = buildUriMatcher();
 
@@ -52,9 +53,12 @@ public class ScoresProvider extends ContentProvider {
 
         // ALL MATCHES WITH TEAMS
         matcher.addURI(authority, DatabaseContract.PATH_SCORE_WITH_TEAMS, MATCHES_AND_TEAMS);
-        // MATCH WITH TEAMS
-        matcher.addURI(authority, DatabaseContract.PATH_SCORE_WITH_TEAMS + "/*",
+        // MATCH WITH TEAMS BY ID
+        matcher.addURI(authority, DatabaseContract.PATH_SCORE_WITH_TEAMS + "/#",
                 MATCHES_AND_TEAMS_WITH_ID);
+        // MATCH WITH TEAMS BY DATE
+        matcher.addURI(authority, DatabaseContract.PATH_SCORE_WITH_TEAMS + "/*",
+                MATCHES_AND_TEAMS_WITH_DATE);
 
         return matcher;
     }
@@ -116,6 +120,10 @@ public class ScoresProvider extends ContentProvider {
                 return ScoreEntry.CONTENT_TYPE;
             case MATCHES_AND_TEAMS:
                 return ScoreEntry.CONTENT_TYPE;
+            case MATCHES_AND_TEAMS_WITH_DATE:
+                return ScoreEntry.CONTENT_TYPE;
+            case MATCHES_AND_TEAMS_WITH_ID:
+                return ScoreEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri :" + uri);
         }
@@ -151,6 +159,7 @@ public class ScoresProvider extends ContentProvider {
 
         final int match = mUriMatcher.match(uri);
         String date = null;
+        String[] whereArg = null;
         switch (match) {
             case MATCHES:
                 cursor = db.query(ScoreEntry.TABLE_NAME,
@@ -158,16 +167,14 @@ public class ScoresProvider extends ContentProvider {
                 break;
             case MATCHES_WITH_DATE:
                 date = uri.getPathSegments().get(1);
-                String[] dateArg = new String[]{date};
-                Log.v(LOG_TAG, "query, " + "MATCHES_WITH_DATE, date: " + splitValues(dateArg));
+                whereArg = new String[]{date};
                 cursor = db.query(ScoreEntry.TABLE_NAME,
                         projection,
                         ScoreEntry.DATE_COL + " LIKE ?",
-                        dateArg,
+                        whereArg,
                         null,
                         null,
                         sortOrder);
-                Log.v(LOG_TAG, "query, " + "MATCHES_WITH_DATE, date: " + splitValues(dateArg) + ", result: " + cursor.getCount());
                 break;
             case TEAMS:
                 cursor = db.query(TeamEntry.TABLE_NAME,
@@ -187,11 +194,22 @@ public class ScoresProvider extends ContentProvider {
                 break;
             case MATCHES_AND_TEAMS_WITH_ID:
                 String id  = uri.getPathSegments().get(1);
-                String[] idArg = new String[]{id};
+                whereArg = new String[]{id};
                 cursor = sMatchesWithTeamsQueryBuilder.query(db,
                         projection,
                         ScoreEntry.MATCH_ID_COL + " LIKE ?",
-                        idArg,
+                        whereArg,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case MATCHES_AND_TEAMS_WITH_DATE:
+                date = uri.getPathSegments().get(1);
+                whereArg = new String[]{date};
+                cursor = sMatchesWithTeamsQueryBuilder.query(db,
+                        projection,
+                        ScoreEntry.DATE_COL + " LIKE ?",
+                        whereArg,
                         null,
                         null,
                         sortOrder);

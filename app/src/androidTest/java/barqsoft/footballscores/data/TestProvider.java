@@ -155,6 +155,7 @@ public class TestProvider extends AndroidTestCase {
                 teamCursor.getCount() == 2);
 
         TestUtils.printAllCursorEntries(teamCursor, " 2 teams should be inserted");
+        teamCursor.close();
 
 //        TestUtils.validateCursor("testInsertReadProvider. Error validating TeamEntry insert.",
 //                teamCursor, teamValues);
@@ -163,6 +164,8 @@ public class TestProvider extends AndroidTestCase {
 
         // score data
         ContentValues scoreValues = TestUtils.createScoreValues();
+
+        tco = TestUtils.getTestContentObserver();
 
         mContext.getContentResolver().registerContentObserver(
                 ScoreEntry.CONTENT_URI, true, tco);
@@ -190,6 +193,7 @@ public class TestProvider extends AndroidTestCase {
 
 
         TestUtils.printAllCursorEntries(scoreCursor, "1 match should be inserted");
+        scoreCursor.close();
 
 //        TestUtils.validateCursor("testInsertReadProvider. Error validating WeatherEntry insert.",
 //                scoreCursor, scoreValues);
@@ -202,7 +206,34 @@ public class TestProvider extends AndroidTestCase {
 
 
         //TODO
-        // Get the joined Weather and Location data
+
+        // insert second game (on same date)
+        ContentValues scoreValues2 = TestUtils.createSecondScoreValues();
+
+        tco = TestUtils.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(
+                ScoreEntry.CONTENT_URI, true, tco);
+
+        Uri scoreInsertUri2 = mContext.getContentResolver().insert(
+                ScoreEntry.CONTENT_URI, scoreValues2);
+        tco.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(tco);
+        assertTrue(scoreInsertUri2 != null);
+
+        // get all
+         scoreCursor = mContext.getContentResolver().query(
+                ScoreEntry.CONTENT_URI,  // Table to Query
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null // columns to group by
+        );
+
+        TestUtils.printAllCursorEntries(scoreCursor, "get all score-entries");
+        assertTrue(scoreCursor.getCount() == 2);
+        scoreCursor.close();
+
+        // Get the joined match and team data by id
         scoreCursor = mContext.getContentResolver().query(
                 ScoreEntry.buildScoreAndTeamsUri(TestUtils.getMatchId()),
                 null, // leaving "columns" null just returns all the columns.
@@ -210,34 +241,23 @@ public class TestProvider extends AndroidTestCase {
                 null, // values for "where" clause
                 null  // sort order
         );
-        Log.v(LOG_TAG, "testInsertReadProvider, " + " after join");
-        assertTrue(scoreCursor.getCount()>0);
-        TestUtils.printAllCursorEntries(scoreCursor, "joined match with 2 teams should work");
-//        TestUtils.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data.",
-//                scoreCursor, scoreValues);
 
-//        // Get the joined Weather and Location data with a start date
-//        weatherCursor = mContext.getContentResolver().query(
-//                WeatherEntry.buildWeatherLocationWithStartDate(
-//                        TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
-//                null, // leaving "columns" null just returns all the columns.
-//                null, // cols for "where" clause
-//                null, // values for "where" clause
-//                null  // sort order
-//        );
-//        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data with start date.",
-//                weatherCursor, weatherValues);
-//
-//        // Get the joined Weather data for a specific date
-//        weatherCursor = mContext.getContentResolver().query(
-//                WeatherEntry.buildWeatherLocationWithDate(TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
-//                null,
-//                null,
-//                null,
-//                null
-//        );
-//        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location data for a specific date.",
-//                weatherCursor, weatherValues);
+        TestUtils.printAllCursorEntries(scoreCursor, "joined match by id with 2 teams should work");
+        assertTrue(scoreCursor.getCount() == 1);
+        scoreCursor.close();
+
+        // Get the joined match and team data by date
+        scoreCursor = mContext.getContentResolver().query(
+                ScoreEntry.buildScoreAndTeamsUri(TestUtils.getMatchDate()),
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null  // sort order
+        );
+
+        TestUtils.printAllCursorEntries(scoreCursor, "joined match by date with 2 teams should work");
+        assertTrue(scoreCursor.getCount() == 2);
+        scoreCursor.close();
 
     }
 
@@ -357,9 +377,9 @@ public class TestProvider extends AndroidTestCase {
                     "2015-10-10",
                     10+i + ":00",
                     "7" + i,
-                    "Swansea City FC" + i,
+//                    "Swansea City FC" + i,
                     "8" + i,
-                    "Stoke City FC" + i,
+//                    "Stoke City FC" + i,
                     "39" + i,
                     (11 - i) + "" ,
                     i + "" ,

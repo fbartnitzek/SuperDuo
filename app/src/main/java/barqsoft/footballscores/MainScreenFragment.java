@@ -31,12 +31,6 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         Log.v(LOG_TAG, "MainScreenFragment, " + "");
     }
 
-//    private void updateScores() {
-//        Log.v(LOG_TAG, "updateScores, " + "");
-//        Intent serviceStart = new Intent(getActivity(), FetchService.class);
-//        getActivity().startService(serviceStart);
-//    }
-
     public void setFragmentDate(String date) {
         Log.v(LOG_TAG, "setFragmentDate, " + "date = [" + date + "]");
         fragmentDate = date;
@@ -47,14 +41,17 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
                              final Bundle savedInstanceState) {
         Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = ["
                 + container + "], savedInstanceState = [" + savedInstanceState + "]");
-//        updateScores();
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        final ListView score_list = (ListView) rootView.findViewById(R.id.scores_list);
+        final ListView scoreList = (ListView) rootView.findViewById(R.id.scores_list);
+
         mAdapter = new ScoresAdapter(getActivity(), null, 0);
-        score_list.setAdapter(mAdapter);
+        scoreList.setAdapter(mAdapter);
+
         getLoaderManager().initLoader(SCORES_LOADER, null, this);
         mAdapter.detail_match_id = MainActivity.selectedMatchId;
-        score_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        scoreList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ViewHolder selected = (ViewHolder) view.getTag();
@@ -69,14 +66,14 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         Log.v(LOG_TAG, "onCreateLoader, " + "i = [" + i + "], bundle = [" + bundle + "]");
-//        return new CursorLoader(getActivity(), DatabaseContract.ScoreEntry.buildScoreWithDate(),
-//                null, null, fragmentDate, null);
-        Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate(fragmentDate);
-//        Uri uri = DatabaseContract.ScoreEntry.CONTENT_URI;
+
+//        Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate(fragmentDate);
+        Uri uri = DatabaseContract.ScoreEntry.buildScoreAndTeamsUri(fragmentDate);
+
         Log.v(LOG_TAG, "onCreateLoader, " + "i = [" + i + "], uri = [" + uri.toString()+ "]");
         return new CursorLoader(getActivity(),
                 uri,
-                null, null, null, null);
+                ScoresAdapter.SCORE_COLUMNS, null, null, null);
     }
 
     @Override

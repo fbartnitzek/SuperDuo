@@ -19,7 +19,7 @@ import java.util.Date;
 public class PagerFragment extends Fragment {
     public static final int NUM_PAGES = Constants.PAST_DAYS + 1 + Constants.FUTURE_DAYS;
     public ViewPager mPagerHandler;
-    private myPageAdapter mPagerAdapter;
+    private PageAdapter mPagerAdapter;
     private MainScreenFragment[] viewFragments = new MainScreenFragment[NUM_PAGES];
     private static final String LOG_TAG = PagerFragment.class.getName();
 
@@ -28,7 +28,7 @@ public class PagerFragment extends Fragment {
         Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
         View rootView = inflater.inflate(R.layout.pager_fragment, container, false);
         mPagerHandler = (ViewPager) rootView.findViewById(R.id.pager);
-        mPagerAdapter = new myPageAdapter(getChildFragmentManager());
+        mPagerAdapter = new PageAdapter(getChildFragmentManager());
 
         //TODO: use default format - but matching with queries...
 //            DateFormat defaultFormat = android.text.format.DateFormat.getDateFormat(getActivity());
@@ -39,9 +39,7 @@ public class PagerFragment extends Fragment {
             Date fragmentDate = new Date(System.currentTimeMillis() +
                     ((i - Constants.PAST_DAYS) * Constants.DAY_IN_MILLIS));
 
-
             viewFragments[i] = new MainScreenFragment();
-//            viewFragments[i].setFragmentDate(dateFormat.format(fragmentDate));
             viewFragments[i].setFragmentDate(Utilities.formatDate(fragmentDate));
         }
         mPagerHandler.setAdapter(mPagerAdapter);
@@ -49,7 +47,7 @@ public class PagerFragment extends Fragment {
         return rootView;
     }
 
-    private class myPageAdapter extends FragmentStatePagerAdapter {
+    private class PageAdapter extends FragmentStatePagerAdapter {
         @Override
         public Fragment getItem(int i) {
 //            Log.v(LOG_TAG, "getItem, " + "i = [" + i + "]");
@@ -62,9 +60,9 @@ public class PagerFragment extends Fragment {
             return NUM_PAGES;
         }
 
-        public myPageAdapter(FragmentManager fm) {
+        public PageAdapter(FragmentManager fm) {
             super(fm);
-            Log.v(LOG_TAG, "myPageAdapter, " + "fm = [" + fm + "]");
+            Log.v(LOG_TAG, "PageAdapter, " + "fm = [" + fm + "]");
         }
 
         // Returns the page title for the top indicator

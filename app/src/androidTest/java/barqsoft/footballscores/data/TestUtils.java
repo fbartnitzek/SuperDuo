@@ -41,6 +41,10 @@ public class TestUtils extends AndroidTestCase{
         return 148783;
     }
 
+    public static String getMatchDate() {
+        return "2015-10-17";
+    }
+
     public static ContentValues createScoreValues() {
 //        return DatabaseHelper.buildMatchCVs(
 //                "2015-10-15", "18:00", "123", "teamA", "543", "teamB", "123", "2", "1",
@@ -49,8 +53,15 @@ public class TestUtils extends AndroidTestCase{
         // match_day=9 matchId=147004 league=398 home_id=72 home=Swansea City FC
 //        Log.v(LOG_TAG, "createScoreValues, " + "");
         return DatabaseHelper.buildMatchCVs(
-                "2015-10-17", "14:00", "35", "Dynamo Dresden", "23", "Energie Cottbus", "403",
+                "2015-10-17", "14:00", "35", "23", "403",
                 "-1", "-1", "148783", "13"
+        );
+    }
+
+    public static ContentValues createSecondScoreValues() {
+        return DatabaseHelper.buildMatchCVs(
+                "2015-10-17", "20:00", "35", "23", "403",
+                "4", "4", "148784", "14"
         );
     }
 
