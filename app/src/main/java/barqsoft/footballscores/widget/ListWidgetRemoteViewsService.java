@@ -30,7 +30,7 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 
     private static final String LOG_TAG = ListWidgetRemoteViewsService.class.getName();
     private static final String[] SCORE_COLUMNS = {
-            DatabaseContract.SCORES_TABLE + "." + DatabaseContract.ScoreEntry._ID,
+            DatabaseContract.ScoreEntry.TABLE_NAME+ "." + DatabaseContract.ScoreEntry._ID,
             DatabaseContract.ScoreEntry.LEAGUE_COL,
             DatabaseContract.ScoreEntry.HOME_COL,
             DatabaseContract.ScoreEntry.AWAY_COL,

@@ -25,8 +25,7 @@ public class TestDb extends AndroidTestCase {
 
     public void testCreateDb(){
         final HashSet<String> tableNameHashSet = new HashSet<String>();
-//        tableNameHashSet.add(DatabaseContract.TEAMS_TABLE);
-        tableNameHashSet.add(DatabaseContract.SCORES_TABLE);
+        tableNameHashSet.add(DatabaseContract.ScoreEntry.TABLE_NAME);
 
         mContext.deleteDatabase(DatabaseHelper.DATABASE_NAME);
         SQLiteDatabase db = new DatabaseHelper(
@@ -50,7 +49,7 @@ public class TestDb extends AndroidTestCase {
                 tableNameHashSet.isEmpty());
 
         // now, do our tables contain the correct columns?
-        c = db.rawQuery("PRAGMA table_info(" + DatabaseContract.SCORES_TABLE+ ")",
+        c = db.rawQuery("PRAGMA table_info(" + DatabaseContract.ScoreEntry.TABLE_NAME+ ")",
                 null);
 
         assertTrue("Error: This means that we were unable to query the database for table information.",
@@ -105,13 +104,13 @@ public class TestDb extends AndroidTestCase {
         ContentValues testValues = TestUtils.createScoreValues();
 
         // Insert ContentValues into database and get a row ID back
-        long insertedRows = db.insert(DatabaseContract.SCORES_TABLE, null, testValues);
+        long insertedRows = db.insert(DatabaseContract.ScoreEntry.TABLE_NAME, null, testValues);
         assertTrue(insertedRows > 0);
 
 
         // Query the database and receive a Cursor back
         Cursor cursor = db.query(
-                DatabaseContract.SCORES_TABLE,
+                DatabaseContract.ScoreEntry.TABLE_NAME,
                 null,   //select
                 null,   //where keys
                 null,   //where values

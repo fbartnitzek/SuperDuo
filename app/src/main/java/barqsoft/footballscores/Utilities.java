@@ -8,6 +8,8 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -22,6 +24,18 @@ public class Utilities {
     private static final String LOG_TAG = Utilities.class.getName();
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat readableDayFormat = new SimpleDateFormat("EEEE");
+
+    private static ArrayList supportedLeagues = new ArrayList<>(Arrays.asList(
+        Constants.BUNDESLIGA1, Constants.BUNDESLIGA2, Constants.BUNDESLIGA3, Constants.CHAMPIONS_LEAGUE,
+        Constants.PREMIER_LEAGUE));
+
+    public static ArrayList<Integer> getSupportedLeagues(){
+        return supportedLeagues;
+    }
+
+    public static boolean isSupportedLeague(int league) {
+        return supportedLeagues.contains(league);
+    }
 
     public static String getLeague(int league_num, Context context) {
         Log.v(LOG_TAG, "getLeague, " + "league_num = [" + league_num + "]");
@@ -94,7 +108,7 @@ public class Utilities {
         }
     }
 
-    public static String extractTeamIdFromLink(String teamLink) {
+    public static String extractIdFromLink(String teamLink) {
         //example: "http://api.football-data.org/alpha/teams/254"
 
         if (teamLink != null) {
@@ -107,19 +121,7 @@ public class Utilities {
         return null;
     }
 
-    public static boolean isSupportedLeague(int league) {
-//        if (league == Constants.PREMIER_LEAGUE ||
-//                league == Constants.SERIE_A ||
-//                league == Constants.BUNDESLIGA1 ||
-//                league == Constants.BUNDESLIGA2 ||
-//                league == Constants.PRIMERA_DIVISION ||
-//                league == Constants.BUNDESLIGA3) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-        return true;
-    }
+
 
     static public boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -128,9 +130,6 @@ public class Utilities {
     }
 
     public static String formatDate(Date date) {
-//        String[] result = new String[1];
-//        result[0] = dateFormat.format(date);
-//        return result;
         return dateFormat.format(date);
     }
 
@@ -160,9 +159,6 @@ public class Utilities {
         } else if (julianDay == currentJulianDay - 1) {
             return context.getString(R.string.yesterday);
         } else {
-//            Time time = new Time();
-//            time.setToNow();
-            // Otherwise, the format is just the day of the week (e.g "Wednesday".
             return readableDayFormat.format(dateInMillis);
         }
     }

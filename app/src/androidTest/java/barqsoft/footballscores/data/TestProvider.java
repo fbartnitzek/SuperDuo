@@ -8,7 +8,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.test.AndroidTestCase;
-import android.util.Log;
+import android.util.Log; 
+import barqsoft.footballscores.data.DatabaseContract.*;
 
 /**
  * Created by frank on 15.10.15.
@@ -18,29 +19,26 @@ public class TestProvider extends AndroidTestCase {
     private static final String LOG_TAG = TestProvider.class.getName();
 
     public void deleteAllRecordsFromProvider() {
-        mContext.getContentResolver().delete(
-                DatabaseContract.ScoreEntry.CONTENT_URI,
-                null,
-                null
-        );
+        mContext.getContentResolver().delete(ScoreEntry.CONTENT_URI, null, null);
+        mContext.getContentResolver().delete(TeamEntry.CONTENT_URI, null, null);
 
         Cursor cursor = mContext.getContentResolver().query(
-                DatabaseContract.ScoreEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                null
-        );
+                ScoreEntry.CONTENT_URI, null, null, null, null);
         assertEquals("Error: Records not deleted from Score table during delete", 0, cursor.getCount());
         cursor.close();
 
+        cursor = mContext.getContentResolver().query(
+                TeamEntry.CONTENT_URI, null, null, null, null);
+        assertEquals("Error: Records not deleted from Team table during delete", 0, cursor.getCount());
+        cursor.close();
     }
 
     public void deleteAllRecordsFromDB() {
         DatabaseHelper dbHelper = new DatabaseHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        db.delete(DatabaseContract.SCORES_TABLE, null, null);
+        db.delete(ScoreEntry.TABLE_NAME, null, null);
+        db.delete(TeamEntry.TABLE_NAME, null, null);
         db.close();
     }
 
@@ -63,12 +61,12 @@ public class TestProvider extends AndroidTestCase {
             ProviderInfo providerInfo = pm.getProviderInfo(componentName, 0);
 
             // Make sure that the registered authority matches the authority from the Contract.
-            assertEquals("Error: WeatherProvider registered with authority: " + providerInfo.authority +
+            assertEquals("Error: ScoresProvider registered with authority: " + providerInfo.authority +
                             " instead of authority: " + DatabaseContract.CONTENT_AUTHORITY,
                     providerInfo.authority, DatabaseContract.CONTENT_AUTHORITY);
         } catch (PackageManager.NameNotFoundException e) {
             // I guess the provider isn't registered correctly.
-            assertTrue("Error: WeatherProvider not registered at " + mContext.getPackageName(),
+            assertTrue("Error: ScoresProvider not registered at " + mContext.getPackageName(),
                     false);
         }
     }
@@ -78,14 +76,15 @@ public class TestProvider extends AndroidTestCase {
         DatabaseHelper dbHelper = new DatabaseHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues testValues = TestUtils.createScoreValues();
-        long locationRowId = db.insert(DatabaseContract.SCORES_TABLE, null, testValues);
-        assertTrue(locationRowId > 0);
+        // test teams
+        ContentValues testValuesTeam = TestUtils.createHomeTeamValues();
+        long teamRowId = db.insert(TeamEntry.TABLE_NAME, null, testValuesTeam);
+        assertTrue(teamRowId > 0);
         db.close();
 
         // Test the basic content provider query
-        Cursor scoreCursor = mContext.getContentResolver().query(
-                DatabaseContract.ScoreEntry.CONTENT_URI,
+        Cursor teamCursor = mContext.getContentResolver().query(
+                TeamEntry.CONTENT_URI,
                 null,
                 null,
                 null,
@@ -93,25 +92,83 @@ public class TestProvider extends AndroidTestCase {
         );
 
         // Make sure we get the correct cursor out of the database
-        TestUtils.validateCursor("testBasicScoreQuery", scoreCursor, testValues);
+//        TestUtils.validateCursor("testBasicTeamQuery", teamCursor, testValuesTeam);
+
+        // test scores
+        db = dbHelper.getWritableDatabase();
+        ContentValues testValuesScores = TestUtils.createScoreValues();
+        long scoreRowId = db.insert(ScoreEntry.TABLE_NAME, null, testValuesScores);
+        assertTrue(scoreRowId > 0);
+        db.close();
+
+        // Test the basic content provider query
+        Cursor scoreCursor = mContext.getContentResolver().query(
+                ScoreEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        assertTrue(scoreCursor.getCount()>0);
+        // Make sure we get the correct cursor out of the database
+//        TestUtils.validateCursor("testBasicScoreQuery", scoreCursor, testValuesScores);
     }
 
 
     public void testInsertReadProvider() {
-        Log.v(LOG_TAG, "testInsertReadProvider, " + "");
-
 
         // Register a content observer for our insert.  This time, directly with the content resolver
         TestUtils.TestContentObserver tco = TestUtils.getTestContentObserver();
 
-        // Fantastic.  Now that we have a location, add some weather!
+
+        // team data
+        ContentValues teamValues = TestUtils.createHomeTeamValues();
+
+        mContext.getContentResolver().registerContentObserver(
+                TeamEntry.CONTENT_URI, true, tco);
+
+        Uri teamInsertUri = mContext.getContentResolver().insert(
+                TeamEntry.CONTENT_URI, teamValues);
+        assertTrue(teamInsertUri != null);
+
+        teamInsertUri = mContext.getContentResolver().insert(
+                TeamEntry.CONTENT_URI, TestUtils.createAwayTeamValues()
+        );
+        assertTrue(teamInsertUri != null);
+
+        // Did our content observer get called?  Students:  If this fails, your insert weather
+        // in your ContentProvider isn't calling
+        // getContext().getContentResolver().notifyChange(uri, null);
+        tco.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(tco);
+
+        // A cursor is your primary interface to the query results.
+        Cursor teamCursor = mContext.getContentResolver().query(
+                TeamEntry.CONTENT_URI,  // Table to Query
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null // columns to group by
+        );
+        assertTrue("missing teams after insert (just " + teamCursor.getCount() + ")",
+                teamCursor.getCount() == 2);
+
+        TestUtils.printAllCursorEntries(teamCursor, " 2 teams should be inserted");
+
+//        TestUtils.validateCursor("testInsertReadProvider. Error validating TeamEntry insert.",
+//                teamCursor, teamValues);
+
+
+
+        // score data
         ContentValues scoreValues = TestUtils.createScoreValues();
 
         mContext.getContentResolver().registerContentObserver(
-                DatabaseContract.ScoreEntry.CONTENT_URI, true, tco);
+                ScoreEntry.CONTENT_URI, true, tco);
 
         Uri scoreInsertUri = mContext.getContentResolver().insert(
-                DatabaseContract.ScoreEntry.CONTENT_URI, scoreValues);
+                ScoreEntry.CONTENT_URI, scoreValues);
         assertTrue(scoreInsertUri != null);
 
         // Did our content observer get called?  Students:  If this fails, your insert weather
@@ -122,62 +179,102 @@ public class TestProvider extends AndroidTestCase {
 
         Log.v(LOG_TAG, "testInsertReadProvider, " + " before query");
         // A cursor is your primary interface to the query results.
-        Cursor weatherCursor = mContext.getContentResolver().query(
-                DatabaseContract.ScoreEntry.CONTENT_URI,  // Table to Query
+        Cursor scoreCursor = mContext.getContentResolver().query(
+                ScoreEntry.CONTENT_URI,  // Table to Query
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
                 null, // values for "where" clause
                 null // columns to group by
         );
-        assertTrue("empty after insert", weatherCursor.getCount() > 0);
+        assertTrue("empty after insert", scoreCursor.getCount() > 0);
 
-        weatherCursor.moveToFirst();
-        TestUtils.printCurrentCursorEntry(weatherCursor);
 
-        TestUtils.validateCursor("testInsertReadProvider. Error validating WeatherEntry insert.",
-                weatherCursor, scoreValues);
+        TestUtils.printAllCursorEntries(scoreCursor, "1 match should be inserted");
+
+//        TestUtils.validateCursor("testInsertReadProvider. Error validating WeatherEntry insert.",
+//                scoreCursor, scoreValues);
+
+
+        // test joins
+        // Add the location values in with the weather data so that we can make
+        // sure that the join worked and we actually get all the values back
+//        scoreValues.putAll(teamValues);
+
+
+        //TODO
+        // Get the joined Weather and Location data
+        scoreCursor = mContext.getContentResolver().query(
+                ScoreEntry.buildScoreAndTeamsUri(TestUtils.getMatchId()),
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null  // sort order
+        );
+        Log.v(LOG_TAG, "testInsertReadProvider, " + " after join");
+        assertTrue(scoreCursor.getCount()>0);
+        TestUtils.printAllCursorEntries(scoreCursor, "joined match with 2 teams should work");
+//        TestUtils.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data.",
+//                scoreCursor, scoreValues);
+
+//        // Get the joined Weather and Location data with a start date
+//        weatherCursor = mContext.getContentResolver().query(
+//                WeatherEntry.buildWeatherLocationWithStartDate(
+//                        TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
+//                null, // leaving "columns" null just returns all the columns.
+//                null, // cols for "where" clause
+//                null, // values for "where" clause
+//                null  // sort order
+//        );
+//        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data with start date.",
+//                weatherCursor, weatherValues);
+//
+//        // Get the joined Weather data for a specific date
+//        weatherCursor = mContext.getContentResolver().query(
+//                WeatherEntry.buildWeatherLocationWithDate(TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
+//                null,
+//                null,
+//                null,
+//                null
+//        );
+//        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location data for a specific date.",
+//                weatherCursor, weatherValues);
+
     }
 
     public void testDeleteRecords() {
         testInsertReadProvider();
 
-        // Register a content observer for our location delete.
-        TestUtils.TestContentObserver scoreObserver = TestUtils.getTestContentObserver();
-//        mContext.getContentResolver().registerContentObserver(LocationEntry.CONTENT_URI, true, locationObserver);
-
-        // Register a content observer for our weather delete.
-//        TestUtilities.TestContentObserver weatherObserver = TestUtilities.getTestContentObserver();
+        // Register a content observer for our team delete.
+        TestUtils.TestContentObserver teamObserver = TestUtils.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(
-                DatabaseContract.ScoreEntry.CONTENT_URI, true, scoreObserver);
+                TeamEntry.CONTENT_URI, true, teamObserver);
+
+        // Register a content observer for our score delete.
+        TestUtils.TestContentObserver scoreObserver = TestUtils.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(
+                ScoreEntry.CONTENT_URI, true, scoreObserver);
 
         deleteAllRecordsFromProvider();
 
-        // Students: If either of these fail, you most-likely are not calling the
-        // getContext().getContentResolver().notifyChange(uri, null); in the ContentProvider
-        // delete.  (only if the insertReadProvider is succeeding)
+        teamObserver.waitForNotificationOrFail();
         scoreObserver.waitForNotificationOrFail();
-//        weatherObserver.waitForNotificationOrFail();
 
+        mContext.getContentResolver().unregisterContentObserver(teamObserver);
         mContext.getContentResolver().unregisterContentObserver(scoreObserver);
-//        mContext.getContentResolver().unregisterContentObserver(weatherObserver);
     }
-
 
     public void testBulkInsert() {
 
-
-        // Now we can bulkInsert some weather.  In fact, we only implement BulkInsert for weather
-        // entries.  With ContentProviders, you really only have to implement the features you
-        // use, after all.
-        ContentValues[] bulkInsertContentValues = createBulkInsertScoreValues();
+        // team
+        ContentValues[] bulkInsertContentValues = createBulkInsertTeamValues();
 
         // Register a content observer for our bulk insert.
         TestUtils.TestContentObserver weatherObserver = TestUtils.getTestContentObserver();
         mContext.getContentResolver().registerContentObserver(
-                DatabaseContract.ScoreEntry.CONTENT_URI, true, weatherObserver);
+                TeamEntry.CONTENT_URI, true, weatherObserver);
 
         int insertCount = mContext.getContentResolver().bulkInsert(
-                DatabaseContract.ScoreEntry.CONTENT_URI, bulkInsertContentValues);
+                TeamEntry.CONTENT_URI, bulkInsertContentValues);
 
         // Students:  If this fails, it means that you most-likely are not calling the
         // getContext().getContentResolver().notifyChange(uri, null); in your BulkInsert
@@ -187,14 +284,8 @@ public class TestProvider extends AndroidTestCase {
 
         assertEquals(insertCount, BULK_INSERT_RECORDS_TO_INSERT);
 
-        // A cursor is your primary interface to the query results.
         Cursor cursor = mContext.getContentResolver().query(
-                DatabaseContract.ScoreEntry.CONTENT_URI,
-                null, // leaving "columns" null just returns all the columns.
-                null, // cols for "where" clause
-                null, // values for "where" clause
-                null  // sort order == by DATE ASCENDING
-        );
+                TeamEntry.CONTENT_URI, null, null, null, null);
 
         // we should have as many records in the database as we've inserted
         assertEquals(cursor.getCount(), BULK_INSERT_RECORDS_TO_INSERT);
@@ -202,17 +293,65 @@ public class TestProvider extends AndroidTestCase {
         // and let's make sure they match the ones we created
         cursor.moveToFirst();
         for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++, cursor.moveToNext() ) {
-            TestUtils.validateCurrentRecord("testBulkInsert.  Error validating WeatherEntry " + i,
-                    cursor, bulkInsertContentValues[i]);
+//            TestUtils.validateCurrentRecord("testBulkInsert.  Error validating TeamEntry " + i,
+//                    cursor, bulkInsertContentValues[i]);
         }
+        cursor.close();
+
+
+        // score
+        bulkInsertContentValues = createBulkInsertScoreValues();
+
+        // Register a content observer for our bulk insert.
+        weatherObserver = TestUtils.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(
+                ScoreEntry.CONTENT_URI, true, weatherObserver);
+
+        insertCount = mContext.getContentResolver().bulkInsert(
+                ScoreEntry.CONTENT_URI, bulkInsertContentValues);
+
+        // Students:  If this fails, it means that you most-likely are not calling the
+        // getContext().getContentResolver().notifyChange(uri, null); in your BulkInsert
+        // ContentProvider method.
+        weatherObserver.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(weatherObserver);
+
+        assertEquals(insertCount, BULK_INSERT_RECORDS_TO_INSERT);
+
+        cursor = mContext.getContentResolver().query(
+                ScoreEntry.CONTENT_URI, null, null, null, null);
+
+        // we should have as many records in the database as we've inserted
+        assertEquals(cursor.getCount(), BULK_INSERT_RECORDS_TO_INSERT);
+
+        // and let's make sure they match the ones we created
+//        cursor.moveToFirst();
+//        for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++, cursor.moveToNext() ) {
+////            TestUtils.validateCurrentRecord("testBulkInsert.  Error validating WeatherEntry " + i,
+////                    cursor, bulkInsertContentValues[i]);
+//        }
         cursor.close();
     }
 
-    static private final int BULK_INSERT_RECORDS_TO_INSERT = 10;
-    private ContentValues[] createBulkInsertScoreValues() {
-        long millisecondsInADay = 1000*60*60*24;
-        ContentValues[] returnContentValues = new ContentValues[BULK_INSERT_RECORDS_TO_INSERT];
 
+    static private final int BULK_INSERT_RECORDS_TO_INSERT = 10;
+
+    private ContentValues[] createBulkInsertTeamValues() {
+        ContentValues[] returnContentValues = new ContentValues[BULK_INSERT_RECORDS_TO_INSERT];
+        for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++ ) {
+            returnContentValues[i] = DatabaseHelper.buildTeamCVs(
+                    "25" + i,
+                    "CD Tenerife" + i,
+                    "http://upload.wikimedia.org/wikipedia/de/f/f4/CD_Tenerife_Logo" + i + ".svg"
+            );
+        }
+        return returnContentValues;
+    }
+
+
+    private ContentValues[] createBulkInsertScoreValues() {
+
+        ContentValues[] returnContentValues = new ContentValues[BULK_INSERT_RECORDS_TO_INSERT];
         for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++ ) {
             returnContentValues[i] = DatabaseHelper.buildMatchCVs(
                     "2015-10-10",

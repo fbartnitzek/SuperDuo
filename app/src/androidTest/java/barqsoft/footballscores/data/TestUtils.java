@@ -9,9 +9,6 @@ import android.os.HandlerThread;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Created by frank on 15.10.15.
  */
@@ -19,41 +16,67 @@ public class TestUtils extends AndroidTestCase{
 
     private static final String LOG_TAG = TestUtils.class.getName();
 
+
+    // sampleData
+
+    public static ContentValues createHomeTeamValues() {
+        return DatabaseHelper.buildTeamCVs("35", "Dynamo Dresden",
+                "http://upload.wikimedia.org/wikipedia/de/e/e1/Logo_SG_Dynamo_Dresden_neu.svg");
+    }
+
+    public static ContentValues createAwayTeamValues() {
+        return DatabaseHelper.buildTeamCVs("23", "Energie Cottbus",
+                "https://upload.wikimedia.org/wikipedia/en/1/12/Fcenergie.png");
+    }
+
+    public static long getHomeTeamId(){
+        return 35L;
+    }
+
+    public static long getAwayTeamId(){
+        return 23L;
+    }
+
+    public static long getMatchId(){
+        return 148783;
+    }
+
     public static ContentValues createScoreValues() {
 //        return DatabaseHelper.buildMatchCVs(
 //                "2015-10-15", "18:00", "123", "teamA", "543", "teamB", "123", "2", "1",
 //                "1234", "1");
         //away_id=70 away=Stoke City FC home_goals=-1 time=21:00 date=2015-10-19 away_goals=-1
         // match_day=9 matchId=147004 league=398 home_id=72 home=Swansea City FC
-        Log.v(LOG_TAG, "createScoreValues, " + "");
+//        Log.v(LOG_TAG, "createScoreValues, " + "");
         return DatabaseHelper.buildMatchCVs(
-                "2015-10-10", "21:00", "72", "Swansea City FC", "70", "Stoke City FC", "398",
-                "-1", "-1", "147004", "9"
+                "2015-10-17", "14:00", "35", "Dynamo Dresden", "23", "Energie Cottbus", "403",
+                "-1", "-1", "148783", "13"
         );
     }
 
-    static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
-        Log.v(LOG_TAG, "validateCursor, " + "error = [" + error + "], valueCursor = [" + valueCursor + "], expectedValues = [" + expectedValues + "]");
-
-        assertTrue("Empty cursor returned. " + error, valueCursor.moveToFirst());
-        validateCurrentRecord(error, valueCursor, expectedValues);
-        valueCursor.close();
-    }
-
-    static void validateCurrentRecord(String error, Cursor valueCursor, ContentValues expectedValues) {
-        Log.v(LOG_TAG, "validateCurrentRecord, " + "error = [" + error + "], valueCursor = [" + valueCursor + "], expectedValues = [" + expectedValues + "]");
-        Set<Map.Entry<String, Object>> valueSet = expectedValues.valueSet();
-        for (Map.Entry<String, Object> entry : valueSet) {
-            String columnName = entry.getKey();
-            int idx = valueCursor.getColumnIndex(columnName);
-            assertFalse("Column '" + columnName + "' not found. " + error, idx == -1);
-            String expectedValue = entry.getValue().toString();
-            Log.v(LOG_TAG, "validateCurrentRecord, " + "error = [" + error + "], valueCursor = [" + valueCursor + "], expectedValues = [" + expectedValues + "]");
-            assertEquals("Value '" + entry.getValue().toString() +
-                    "' did not match the expected value '" +
-                    expectedValue + "'. " + error, expectedValue, valueCursor.getString(idx));
-        }
-    }
+    // TODO: seems to be wrong without adaption
+//    static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
+//        Log.v(LOG_TAG, "validateCursor, " + "error = [" + error + "], valueCursor = [" + valueCursor + "], expectedValues = [" + expectedValues + "]");
+//
+//        assertTrue("Empty cursor returned. " + error, valueCursor.moveToFirst());
+//        validateCurrentRecord(error, valueCursor, expectedValues);
+//        valueCursor.close();
+//    }
+//
+//    static void validateCurrentRecord(String error, Cursor valueCursor, ContentValues expectedValues) {
+//        Log.v(LOG_TAG, "validateCurrentRecord, " + "error = [" + error + "], valueCursor = [" + valueCursor + "], expectedValues = [" + expectedValues + "]");
+//        Set<Map.Entry<String, Object>> valueSet = expectedValues.valueSet();
+//        for (Map.Entry<String, Object> entry : valueSet) {
+//            String columnName = entry.getKey();
+//            int idx = valueCursor.getColumnIndex(columnName);
+//            assertFalse("Column '" + columnName + "' not found. " + error, idx == -1);
+//            String expectedValue = entry.getValue().toString();
+//            Log.v(LOG_TAG, "validateCurrentRecord, " + "error = [" + error + "], valueCursor = [" + valueCursor + "], expectedValues = [" + expectedValues + "]");
+//            assertEquals("Value '" + entry.getValue().toString() +
+//                    "' did not match the expected value '" +
+//                    expectedValue + "'. " + error, expectedValue, valueCursor.getString(idx));
+//        }
+//    }
 
     public static void printCurrentCursorEntry(Cursor cursor) {
         String result = "";
@@ -63,6 +86,14 @@ public class TestUtils extends AndroidTestCase{
         }
         Log.v(LOG_TAG, "printCurrentCursorEntry, " + "content= [" + result+ "]");
     }
+
+    public static void printAllCursorEntries(Cursor teamCursor, String msg) {
+        Log.v(LOG_TAG, "printAllCursorEntries, " + "msg = [" + msg + "]");
+        while (teamCursor.moveToNext()){
+            printCurrentCursorEntry(teamCursor);
+        }
+    }
+
 
     static class TestContentObserver extends ContentObserver {
         final HandlerThread mHT;
