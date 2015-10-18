@@ -110,6 +110,21 @@ public class DatabaseContract {
         public static Uri buildScoreAndTeamsUri(String fragmentDate) {
             return CONTENT_URI_WITH_TEAMS.buildUpon().appendPath(fragmentDate).build();
         }
+
+        public static Uri buildScoreAndTeamsUri(String fragmentDate, long id) {
+            return CONTENT_URI_WITH_TEAMS.buildUpon().appendPath(fragmentDate)
+                    .appendPath(Long.toString(id)).build();
+        }
+
+        public static String getDateFromWidgetUri(Uri contentUri) {
+            Log.v(LOG_TAG, "getDateFromWidgetUri, " + "contentUri = [" + contentUri
+                    + "], date: " + contentUri.getPathSegments().get(1) );
+            return contentUri.getPathSegments().get(1);
+        }
+
+        public static long getMatchIdFromWidgetUri(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(2));
+        }
     }
 
 

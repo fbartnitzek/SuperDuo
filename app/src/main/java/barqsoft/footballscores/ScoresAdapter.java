@@ -34,7 +34,7 @@ import barqsoft.footballscores.svg.SvgSoftwareLayerSetter;
  */
 public class ScoresAdapter extends CursorAdapter {
 
-    public double detail_match_id = 0;
+    public double detailMatchId = 0;
     private static final String LOG_TAG = ScoresAdapter.class.getName();
 
     public static final String[] SCORE_COLUMNS = {
@@ -125,7 +125,7 @@ public class ScoresAdapter extends CursorAdapter {
                 mContext);
         mHolder.score.setText(score);
         mHolder.score.setContentDescription(context.getString(R.string.a11y_score, score));
-        mHolder.matchId = cursor.getDouble(INDEX_SCORE_MATCH_ID);
+        mHolder.matchId = cursor.getLong(INDEX_SCORE_MATCH_ID);
 
         String urlHomeIcon = cursor.getString(INDEX_TEAM_HOME_ICON);
         requestBuilder
@@ -143,7 +143,7 @@ public class ScoresAdapter extends CursorAdapter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.detail_fragment, null);
         ViewGroup container = (ViewGroup) view.findViewById(R.id.details_fragment_container);
-        if (mHolder.matchId == detail_match_id) {
+        if (mHolder.matchId == detailMatchId) {
             //Log.v(FetchScoreTask.LOG_TAG,"will insert extraView");
 
             container.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
@@ -165,6 +165,9 @@ public class ScoresAdapter extends CursorAdapter {
                             R.string.scores_share_text, hName, score, aName)));
                 }
             });
+
+            //TODO: callback to MainScreenFragment -> smoothScrollToPosition
+
         } else {
             container.removeAllViews();
         }

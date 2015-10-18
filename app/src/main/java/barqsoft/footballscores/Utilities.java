@@ -148,4 +148,23 @@ public class Utilities {
             return readableDayFormat.format(dateInMillis);
         }
     }
+
+    public static int getRelativeDay(String dateString) {
+        Time t = new Time();
+        t.setToNow();
+        int julianDay = 0;
+        int currentJulianDay = Time.getJulianDay(System.currentTimeMillis(), t.gmtoff);
+        long dateInMillis;
+
+        try {
+            Date date = dateFormat.parse(dateString);
+            dateInMillis = date.getTime();
+        } catch (ParseException e) {
+            dateInMillis = 0;
+        }
+        julianDay = Time.getJulianDay(dateInMillis, t.gmtoff);
+
+        return julianDay - currentJulianDay;
+    }
+
 }

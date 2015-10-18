@@ -1,19 +1,21 @@
 package barqsoft.footballscores;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import barqsoft.footballscores.data.DatabaseContract;
 import barqsoft.footballscores.service.FetchService;
 
 public class MainActivity extends ActionBarActivity {
     private static final String PAGER_CURRENT = "Pager_Current";
     private static final String SELECTED_MATCH = "Selected_match";
     private static final String MAIN_FRAGMENT = "mainFragment";
-    public static int selectedMatchId;
+    public static long selectedMatchId;
     public static int currentFragment = Constants.PAST_DAYS;    // today
     private static final String LOG_TAG = MainActivity.class.getName();
     private PagerFragment mainFragment;
@@ -23,12 +25,34 @@ public class MainActivity extends ActionBarActivity {
         Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Uri contentUri = getIntent() != null ? getIntent().getData() : null;
+
         if (savedInstanceState == null) {
             mainFragment = new PagerFragment();
+            if (contentUri != null) {
+                String date = DatabaseContract.ScoreEntry.getDateFromWidgetUri(contentUri);
+                int relativeDay = Utilities.getRelativeDay(date);
+                Log.v(LOG_TAG, "onCreate, " + "relative day = [" + relativeDay + "]");
+                if ( (-1) * Constants.PAST_DAYS <= relativeDay &&
+                        relativeDay <= Constants.FUTURE_DAYS) {
+                    currentFragment = relativeDay + Constants.PAST_DAYS;    // past days is offset
+                } else {
+                    Log.e(LOG_TAG, "onCreate " + " wrong relative day!!!");
+                }
+
+                selectedMatchId = DatabaseContract.ScoreEntry.getMatchIdFromWidgetUri(contentUri);
+
+                Bundle args = new Bundle();
+                args.putParcelable(Constants.DETAIL_URI, contentUri);
+                mainFragment.setArguments(args);
+            }
+
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, mainFragment)
                     .commit();
         }
+
         updateScores();
     }
 
@@ -71,7 +95,7 @@ public class MainActivity extends ActionBarActivity {
 //        Log.v(LOG_TAG, "fragment: " + String.valueOf(mainFragment.mPagerHandler.getCurrentItem()));
 //        Log.v(LOG_TAG, "selected id: " + selectedMatchId);
         outState.putInt(PAGER_CURRENT, mainFragment.mPagerHandler.getCurrentItem());
-        outState.putInt(SELECTED_MATCH, selectedMatchId);
+        outState.putLong(SELECTED_MATCH, selectedMatchId);
         getSupportFragmentManager().putFragment(outState, MAIN_FRAGMENT, mainFragment);
         super.onSaveInstanceState(outState);
     }
@@ -82,7 +106,7 @@ public class MainActivity extends ActionBarActivity {
 //        Log.v(LOG_TAG, "fragment: " + String.valueOf(savedInstanceState.getInt("Pager_Current")));
 //        Log.v(LOG_TAG, "selected id: " + savedInstanceState.getInt("Selected_match"));
         currentFragment = savedInstanceState.getInt(PAGER_CURRENT);
-        selectedMatchId = savedInstanceState.getInt(SELECTED_MATCH);
+        selectedMatchId = savedInstanceState.getLong(SELECTED_MATCH);
         mainFragment = (PagerFragment) getSupportFragmentManager().getFragment(
                 savedInstanceState, MAIN_FRAGMENT);
         super.onRestoreInstanceState(savedInstanceState);

@@ -45,7 +45,10 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 
             // inner join away team
             TeamEntry.ALIAS_AWAY + "." + TeamEntry.TEAM_NAME_COL,
-            TeamEntry.ALIAS_AWAY + "." + TeamEntry.TEAM_ICON_COL
+            TeamEntry.ALIAS_AWAY + "." + TeamEntry.TEAM_ICON_COL,
+
+            ScoreEntry.MATCH_ID_COL,
+            ScoreEntry.DATE_COL
 
     };
     // these indices must match the projection
@@ -58,6 +61,8 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
     static final int INDEX_TEAM_HOME_ICON= 6;
     static final int INDEX_TEAM_AWAY_NAME= 7;
     static final int INDEX_TEAM_AWAY_ICON= 8;
+    static final int INDEX_SCORE_MATCH_ID= 9;
+    static final int INDEX_SCORE_DATE= 10;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -171,6 +176,8 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                 String time = data.getString(INDEX_SCORE_TIME);
                 String score = Utilities.getScores(data.getInt(INDEX_SCORE_HOME_GOALS),
                         data.getInt(INDEX_SCORE_AWAY_GOALS), mContext);
+                long matchId = data.getLong(INDEX_SCORE_MATCH_ID);
+                String date = data.getString(INDEX_SCORE_DATE);
 
                 String desc = time + ": " + home + " vs " + away + ", score: " + score;
                 Log.v(LOG_TAG, "getViewAt, " + "desc = [" + desc + "]");
@@ -185,7 +192,7 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 
                 String urlHomeIcon = data.getString(INDEX_TEAM_HOME_ICON);
                 String urlAwayIcon = data.getString(INDEX_TEAM_AWAY_ICON);
-                // TODO: get pics and use them
+                // TODO: get pics and use them?
 //                mHolder.homeCrest.setImageResource(Utilities.getTeamCrestByTeamName(
 //                        cursor.getString(DatabaseHelper.COL_MATCH_HOME)));
 //                mHolder.awayCrest.setImageResource(Utilities.getTeamCrestByTeamName(
@@ -195,10 +202,11 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 //                final Intent fillIntent = new Intent();
 //                Uri scoreUri = DatabaseContract.ScoreEntry.buildScoreWithDate();
 
-                // TODO: update provider and call matching date
                 Intent intent = new Intent(mContext, MainActivity.class);
+                Uri matchUri = DatabaseContract.ScoreEntry.buildScoreAndTeamsUri(date, matchId);
 //                PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 //                views.setOnClickPendingIntent(R.id.widget, pi);
+                intent.setData(matchUri);
                 views.setOnClickFillInIntent(R.id.widget_list_item, intent);
 
                 return views;

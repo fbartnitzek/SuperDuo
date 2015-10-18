@@ -49,13 +49,13 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         scoreList.setAdapter(mAdapter);
 
         getLoaderManager().initLoader(SCORES_LOADER, null, this);
-        mAdapter.detail_match_id = MainActivity.selectedMatchId;
+        mAdapter.detailMatchId = MainActivity.selectedMatchId;
 
         scoreList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ViewHolder selected = (ViewHolder) view.getTag();
-                mAdapter.detail_match_id = selected.matchId;
+                mAdapter.detailMatchId = selected.matchId;
                 MainActivity.selectedMatchId = (int) selected.matchId;
                 mAdapter.notifyDataSetChanged();
             }

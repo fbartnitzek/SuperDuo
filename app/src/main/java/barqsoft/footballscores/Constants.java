@@ -26,4 +26,5 @@ public class Constants {
     public static final int CHAMPIONS_LEAGUE = 362;
 
 
+    public static final String DETAIL_URI = "DETAIL_URI_FROM_WIDGET";
 }
