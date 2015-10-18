@@ -3,6 +3,7 @@ package barqsoft.footballscores;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.Html;
 import android.text.format.Time;
 import android.util.Log;
 
@@ -16,20 +17,16 @@ import java.util.Date;
  * Created by yehya khaled on 3/3/2015.
  */
 public class Utilities {
-//    public static final int SERIE_A = 357;
-//    public static final int PREMIER_LEGAUE = 354;
-//    public static final int CHAMPIONS_LEAGUE = 362;
-//    public static final int PRIMERA_DIVISION = 358;
-//    public static final int BUNDESLIGA = 351;
+
     private static final String LOG_TAG = Utilities.class.getName();
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat readableDayFormat = new SimpleDateFormat("EEEE");
 
     private static ArrayList supportedLeagues = new ArrayList<>(Arrays.asList(
-        Constants.BUNDESLIGA1, Constants.BUNDESLIGA2, Constants.BUNDESLIGA3, Constants.CHAMPIONS_LEAGUE,
-        Constants.PREMIER_LEAGUE));
+            Constants.BUNDESLIGA1, Constants.BUNDESLIGA2, Constants.BUNDESLIGA3, Constants.CHAMPIONS_LEAGUE,
+            Constants.PREMIER_LEAGUE));
 
-    public static ArrayList<Integer> getSupportedLeagues(){
+    public static ArrayList<Integer> getSupportedLeagues() {
         return supportedLeagues;
     }
 
@@ -78,33 +75,12 @@ public class Utilities {
         }
     }
 
-    public static String getScores(int home_goals, int awaygoals) {
+    public static String getScores(int home_goals, int awaygoals, Context ctx) {
         Log.v(LOG_TAG, "getScores, " + "home_goals = [" + home_goals + "], awaygoals = [" + awaygoals + "]");
         if (home_goals < 0 || awaygoals < 0) {
-            return "";
+            return ctx.getString(R.string.no_scores);
         } else {
-            return String.valueOf(home_goals) + " - " + String.valueOf(awaygoals);
-        }
-    }
-
-    public static int getTeamCrestByTeamName(String teamname) {
-        Log.v(LOG_TAG, "getTeamCrestByTeamName, " + "teamname = [" + teamname + "]");
-        if (teamname == null) {
-            return R.drawable.no_icon;
-        }
-        switch (teamname) { //This is the set of icons that are currently in the app. Feel free to find and add more
-            //as you go.
-            case "Arsenal London FC": return R.drawable.arsenal;
-            case "Manchester United FC": return R.drawable.manchester_united;
-            case "Swansea City": return R.drawable.swansea_city_afc;
-            case "Leicester City": return R.drawable.leicester_city_fc_hd_logo;
-            case "Everton FC": return R.drawable.everton_fc_logo1;
-            case "West Ham United FC": return R.drawable.west_ham;
-            case "Tottenham Hotspur FC": return R.drawable.tottenham_hotspur;
-            case "West Bromwich Albion": return R.drawable.west_bromwich_albion_hd_logo;
-            case "Sunderland AFC": return R.drawable.sunderland;
-            case "Stoke City FC": return R.drawable.stoke_city;
-            default: return R.drawable.no_icon;
+            return ctx.getString(R.string.scores, home_goals, awaygoals);
         }
     }
 
@@ -122,7 +98,6 @@ public class Utilities {
     }
 
 
-
     static public boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -131,6 +106,17 @@ public class Utilities {
 
     public static String formatDate(Date date) {
         return dateFormat.format(date);
+    }
+
+    public static String decodeHtml(String text) {
+        if (text.contains("&")){    // faster
+            //        Log.v(LOG_TAG, "decodeHtml, " + "text = [" + text + "]");
+            String result = Html.fromHtml(text).toString();
+            //        Log.v(LOG_TAG, "decodeHtml, " + "result = [" + result + "]");
+            return result;
+        } else {
+            return text;
+        }
     }
 
     public static String getReadableDayName(Context context, long dateInMillis, String dateString) {
@@ -142,7 +128,7 @@ public class Utilities {
         int julianDay = 0;
         int currentJulianDay = Time.getJulianDay(System.currentTimeMillis(), t.gmtoff);
 
-        if (dateInMillis <= 0 && dateString != null){
+        if (dateInMillis <= 0 && dateString != null) {
             try {
                 Date date = dateFormat.parse(dateString);
                 dateInMillis = date.getTime();

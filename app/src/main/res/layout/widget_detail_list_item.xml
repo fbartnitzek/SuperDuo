@@ -14,7 +14,10 @@
         android:paddingLeft="8dp"
         android:layout_width="0dp"
         android:layout_weight="2"
-        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/widget_item_vertical_padding"
+        android:paddingTop="@dimen/widget_item_vertical_padding"
+        android:gravity="center"
+        android:layout_gravity="center"
         android:text="@string/sample_name_home"
         android:contentDescription="@string/sample_name_home"/>
 
@@ -34,6 +37,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="@string/sample_time"
+            android:paddingBottom="@dimen/widget_item_vertical_padding"
+            android:paddingTop="@dimen/widget_item_vertical_padding"
             android:contentDescription="@string/sample_time"/>
 
         <TextView
@@ -42,6 +47,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="@string/sample_score"
+            android:paddingBottom="@dimen/widget_item_vertical_padding"
+            android:paddingTop="@dimen/widget_item_vertical_padding"
             android:contentDescription="@string/sample_score"/>
 
     </LinearLayout>
@@ -54,8 +61,11 @@
         android:layout_weight="2"
         android:paddingLeft="8dp"
         android:paddingStart="8dp"
-        android:gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_gravity="center"
         android:text="@string/sample_name_away"
+        android:paddingBottom="@dimen/widget_item_vertical_padding"
+        android:paddingTop="@dimen/widget_item_vertical_padding"
         android:contentDescription="@string/sample_name_away"/>
 
 </LinearLayout>

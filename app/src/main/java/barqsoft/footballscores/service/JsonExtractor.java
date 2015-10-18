@@ -44,10 +44,10 @@ public class JsonExtractor {
     private static final String NAME = "name";
     private static final String CREST_URL = "crestUrl";
 
+
     public static ArrayList<ContentValues> processTeamsJsonData(String jsonData, Context appContext) {
 
         ArrayList<ContentValues> values = null;
-
         try {
             JSONArray teams = new JSONObject(jsonData).getJSONArray(TEAMS);
 
@@ -63,9 +63,11 @@ public class JsonExtractor {
                 String id = Utilities.extractIdFromLink(selfLink);
 
                 String name = teamData.getString(NAME);
+
                 String picUrl = teamData.getString(CREST_URL);
 
-                values.add(DatabaseHelper.buildTeamCVs(id, name, picUrl));
+                // bugfix for Würzburger Kickers (3. Bundesliga)
+                values.add(DatabaseHelper.buildTeamCVs(id, Utilities.decodeHtml(name), picUrl));
             }
 
         } catch (JSONException e) {
@@ -93,7 +95,7 @@ public class JsonExtractor {
                 JSONObject links = matchData.getJSONObject(LINKS);
                 String league = links.getJSONObject(SOCCER_SEASON).getString(HREF);
                 league = Utilities.extractIdFromLink(league);
-//                league = league.replace(SEASON_LINK, "");
+
                 //This if statement controls which leagues we're interested in the data from.
                 //add leagues here in order to have them be added to the DB.
                 // If you are finding no data in the app, check that this contains all the leagues.
@@ -102,7 +104,6 @@ public class JsonExtractor {
 
                     String matchId = links.getJSONObject(SELF).getString(HREF);
                     matchId = Utilities.extractIdFromLink(matchId);
-//                    matchId = matchId.replace(MATCH_LINK, "");
 
                     // both teams
                     String awayLink = links.getJSONObject(AWAY_TEAM_OBJ).getString(HREF);
@@ -128,14 +129,11 @@ public class JsonExtractor {
                         Log.d(LOG_TAG, "error here!");
                         Log.e(LOG_TAG, e.getMessage());
                     }
-//                    String home = matchData.getString(HOME_TEAM);
-//                    String away = matchData.getString(AWAY_TEAM);
 
                     String homeGoals = matchData.getJSONObject(RESULT).getString(HOME_GOALS);
                     String awayGoals = matchData.getJSONObject(RESULT).getString(AWAY_GOALS);
 
                     String matchDay = matchData.getString(MATCH_DAY);
-
 
                     values.add(DatabaseHelper.buildMatchCVs(date, time, homeId, awayId,
                             league, homeGoals, awayGoals, matchId, matchDay));

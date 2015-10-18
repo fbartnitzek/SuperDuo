@@ -45,7 +45,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final ListView scoreList = (ListView) rootView.findViewById(R.id.scores_list);
 
-        mAdapter = new ScoresAdapter(getActivity(), null, 0);
+        mAdapter = new ScoresAdapter(getActivity(), null, 0, this);
         scoreList.setAdapter(mAdapter);
 
         getLoaderManager().initLoader(SCORES_LOADER, null, this);
@@ -79,19 +79,9 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         Log.v(LOG_TAG, "onLoadFinished, " + "cursorLoader = [" + cursorLoader + "], cursor = [" + cursor + "]");
-        //Log.v(FetchScoreTask.LOG_TAG,"loader finished");
-        //cursor.moveToFirst();
-        /*
-        while (!cursor.isAfterLast())
-        {
-            Log.v(FetchScoreTask.LOG_TAG,cursor.getString(1));
-            cursor.moveToNext();
-        }
-        */
-
 
         cursor.moveToFirst();
-        Log.v(LOG_TAG, "onLoadFinished, " + " cursor-entries = [" + cursor.getCount() + "]");
+        Log.v(LOG_TAG, "onLoadFinished, MainScreenFragmentInstance: " + this.hashCode() +", cursor-entries = [" + cursor.getCount() + "]");
         if (cursor.getCount() > 0) {
             getView().findViewById(R.id.scores_list).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.scores_list_empty).setVisibility(View.GONE);

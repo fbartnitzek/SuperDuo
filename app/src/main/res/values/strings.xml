@@ -44,11 +44,12 @@
     <!--<string name="unknown_goals">n/a</string>-->
     <string name="no_match_day">no matches today</string>
     <string name="sample_name_home">sample name home</string>
-    <string name="sample_score">1 - 0</string>
+    <string name="sample_score">1 – 0</string>
     <string name="widget_score_size">24dp</string>
     <string name="widget_time_size">16dp</string>
     <string name="sample_time">14:00</string>
     <string name="sample_name_away">sample team away</string>
+    <string name="sample_next_match_day">next match day</string>
 
     <string name="unknown_league">Unknown league, please report</string>
     <string name="league_premier_league">Premier League</string>
@@ -63,15 +64,18 @@
     <string name="champions_league_quarter_final">QuarterFinal</string>
     <string name="champions_league_semi_final">SemiFinal</string>
     <string name="champions_league_final">Final</string>
-    <string name="matchday">Matchday : </string>
-    <string name="sample_next_match_day">next match day</string>
+    <string name="scores">%1$s – %2$s</string>
+    <string name="no_scores"></string>
+    <string name="matchday">Match day: </string>
+    <string name="scores_share_text">%1$s %2$s %3$s #Football_Scores</string>
 
-    <string name="a11_homename">Hometeam: <xliff:g id="home">%1$s</xliff:g></string>
-    <string name="a11_awayname">Awayteam: <xliff:g id="away">%1$s</xliff:g></string>
-    <string name="a11_date">Date: <xliff:g id="date">%1$s</xliff:g></string>
-    <string name="a11_time">Time: <xliff:g id="time">%1$s</xliff:g></string>
-    <string name="a11_score">Score: <xliff:g id="time">%1$s</xliff:g></string>
+
+    <string name="a11y_homename">Home team: <xliff:g id="home">%1$s</xliff:g></string>
+    <string name="a11y_awayname">Away team: <xliff:g id="away">%1$s</xliff:g></string>
+    <string name="a11y_date">Date: <xliff:g id="date">%1$s</xliff:g></string>
+    <string name="a11y_time">Time: <xliff:g id="time">%1$s</xliff:g></string>
+    <string name="a11y_score">Score: <xliff:g id="time">%1$s</xliff:g></string>
 
     <string name="empty_score_list_no_network" >No Score Information Available. The network is not available to fetch score data.</string>
-    <string name="share_football_scores">#Football_Scores</string>
+    <!--<string name="share_football_scores">#Football_Scores</string>-->
 </resources>

@@ -30,10 +30,6 @@ public class PagerFragment extends Fragment {
         mPagerHandler = (ViewPager) rootView.findViewById(R.id.pager);
         mPagerAdapter = new PageAdapter(getChildFragmentManager());
 
-        //TODO: use default format - but matching with queries...
-//            DateFormat defaultFormat = android.text.format.DateFormat.getDateFormat(getActivity());
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
         for (int i = 0; i < NUM_PAGES; i++) {
 
             Date fragmentDate = new Date(System.currentTimeMillis() +

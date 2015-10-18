@@ -182,7 +182,6 @@ public class ScoresProvider extends ContentProvider {
                 break;
 
             case MATCHES_AND_TEAMS:
-//                cursor = getMatchesWithTeamsQuery(uri, projection, sortOrder);
                 cursor = sMatchesWithTeamsQueryBuilder.query(db,
                         projection,
                         selection,

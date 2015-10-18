@@ -14,15 +14,18 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/home_crest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_width="@dimen/score_item_icon_size"
+                android:layout_height="@dimen/score_item_icon_size"
+                android:layout_gravity="center"
+                android:paddingBottom="@dimen/list_item_vertical_padding"
+                android:paddingTop="@dimen/list_item_vertical_padding"
+                android:src="@drawable/no_icon" />
 
             <TextView
                 android:id="@+id/home_name"
@@ -31,14 +34,27 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="@string/test_text"
+                android:paddingBottom="@dimen/list_item_vertical_padding"
+                android:paddingTop="@dimen/list_item_vertical_padding"
                 android:textSize="@dimen/TeamNames" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/data_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/test_text"
+                android:paddingTop="@dimen/list_item_vertical_padding"
+                android:paddingBottom="@dimen/list_item_vertical_padding"/>
 
             <TextView
                 android:id="@+id/score_textview"
@@ -48,30 +64,26 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/test_text"
-                android:textSize="@dimen/Score" />
-
-            <TextView
-                android:id="@+id/data_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/test_text" />
+                android:textSize="@dimen/Score"
+                android:paddingTop="@dimen/list_item_vertical_padding"
+                android:paddingBottom="@dimen/list_item_vertical_padding"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/away_crest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_width="@dimen/score_item_icon_size"
+                android:layout_height="@dimen/score_item_icon_size"
+                android:layout_gravity="center"
+                android:paddingBottom="@dimen/list_item_vertical_padding"
+                android:paddingTop="@dimen/list_item_vertical_padding"
+                android:src="@drawable/no_icon" />
 
             <TextView
                 android:id="@+id/away_name"
@@ -80,6 +92,8 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="@string/test_text"
+                android:paddingBottom="@dimen/list_item_vertical_padding"
+                android:paddingTop="@dimen/list_item_vertical_padding"
                 android:textSize="@dimen/TeamNames" />
         </LinearLayout>
     </LinearLayout>
@@ -87,7 +101,7 @@
     <FrameLayout
         android:id="@+id/details_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></FrameLayout>
+        android:layout_height="wrap_content"/>
 </LinearLayout>
 
 

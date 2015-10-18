@@ -17,7 +17,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Map;
 
 import barqsoft.footballscores.Constants;
 import barqsoft.footballscores.R;
@@ -233,22 +232,23 @@ public class FetchService extends IntentService {
         }
     }
 
-    private String print(ContentValues[] insertData) {
-        String all = "";
-        for (ContentValues data : insertData){
-            String row = "";
-            for( Map.Entry<String, Object> entry : data.valueSet()) {
-                row += entry.getKey() + "=" + entry.getValue() + ",";
-            }
-            all += row + ";";
-        }
-        return all;
-    }
+//    private String print(ContentValues[] insertData) {
+//        String all = "";
+//        for (ContentValues data : insertData){
+//            String row = "";
+//            for( Map.Entry<String, Object> entry : data.valueSet()) {
+//                row += entry.getKey() + "=" + entry.getValue() + ",";
+//            }
+//            all += row + ";";
+//        }
+//        return all;
+//    }
 
     private void updateWidgets(Context context) {
         Log.v(LOG_TAG, "updateWidgets, " + "context = [" + context + "]");
         // only soccer app can receive broadcast
-        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED).setPackage(context.getPackageName());
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED).setPackage(
+                context.getPackageName());
         context.sendBroadcast(dataUpdatedIntent);
     }
 }

@@ -51,22 +51,19 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
     // these indices must match the projection
     static final int INDEX_SCORE_ID = 0;
     static final int INDEX_SCORE_LEAGUE = 1;
-//    static final int INDEX_SCORE_HOME = 2;
-//    static final int INDEX_SCORE_AWAY= 3;
-    static final int INDEX_SCORE_HOME_GOALS= 3;
-    static final int INDEX_SCORE_AWAY_GOALS= 4;
-    static final int INDEX_SCORE_TIME= 5;
-    static final int INDEX_TEAM_HOME_NAME= 6;
-    static final int INDEX_TEAM_HOME_ICON= 7;
-    static final int INDEX_TEAM_AWAY_NAME= 8;
-    static final int INDEX_TEAM_AWAY_ICON= 9;
+    static final int INDEX_SCORE_HOME_GOALS= 2;
+    static final int INDEX_SCORE_AWAY_GOALS= 3;
+    static final int INDEX_SCORE_TIME= 4;
+    static final int INDEX_TEAM_HOME_NAME= 5;
+    static final int INDEX_TEAM_HOME_ICON= 6;
+    static final int INDEX_TEAM_AWAY_NAME= 7;
+    static final int INDEX_TEAM_AWAY_ICON= 8;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new RemoteViewsFactory() {
             private Context mContext = getApplicationContext();
             private Cursor data = null;
-//            private String[] date = null;
             private String date = null;
 
             @Override
@@ -80,19 +77,18 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                 if (null != data) {
                     data.close();
                 }
-                Log.v(LOG_TAG, "onDataSetChanged, " + "data closed");
+//                Log.v(LOG_TAG, "onDataSetChanged, " + "data closed");
 
                 final long identityToken = Binder.clearCallingIdentity();
 
                 data = getNextMatchDay();
                 if (data.getCount()>0){
-                    Log.v(LOG_TAG, "onDataSetChanged, " + "matchDate: " + date + ", matches: " + data.getCount());
+//                    Log.v(LOG_TAG, "onDataSetChanged, " + "matchDate: " + date + ", matches: " + data.getCount());
                     updateWidgetDate(date);
                 } else {
-                    Log.v(LOG_TAG, "onDataSetChanged, " + "no matches... ");
+//                    Log.v(LOG_TAG, "onDataSetChanged, " + "no matches... ");
                     updateWidgetDate(date);
                 }
-
 
                 Binder.restoreCallingIdentity(identityToken);
             }
@@ -100,8 +96,6 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
             private void updateWidgetDate(String date) {
                 Log.v(LOG_TAG, "updateWidgetDate, " + "date = [" + date + "]");
 
-
-//                views.setTextViewText(R.id.widget_next_match_day, date[0]);
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
                 int appWidgetIds[] = appWidgetManager.getAppWidgetIds(
                         new ComponentName(mContext, ListWidgetProvider.class));
@@ -152,7 +146,6 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                     data.close();
                     data = null;
                 }
-
             }
 
 
@@ -173,15 +166,11 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 
                 RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_detail_list_item);
 
-//                views.setTextViewText(R.id.widget_date, formattedDate);
-//                views.setTextViewText(R.id.widget_description, desc);
-//                views.setTextViewText(R.id.widget_high_temperature, formattedMaxTemp);
-//                views.setTextViewText(R.id.widget_low_temperature, formattedMinTemp);
                 String home = data.getString(INDEX_TEAM_HOME_NAME);
                 String away = data.getString(INDEX_TEAM_AWAY_NAME);
                 String time = data.getString(INDEX_SCORE_TIME);
                 String score = Utilities.getScores(data.getInt(INDEX_SCORE_HOME_GOALS),
-                        data.getInt(INDEX_SCORE_AWAY_GOALS));
+                        data.getInt(INDEX_SCORE_AWAY_GOALS), mContext);
 
                 String desc = time + ": " + home + " vs " + away + ", score: " + score;
                 Log.v(LOG_TAG, "getViewAt, " + "desc = [" + desc + "]");
