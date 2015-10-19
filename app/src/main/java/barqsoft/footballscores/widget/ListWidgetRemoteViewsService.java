@@ -87,48 +87,45 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                 final long identityToken = Binder.clearCallingIdentity();
 
                 data = getNextMatchDay();
-                if (data.getCount()>0){
-//                    Log.v(LOG_TAG, "onDataSetChanged, " + "matchDate: " + date + ", matches: " + data.getCount());
-                    updateWidgetDate(date);
-                } else {
-//                    Log.v(LOG_TAG, "onDataSetChanged, " + "no matches... ");
-                    updateWidgetDate(date);
-                }
+
+                updateWidgetDate(date, data.getCount()>0);
 
                 Binder.restoreCallingIdentity(identityToken);
             }
 
-            private void updateWidgetDate(String date) {
-                Log.v(LOG_TAG, "updateWidgetDate, " + "date = [" + date + "]");
+            private void updateWidgetDate(String date, boolean filled) {
+                Log.v(LOG_TAG, "updateWidgetDate, " + "date = [" + date + "], filled: " + filled);
 
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
                 int appWidgetIds[] = appWidgetManager.getAppWidgetIds(
                         new ComponentName(mContext, ListWidgetProvider.class));
                 for (int appWidgetId : appWidgetIds) {
-                    RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list);
+                    RemoteViews views = new RemoteViews(mContext.getPackageName(),
+                            R.layout.widget_list);
                     views.setTextViewText(R.id.widget_next_match_day,
                             Utilities.getReadableDayName(mContext, 0, date));
-//                            date[0]);
+
+                    if (!filled){
+                        String readableDate = Utilities.getReadableDayName(mContext, 0, date);
+                        views.setTextViewText(R.id.widget_empty,
+                                mContext.getString(R.string.widget_no_matches_until, readableDate));
+                    }
+
                     appWidgetManager.updateAppWidget(appWidgetId, views);
                 }
 
             }
 
             private Cursor getNextMatchDay() {
-//                Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate();
 
                 for (int i=0 ; i<=Constants.FUTURE_DAYS; ++i){
-//                    Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate(
                     Uri uri = DatabaseContract.ScoreEntry.buildScoreAndTeamsUri(
                             Utilities.formatDate(
                                     new Date(System.currentTimeMillis() + i * Constants.DAY_IN_MILLIS)));
                     data = getContentResolver().query(uri,
                             SCORE_COLUMNS,
                             null,
-                            // next day
                             null,
-//                            Utilities.formatDate(new Date(System.currentTimeMillis() +
-//                                    i * Constants.DAY_IN_MILLIS)),
                             null);
 
                     Log.v(LOG_TAG, "getNextMatchDay, " + "data: " + data.getCount());
@@ -190,22 +187,12 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                 views.setTextViewText(R.id.widget_time, time);
                 views.setTextViewText(R.id.widget_score, score);
 
-                String urlHomeIcon = data.getString(INDEX_TEAM_HOME_ICON);
-                String urlAwayIcon = data.getString(INDEX_TEAM_AWAY_ICON);
                 // TODO: get pics and use them?
-//                mHolder.homeCrest.setImageResource(Utilities.getTeamCrestByTeamName(
-//                        cursor.getString(DatabaseHelper.COL_MATCH_HOME)));
-//                mHolder.awayCrest.setImageResource(Utilities.getTeamCrestByTeamName(
-//                        cursor.getString(DatabaseHelper.COL_AWAY)
-
-
-//                final Intent fillIntent = new Intent();
-//                Uri scoreUri = DatabaseContract.ScoreEntry.buildScoreWithDate();
+//                String urlHomeIcon = data.getString(INDEX_TEAM_HOME_ICON);
+//                String urlAwayIcon = data.getString(INDEX_TEAM_AWAY_ICON);
 
                 Intent intent = new Intent(mContext, MainActivity.class);
                 Uri matchUri = DatabaseContract.ScoreEntry.buildScoreAndTeamsUri(date, matchId);
-//                PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-//                views.setOnClickPendingIntent(R.id.widget, pi);
                 intent.setData(matchUri);
                 views.setOnClickFillInIntent(R.id.widget_list_item, intent);
 

@@ -20,12 +20,14 @@ import barqsoft.footballscores.data.DatabaseContract;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainScreenFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainScreenFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<Cursor>,ScoresAdapter.ScoresAdapterScrollHandler {
     public ScoresAdapter mAdapter;
     public static final int SCORES_LOADER = 0;
     private String fragmentDate;
     private static final String LOG_TAG = MainScreenFragment.class.getName();
     private int lastSelectedItem = -1;
+    ListView mScoreList = null;
 
     public MainScreenFragment() {
         Log.v(LOG_TAG, "MainScreenFragment, " + "");
@@ -43,15 +45,15 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
                 + container + "], savedInstanceState = [" + savedInstanceState + "]");
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        final ListView scoreList = (ListView) rootView.findViewById(R.id.scores_list);
+        mScoreList = (ListView) rootView.findViewById(R.id.scores_list);
 
-        mAdapter = new ScoresAdapter(getActivity(), null, 0, this);
-        scoreList.setAdapter(mAdapter);
+        mAdapter = new ScoresAdapter(getActivity(), null, 0, this, this);
+        mScoreList.setAdapter(mAdapter);
 
         getLoaderManager().initLoader(SCORES_LOADER, null, this);
         mAdapter.detailMatchId = MainActivity.selectedMatchId;
 
-        scoreList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mScoreList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ViewHolder selected = (ViewHolder) view.getTag();
@@ -60,6 +62,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
                 mAdapter.notifyDataSetChanged();
             }
         });
+
         return rootView;
     }
 
@@ -119,4 +122,9 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     }
 
 
+    @Override
+    public void onFound(int position) {
+        Log.v(LOG_TAG, "onFound, " + "position = [" + position + "]");
+        mScoreList.smoothScrollToPosition(position);
+    }
 }

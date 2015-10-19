@@ -70,10 +70,14 @@ public class ScoresAdapter extends CursorAdapter {
     static final int INDEX_TEAM_AWAY_NAME= 9;
     static final int INDEX_TEAM_AWAY_ICON= 10;
 
+    final private ScoresAdapterScrollHandler mScrollHandler;
+
     private GenericRequestBuilder<Uri, InputStream, SVG, PictureDrawable> requestBuilder;
 
-    public ScoresAdapter(Context context, Cursor cursor, int flags, Fragment fragment) {
+    public ScoresAdapter(Context context, Cursor cursor, int flags, Fragment fragment,
+                         ScoresAdapterScrollHandler scrollHandler) {
         super(context, cursor, flags);
+        mScrollHandler = scrollHandler;
         Log.v(LOG_TAG, "ScoresAdapter, " + "context = [" + context + "], cursor = [" + cursor + "], flags = [" + flags + "]");
 
         //create requestBuilder for svg-glide-usage as described here:
@@ -153,7 +157,7 @@ public class ScoresAdapter extends CursorAdapter {
             matchDay.setText(Utilities.getMatchDay(cursor.getInt(INDEX_SCORE_MATCH_DAY),
                     leagueNo, context));
             TextView league = (TextView) v.findViewById(R.id.league_textview);
-            league.setText(Utilities.getLeague(leagueNo ,context));
+            league.setText(Utilities.getLeague(leagueNo, context));
             Button share_button = (Button) v.findViewById(R.id.share_button);
 
             share_button.setContentDescription(context.getString(R.string.share_text));
@@ -166,12 +170,18 @@ public class ScoresAdapter extends CursorAdapter {
                 }
             });
 
-            //TODO: callback to MainScreenFragment -> smoothScrollToPosition
+            //TODO: Adapter used the wrong way - just 1 entry, not whole list...
+            // always returns 0...
+            mScrollHandler.onFound(view.getVerticalScrollbarPosition());
 
         } else {
             container.removeAllViews();
         }
 
+    }
+
+    public interface ScoresAdapterScrollHandler {
+        void onFound(int position);
     }
 
     public Intent createShareForecastIntent(String text) {

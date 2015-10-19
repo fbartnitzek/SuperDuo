@@ -66,7 +66,8 @@ public class PagerFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             Log.v(LOG_TAG, "getPageTitle, " + "position = [" + position + "]");
             return Utilities.getReadableDayName(getActivity(),
-                    System.currentTimeMillis() + ((position - 2) * Constants.DAY_IN_MILLIS), null);
+                    System.currentTimeMillis() + ((position - Constants.PAST_DAYS)
+                            * Constants.DAY_IN_MILLIS), null);
         }
 
     }
