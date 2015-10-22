@@ -150,7 +150,7 @@ public class BookService extends IntentService {
             urlConnection.connect();
 
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream != null) {
                 reader = new BufferedReader(new InputStreamReader(inputStream));
                 String line;
@@ -202,7 +202,7 @@ public class BookService extends IntentService {
         final String IMG_URL_PATH = "imageLinks";
         final String IMG_URL = "thumbnail";
 
-        Log.v(LOG_TAG, "fetchBook, " + "bookJsonString= [" + jsonBook + "]");
+//        Log.v(LOG_TAG, "fetchBook, " + "bookJsonString= [" + jsonBook + "]");
 
         try {
             JSONObject bookJson = new JSONObject(jsonBook);
@@ -212,7 +212,7 @@ public class BookService extends IntentService {
             } else {
 
                 if (!Utility.isValidISBN13(ean)){
-                    Log.v(LOG_TAG, "parseJsonAndStoreBook, invalid isbn");
+//                    Log.v(LOG_TAG, "parseJsonAndStoreBook, invalid isbn");
                     broadcastBookStatus(getApplicationContext(), BOOK_STATUS_INVALID_ISBN);
                     return;
                 }
@@ -224,11 +224,11 @@ public class BookService extends IntentService {
 
                 if (totalItems != null && "0".equals(totalItems)) {
                     // no book found
-                    Log.v(LOG_TAG, "fetchBook, " + "no book found");
+//                    Log.v(LOG_TAG, "fetchBook, " + "no book found");
                     broadcastBookStatus(getApplicationContext(), BOOK_STATUS_NOT_FOUND);
                 } else {
                     // no valid answer
-                    Log.v(LOG_TAG, "fetchBook, " + "no valid answer");
+//                    Log.v(LOG_TAG, "fetchBook, " + "no valid answer");
                     broadcastBookStatus(getApplicationContext(), BOOK_STATUS_SERVER_INVALID);
                 }
                 return;
@@ -305,7 +305,7 @@ public class BookService extends IntentService {
 //        if (title != null){
 //            messageIntent.putExtra(Constants.EXTRA_BOOK_TITLE, title);
 //        }
-        Log.v(LOG_TAG, "broadcastBookStatus, " + "bookStatus = [" + bookStatus + "]");
+//        Log.v(LOG_TAG, "broadcastBookStatus, " + "bookStatus = [" + bookStatus + "]");
         LocalBroadcastManager.getInstance(c).sendBroadcast(messageIntent);
     }
 

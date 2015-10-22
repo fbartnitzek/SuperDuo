@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,10 +39,10 @@ public class MainActivity extends ActionBarActivity implements
         IS_TABLET = isTablet();
         if(IS_TABLET){
             setContentView(R.layout.activity_main_tablet);
-            Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
+//            Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
         }else {
             setContentView(R.layout.activity_main);
-            Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
+//            Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
         }
 
         // IntentFilter and Receiver useless?
@@ -60,7 +59,7 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     public void onNavigationDrawerItemSelected(int position) {
 
-        Log.v(LOG_TAG, "onNavigationDrawerItemSelected, position " + position);
+//        Log.v(LOG_TAG, "onNavigationDrawerItemSelected, position " + position);
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment nextFragment = positionToFragment(position);
 
@@ -111,12 +110,12 @@ public class MainActivity extends ActionBarActivity implements
         title = getString(titleId);
 
 
-        Log.v(LOG_TAG, "setTitle, " + "titleId = [" + titleId + "]");
+//        Log.v(LOG_TAG, "setTitle, " + "titleId = [" + titleId + "]");
     }
 
-    public void restoreActionBar() {
+    private void restoreActionBar() {
 
-        Log.v(LOG_TAG, "restoreActionBar, " + "");
+//        Log.v(LOG_TAG, "restoreActionBar, " + "");
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -127,7 +126,7 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.v(LOG_TAG, "onCreateOptionsMenu, " + "menu = [" + menu + "]");
+//        Log.v(LOG_TAG, "onCreateOptionsMenu, " + "menu = [" + menu + "]");
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
@@ -145,7 +144,7 @@ public class MainActivity extends ActionBarActivity implements
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        Log.v(LOG_TAG, "onOptionsItemSelected, " + "item = [" + item + "]");
+//        Log.v(LOG_TAG, "onOptionsItemSelected, " + "item = [" + item + "]");
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
@@ -156,13 +155,13 @@ public class MainActivity extends ActionBarActivity implements
 
     @Override
     protected void onDestroy() {
-        Log.v(LOG_TAG, "onDestroy, " + "");
+//        Log.v(LOG_TAG, "onDestroy, " + "");
         super.onDestroy();
     }
 
     @Override
     public void onItemSelected(String ean) {
-        Log.v(LOG_TAG, "onItemSelected, " + "ean = [" + ean + "]");
+//        Log.v(LOG_TAG, "onItemSelected, " + "ean = [" + ean + "]");
         Bundle args = new Bundle();
         args.putString(BookDetail.EAN_KEY, ean);
 
@@ -181,12 +180,12 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     public void goBack(View view){
-        Log.v(LOG_TAG, "goBack, " + "view = [" + view + "]");
+//        Log.v(LOG_TAG, "goBack, " + "view = [" + view + "]");
         getSupportFragmentManager().popBackStack();
     }
 
     private boolean isTablet() {
-        Log.v(LOG_TAG, "isTablet, " + "");
+//        Log.v(LOG_TAG, "isTablet, " + "");
         return (getApplicationContext().getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
@@ -195,7 +194,7 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
-        logBackStack(fm);
+//        logBackStack(fm);
         if(fm.getBackStackEntryCount()<2){
             finish();
         } else if (mNavigationDrawerFragment != null){
@@ -209,15 +208,15 @@ public class MainActivity extends ActionBarActivity implements
         super.onBackPressed();
     }
 
-    private void logBackStack(FragmentManager fm) {
-        for (int i=0; i<fm.getBackStackEntryCount();++i){
-            Log.v(LOG_TAG, "logBackStack, position " + i + ": "
-                    + fm.getBackStackEntryAt(i).getName());
-        }
-        if (fm.getBackStackEntryCount()==0){
-            Log.v(LOG_TAG, "logBackStack, no backstack");
-        }
-    }
+//    private void logBackStack(FragmentManager fm) {
+//        for (int i=0; i<fm.getBackStackEntryCount();++i){
+////            Log.v(LOG_TAG, "logBackStack, position " + i + ": "
+////                    + fm.getBackStackEntryAt(i).getName());
+//        }
+//        if (fm.getBackStackEntryCount()==0){
+////            Log.v(LOG_TAG, "logBackStack, no backstack");
+//        }
+//    }
 
 
 }

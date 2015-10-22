@@ -32,7 +32,7 @@
 
     <string name="status_empty" translatable="false"></string>
     <string name="status_no_information">No book information available.</string>
-    <string name="status_unknown_error">An unpredicted error happened...</string>
+    <string name="status_unknown_error">An unpredicted error happened…</string>
     <string name="status_no_network" >The network is not available to fetch book data.</string>
     <string name="status_server_down">The server is not returning data.</string>
     <string name="status_server_error">The server is not returning valid data. Please check for an updated version of alexandria.</string>

@@ -8,7 +8,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,7 +27,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     public static final String EAN_KEY = "EAN";
     private static final String LOG_TAG = BookDetail.class.getName();
-    private final int LOADER_ID = 10;
     private View mRootView;
     private String ean;
     private String mBookTitle;
@@ -42,7 +40,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
+//        Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
@@ -53,12 +51,13 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         Bundle arguments = getArguments();
         if (arguments != null) {
-            Log.v(LOG_TAG, "onCreateView with args, " + "inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
+//            Log.v(LOG_TAG, "onCreateView with args, " + "inflater = [" + inflater + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
             ean = arguments.getString(BookDetail.EAN_KEY);
+            int LOADER_ID = 10;
             getLoaderManager().restartLoader(LOADER_ID, null, this);
         } else {
-            Log.v(LOG_TAG, "onCreateView without args, " + "inflater = [" + inflater
-                    + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
+//            Log.v(LOG_TAG, "onCreateView without args, " + "inflater = [" + inflater
+//                    + "], container = [" + container + "], savedInstanceState = [" + savedInstanceState + "]");
         }
 
         mRootView = inflater.inflate(R.layout.fragment_full_book, container, false);
@@ -79,7 +78,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.book_detail, menu);
-        Log.v(LOG_TAG, "onCreateOptionsMenu, " + "menu = [" + menu + "], inflater = [" + inflater + "]");
+//        Log.v(LOG_TAG, "onCreateOptionsMenu, " + "menu = [" + menu + "], inflater = [" + inflater + "]");
 
         MenuItem menuItem = menu.findItem(R.id.action_share);
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
@@ -87,7 +86,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.v(LOG_TAG, "onCreateLoader, " + "id = [" + id + "], args = [" + args + "]");
+//        Log.v(LOG_TAG, "onCreateLoader, " + "id = [" + id + "], args = [" + args + "]");
         return new CursorLoader(
                 getActivity(),
                 AlexandriaContract.BookEntry.buildFullBookUri(Long.parseLong(ean)),
@@ -100,7 +99,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-        Log.v(LOG_TAG, "onLoadFinished, " + "loader = [" + loader + "], data = [" + data + "]");
+//        Log.v(LOG_TAG, "onLoadFinished, " + "loader = [" + loader + "], data = [" + data + "]");
         if (!data.moveToFirst()) {
             return;
         }
@@ -118,7 +117,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         // https://www.googleapis.com/books/v1/volumes?q=isbn:9783864050176
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        Log.v(LOG_TAG, "onLoadFinished - authors: " + authors);
+//        Log.v(LOG_TAG, "onLoadFinished - authors: " + authors);
         Utility.updateAuthorsView(mRootView, authors);
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
@@ -154,12 +153,12 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
-        Log.v(LOG_TAG, "onLoaderReset, " + "loader = [" + loader + "]");
+//        Log.v(LOG_TAG, "onLoaderReset, " + "loader = [" + loader + "]");
     }
 
     @Override
     public void onPause() {
-        Log.v(LOG_TAG, "onPause, " + "");
+//        Log.v(LOG_TAG, "onPause, " + "");
         super.onDestroyView();
         if(MainActivity.IS_TABLET && mRootView.findViewById(R.id.right_container)==null){
             getActivity().getSupportFragmentManager().popBackStack();

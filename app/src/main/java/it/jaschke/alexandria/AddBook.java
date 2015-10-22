@@ -13,7 +13,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +38,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private static final String LOG_TAG = AddBook.class.getName();
     private EditText mEanView;
 
-    private final int LOADER_ID = 1;
     private View mRootView;
 
     private String mBookTitle;
@@ -48,12 +46,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 //        Log.v(LOG_TAG, "AddBook, " + this.hashCode());
     }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Constants.ACTION_BROADCAST_BOOK_STATUS.equals(intent.getAction())) {
                 int status = intent.getIntExtra(Constants.EXTRA_BOOK_STATUS, -1);
-                Log.v(LOG_TAG, "onReceive, " + "status=" + status);
+//                Log.v(LOG_TAG, "onReceive, " + "status=" + status);
 
                 if (status == BookService.BOOK_STATUS_ALREADY_STORED){
 
@@ -87,10 +85,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if(mEanView !=null) {
-            Log.v(LOG_TAG, "onSaveInstanceState with mEanView, " + "outState = [" + outState + "]");
+//            Log.v(LOG_TAG, "onSaveInstanceState with mEanView, " + "outState = [" + outState + "]");
             outState.putString(Constants.STATE_EAN_CONTENT, mEanView.getText().toString());
         } else {
-            Log.v(LOG_TAG, "onSaveInstanceState without mEanView, " + "outState = [" + outState + "]");
+//            Log.v(LOG_TAG, "onSaveInstanceState without mEanView, " + "outState = [" + outState + "]");
         }
     }
 
@@ -99,8 +97,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         mRootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         mEanView = (EditText) mRootView.findViewById(R.id.ean);
-        Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = ["
-                + container + "], savedInstanceState = [" + savedInstanceState + "]");
+//        Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = ["
+//                + container + "], savedInstanceState = [" + savedInstanceState + "]");
 
         mEanView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -148,7 +146,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 // Hint: Use a Try/Catch block to handle the Intent dispatch gracefully, if you
                 // are using an external app.
                 //when you're done, remove the toast below.
-                Log.v(LOG_TAG, "onClick - scan intent, " + "v = [" + v + "]");
+//                Log.v(LOG_TAG, "onClick - scan intent, " + "v = [" + v + "]");
                 launchEmbeddedScanner();
 
             }
@@ -157,7 +155,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         mRootView.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.v(LOG_TAG, "conClick, " + "view = [" + view + "]");
+//                Log.v(LOG_TAG, "conClick, " + "view = [" + view + "]");
                 if (mBookTitle != null) {
                     Toast.makeText(getActivity(),
                             mBookTitle + getString(R.string.added_to_list),
@@ -172,7 +170,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         mRootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.v(LOG_TAG, "onClick, " + "view = [" + view + "]");
+//                Log.v(LOG_TAG, "onClick, " + "view = [" + view + "]");
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
                 bookIntent.putExtra(BookService.EAN, mEanView.getText().toString());
                 bookIntent.setAction(BookService.DELETE_BOOK);
@@ -201,21 +199,21 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Log.v(LOG_TAG, "onActivityResult, " + "requestCode = [" + requestCode
-                + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+//        Log.v(LOG_TAG, "onActivityResult, " + "requestCode = [" + requestCode
+//                + "], resultCode = [" + resultCode + "], data = [" + data + "]");
         IntentResult scanResult = IntentIntegrator.parseActivityResult(
                 requestCode, resultCode, data);
         if (scanResult != null) {
-            Log.v(LOG_TAG, "onActivityResult with scanResult, " + "requestCode = ["
-                    + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+//            Log.v(LOG_TAG, "onActivityResult with scanResult, " + "requestCode = ["
+//                    + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
             String barCode = scanResult.getContents();
             if (barCode != null){
                 mEanView.setText(barCode);
             }
 
         } else {
-            Log.v(LOG_TAG, "onActivityResult without scanResult, " + "requestCode = [" + requestCode
-                    + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+//            Log.v(LOG_TAG, "onActivityResult without scanResult, " + "requestCode = [" + requestCode
+//                    + "], resultCode = [" + resultCode + "], data = [" + data + "]");
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -224,13 +222,14 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     private void restartLoader(){
 
-        Log.v(LOG_TAG, "restartLoader, " + "");
+//        Log.v(LOG_TAG, "restartLoader, " + "");
+        int LOADER_ID = 1;
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.v(LOG_TAG, "onCreateLoader, " + "id = [" + id + "], args = [" + args + "]");
+//        Log.v(LOG_TAG, "onCreateLoader, " + "id = [" + id + "], args = [" + args + "]");
         if(mEanView.getText().length()==0){
             return null;
         }
@@ -250,9 +249,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
-        Log.v(LOG_TAG, "onLoadFinished, " + "loader = [" + loader + "], data = [" + data + "]");
+//        Log.v(LOG_TAG, "onLoadFinished, " + "loader = [" + loader + "], data = [" + data + "]");
         if (!data.moveToFirst()) {  //empty
-            Log.v(LOG_TAG, "onLoadFinished - empty loader");
+//            Log.v(LOG_TAG, "onLoadFinished - empty loader");
             return;
         }
 
@@ -266,7 +265,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         ((TextView) mRootView.findViewById(R.id.bookSubTitle)).setText(bookSubTitle);
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        Log.v(LOG_TAG, "onLoadFinished: " + authors);
+//        Log.v(LOG_TAG, "onLoadFinished: " + authors);
         Utility.updateAuthorsView(mRootView, authors);
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
@@ -288,11 +287,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
-        Log.v(LOG_TAG, "onLoaderReset, " + "loader = [" + loader + "]");
+//        Log.v(LOG_TAG, "onLoaderReset, " + "loader = [" + loader + "]");
     }
 
     private void clearFields(){
-        Log.v(LOG_TAG, "clearFields, " + "");
+//        Log.v(LOG_TAG, "clearFields, " + "");
         ((TextView) mRootView.findViewById(R.id.bookTitle)).setText("");
         ((TextView) mRootView.findViewById(R.id.bookSubTitle)).setText("");
         ((TextView) mRootView.findViewById(R.id.authors)).setText("");
@@ -312,7 +311,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             boolean errorHappened = false;
             // first test network
             if (!Utility.isNetworkAvailable(getActivity())) {
-                Log.v(LOG_TAG, "updateErrorView, " + "no network");
+//                Log.v(LOG_TAG, "updateErrorView, " + "no network");
                 detailedMessage = R.string.status_no_network;
                 errorHappened = true;
             } else {
@@ -321,17 +320,17 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     case BookService.BOOK_STATUS_SERVER_DOWN:
                         detailedMessage = R.string.status_server_down;
                         errorHappened = true;
-                        Log.v(LOG_TAG, "updateErrorView, " + "server down");
+//                        Log.v(LOG_TAG, "updateErrorView, " + "server down");
                         break;
                     case BookService.BOOK_STATUS_SERVER_INVALID:
                         detailedMessage = R.string.status_server_error;
                         errorHappened = true;
-                        Log.v(LOG_TAG, "updateErrorView, " + "server invalid");
+//                        Log.v(LOG_TAG, "updateErrorView, " + "server invalid");
                         break;
                     case BookService.BOOK_STATUS_INVALID_ISBN:
                         detailedMessage = R.string.status_invalid_isbn;
                         errorHappened = true;
-                        Log.v(LOG_TAG, "updateErrorView, " + "isbn invalid");
+//                        Log.v(LOG_TAG, "updateErrorView, " + "isbn invalid");
                         break;
                     case BookService.BOOK_STATUS_UNKNOWN:
                         detailedMessage = R.string.status_unknown_error;
@@ -340,10 +339,10 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     case BookService.BOOK_STATUS_NOT_FOUND:
                         detailedMessage = R.string.status_book_not_found;
                         errorHappened = true;
-                        Log.v(LOG_TAG, "updateErrorView, " + "no book found");
+//                        Log.v(LOG_TAG, "updateErrorView, " + "no book found");
                         break;
                     default:
-                        Log.v(LOG_TAG, "updateErrorView, " + "other case, status=" + status);
+//                        Log.v(LOG_TAG, "updateErrorView, " + "other case, status=" + status);
                 }
             }
 
@@ -355,14 +354,14 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 subTv.setVisibility(View.VISIBLE);
                 imgv.setImageResource(android.R.drawable.stat_notify_error);
                 imgv.setVisibility(View.VISIBLE);
-                Log.v(LOG_TAG, "updateErrorView, " + "errorHappened, shown, resetting state");
+//                Log.v(LOG_TAG, "updateErrorView, " + "errorHappened, shown, resetting state");
             }
         }
     }
 
     @Override
     public void onAttach(Activity activity) {
-        Log.v(LOG_TAG, "onAttach, " + "activity = [" + activity + "]");
+//        Log.v(LOG_TAG, "onAttach, " + "activity = [" + activity + "]");
         super.onAttach(activity);
         activity.setTitle(R.string.scan);
     }

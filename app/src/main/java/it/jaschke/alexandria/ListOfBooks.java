@@ -27,12 +27,10 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     private BookListAdapter mBookListAdapter;
     private static final String LOG_TAG = ListOfBooks.class.getName();
     private ListView mBookList;
-    private int mPosition = ListView.INVALID_POSITION;
+    private final int mPosition = ListView.INVALID_POSITION;
     private EditText mSearchText;
     private final String selection = AlexandriaContract.BookEntry.TITLE
             +" LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
-
-    private final int LOADER_ID = 10;
 
     public ListOfBooks() {
 //        Log.v(LOG_TAG, "ListOfBooks, " + this.hashCode());
@@ -41,15 +39,15 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
+//        Log.v(LOG_TAG, "onCreate, " + "savedInstanceState = [" + savedInstanceState + "]");
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = ["
-                + container + "], savedInstanceState = [" + savedInstanceState + "]");
+//        Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = ["
+//                + container + "], savedInstanceState = [" + savedInstanceState + "]");
 
         View rootView = inflater.inflate(R.layout.fragment_list_of_books, container, false);
         mSearchText = (EditText) rootView.findViewById(R.id.searchText);
@@ -74,7 +72,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.v(LOG_TAG, "onClick, " + "v = [" + v + "]");
+//                        Log.v(LOG_TAG, "onClick, " + "v = [" + v + "]");
                         ListOfBooks.this.restartLoader();
                     }
                 }
@@ -84,7 +82,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         if (mSearchText != null && !"".equals(mSearchText.getText().toString())){
             searchString = "%" + mSearchText.getText().toString() + "%";
         }
-        Log.v(LOG_TAG, "onCreateView, searchString=" + searchString);
+//        Log.v(LOG_TAG, "onCreateView, searchString=" + searchString);
         // dynamic where clause
         // might be useless through restartLoader...
         Cursor cursor = getActivity().getContentResolver().query(
@@ -104,8 +102,8 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Log.v(LOG_TAG, "onItemClick, " + "adapterView = [" + adapterView + "], view = ["
-                        + view + "], mPosition = [" + position + "], l = [" + l + "]");
+//                Log.v(LOG_TAG, "onItemClick, " + "adapterView = [" + adapterView + "], view = ["
+//                        + view + "], mPosition = [" + position + "], l = [" + l + "]");
                 Cursor cursor = mBookListAdapter.getCursor();
                 if (cursor != null && cursor.moveToPosition(position)) {
                     ((Callback) getActivity())
@@ -127,7 +125,8 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     }
 
     private void restartLoader(){
-        Log.v(LOG_TAG, "restartLoader, " + "");
+//        Log.v(LOG_TAG, "restartLoader, " + "");
+        int LOADER_ID = 10;
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
@@ -164,7 +163,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        Log.v(LOG_TAG, "onLoadFinished, " + "loader = [" + loader + "], data = [" + data + "]");
+//        Log.v(LOG_TAG, "onLoadFinished, " + "loader = [" + loader + "], data = [" + data + "]");
         mBookListAdapter.swapCursor(data);
         if (mPosition != ListView.INVALID_POSITION) {
             mBookList.smoothScrollToPosition(mPosition);
@@ -174,13 +173,13 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
-        Log.v(LOG_TAG, "onLoaderReset, " + "loader = [" + loader + "]");
+//        Log.v(LOG_TAG, "onLoaderReset, " + "loader = [" + loader + "]");
         mBookListAdapter.swapCursor(null);
     }
 
     @Override
     public void onAttach(Activity activity) {
-        Log.v(LOG_TAG, "onAttach, " + "activity = [" + activity + "]");
+//        Log.v(LOG_TAG, "onAttach, " + "activity = [" + activity + "]");
         super.onAttach(activity);
         activity.setTitle(R.string.books);
     }

@@ -27,7 +27,6 @@
                 android:maxLength="@integer/ean_size"
                 android:maxLines="1"
                 android:hint="@string/input_hint"
-                android:contentDescription="@string/input_hint"
                 android:paddingRight="20dp"
                 android:paddingLeft="10dp"
                 android:paddingStart="10dp"

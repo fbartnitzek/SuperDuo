@@ -11,7 +11,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -75,13 +74,13 @@ public class NavigationDrawerFragment extends Fragment {
 
 
         if (savedInstanceState != null) {
-            Log.v(LOG_TAG, "onCreate - restoring, "
-                    + "savedInstanceState = [" + savedInstanceState + "]");
+//            Log.v(LOG_TAG, "onCreate - restoring, "
+//                    + "savedInstanceState = [" + savedInstanceState + "]");
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }else{
-            Log.v(LOG_TAG, "onCreate - new, "
-                    + "savedInstanceState = [" + savedInstanceState + "]");
+//            Log.v(LOG_TAG, "onCreate - new, "
+//                    + "savedInstanceState = [" + savedInstanceState + "]");
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             int position = Integer.parseInt(prefs.getString("pref_startFragment","0"));
             selectItem(position);
@@ -92,7 +91,7 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.v(LOG_TAG, "onActivityCreated, " + "savedInstanceState = [" + savedInstanceState + "]");
+//        Log.v(LOG_TAG, "onActivityCreated, " + "savedInstanceState = [" + savedInstanceState + "]");
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
     }
@@ -100,19 +99,19 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = ["
-                + container + "], savedInstanceState = [" + savedInstanceState + "]");
+//        Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = ["
+//                + container + "], savedInstanceState = [" + savedInstanceState + "]");
         mDrawerListView = (ListView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.v(LOG_TAG, "onItemClick, " + "parent = [" + parent + "], view = [" + view
-                        + "], position = [" + position + "], id = [" + id + "]");
+//                Log.v(LOG_TAG, "onItemClick, " + "parent = [" + parent + "], view = [" + view
+//                        + "], position = [" + position + "], id = [" + id + "]");
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+        mDrawerListView.setAdapter(new ArrayAdapter<>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
@@ -137,8 +136,8 @@ public class NavigationDrawerFragment extends Fragment {
      */
     public void setUp(int fragmentId, DrawerLayout drawerLayout) {
 
-        Log.v(LOG_TAG, "setUp, " + "fragmentId = [" + fragmentId + "], drawerLayout = ["
-                + drawerLayout + "]");
+//        Log.v(LOG_TAG, "setUp, " + "fragmentId = [" + fragmentId + "], drawerLayout = ["
+//                + drawerLayout + "]");
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
@@ -162,7 +161,7 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                Log.v(LOG_TAG, "onDrawerClosed, " + "drawerView = [" + drawerView + "]");
+//                Log.v(LOG_TAG, "onDrawerClosed, " + "drawerView = [" + drawerView + "]");
                 if (!isAdded()) {
                     return;
                 }
@@ -173,7 +172,7 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                Log.v(LOG_TAG, "onDrawerOpened, " + "drawerView = [" + drawerView + "]");
+//                Log.v(LOG_TAG, "onDrawerOpened, " + "drawerView = [" + drawerView + "]");
                 if (!isAdded()) {
                     return;
                 }
@@ -211,7 +210,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     private void selectItem(int position) {
-        Log.v(LOG_TAG, "selectItem, " + "position = [" + position + "]");
+//        Log.v(LOG_TAG, "selectItem, " + "position = [" + position + "]");
 
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
@@ -240,7 +239,7 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Log.v(LOG_TAG, "onAttach, " + "activity = [" + activity + "]");
+//        Log.v(LOG_TAG, "onAttach, " + "activity = [" + activity + "]");
         try {
             mCallbacks = (NavigationDrawerCallbacks) activity;
         } catch (ClassCastException e) {
@@ -250,21 +249,21 @@ public class NavigationDrawerFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        Log.v(LOG_TAG, "onDetach, " + "");
+//        Log.v(LOG_TAG, "onDetach, " + "");
         super.onDetach();
         mCallbacks = null;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.v(LOG_TAG, "onSaveInstanceState, " + "outState = [" + outState + "]");
+//        Log.v(LOG_TAG, "onSaveInstanceState, " + "outState = [" + outState + "]");
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.v(LOG_TAG, "onConfigurationChanged, " + "newConfig = [" + newConfig + "]");
+//        Log.v(LOG_TAG, "onConfigurationChanged, " + "newConfig = [" + newConfig + "]");
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration the drawer toggle component.
         mDrawerToggle.onConfigurationChanged(newConfig);
@@ -274,8 +273,8 @@ public class NavigationDrawerFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // If the drawer is open, show the global app actions in the action bar. See also
         // showGlobalContextActionBar, which controls the top-left area of the action bar.
-        Log.v(LOG_TAG, "onCreateOptionsMenu, " + "menu = [" + menu + "], inflater = ["
-                + inflater + "]");
+//        Log.v(LOG_TAG, "onCreateOptionsMenu, " + "menu = [" + menu + "], inflater = ["
+//                + inflater + "]");
         if (mDrawerLayout != null && isDrawerOpen()) {
             inflater.inflate(R.menu.main, menu);
             showGlobalContextActionBar();
@@ -285,7 +284,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.v(LOG_TAG, "onOptionsItemSelected, " + "item = [" + item + "]");
+//        Log.v(LOG_TAG, "onOptionsItemSelected, " + "item = [" + item + "]");
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -298,7 +297,7 @@ public class NavigationDrawerFragment extends Fragment {
      * 'context', rather than just what's in the current screen.
      */
     private void showGlobalContextActionBar() {
-        Log.v(LOG_TAG, "showGlobalContextActionBar, " + "");
+//        Log.v(LOG_TAG, "showGlobalContextActionBar, " + "");
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -306,7 +305,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     private ActionBar getActionBar() {
-        Log.v(LOG_TAG, "getActionBar, " + "");
+//        Log.v(LOG_TAG, "getActionBar, " + "");
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 
