@@ -33,7 +33,7 @@
         During the off season, fake data will be added to the app.
     </string>
     <string name="widget_text">This is a widget probably.</string>
-    <string name="api_key" translatable="false">fb7b308235244d839b3996aa6494eebf</string>
+    <string name="api_key" translatable="false">INSERT API KEY HERE</string>
     <!-- TODO -->
     <!--string name="api_key" translatable="false">"This is where you insert your API key"</string-->
 
