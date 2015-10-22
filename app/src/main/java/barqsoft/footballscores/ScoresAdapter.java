@@ -7,7 +7,6 @@ import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,28 +56,28 @@ public class ScoresAdapter extends CursorAdapter {
     };
 
     // these indices must match the projection
-    static final int INDEX_SCORE_LEAGUE = 1;
-    static final int INDEX_SCORE_TIME = 2;
-    static final int INDEX_SCORE_HOME_GOALS= 3;
-    static final int INDEX_SCORE_AWAY_GOALS= 4;
-    static final int INDEX_SCORE_MATCH_ID = 5;
-    static final int INDEX_SCORE_MATCH_DAY = 6;
+    private static final int INDEX_SCORE_LEAGUE = 1;
+    private static final int INDEX_SCORE_TIME = 2;
+    private static final int INDEX_SCORE_HOME_GOALS= 3;
+    private static final int INDEX_SCORE_AWAY_GOALS= 4;
+    private static final int INDEX_SCORE_MATCH_ID = 5;
+    private static final int INDEX_SCORE_MATCH_DAY = 6;
 
-    static final int INDEX_TEAM_HOME_NAME= 7;
-    static final int INDEX_TEAM_HOME_ICON= 8;
+    private static final int INDEX_TEAM_HOME_NAME= 7;
+    private static final int INDEX_TEAM_HOME_ICON= 8;
 
-    static final int INDEX_TEAM_AWAY_NAME= 9;
-    static final int INDEX_TEAM_AWAY_ICON= 10;
+    private static final int INDEX_TEAM_AWAY_NAME= 9;
+    private static final int INDEX_TEAM_AWAY_ICON= 10;
 
     final private ScoresAdapterScrollHandler mScrollHandler;
 
-    private GenericRequestBuilder<Uri, InputStream, SVG, PictureDrawable> requestBuilder;
+    private final GenericRequestBuilder<Uri, InputStream, SVG, PictureDrawable> requestBuilder;
 
     public ScoresAdapter(Context context, Cursor cursor, int flags, Fragment fragment,
                          ScoresAdapterScrollHandler scrollHandler) {
         super(context, cursor, flags);
         mScrollHandler = scrollHandler;
-        Log.v(LOG_TAG, "ScoresAdapter, " + "context = [" + context + "], cursor = [" + cursor + "], flags = [" + flags + "]");
+//        Log.v(LOG_TAG, "ScoresAdapter, " + "context = [" + context + "], cursor = [" + cursor + "], flags = [" + flags + "]");
 
         //create requestBuilder for svg-glide-usage as described here:
         // https://github.com/bumptech/glide/tree/v3.6.0/samples/svg/src/main/java/com/bumptech/svgsample/app
@@ -89,7 +88,7 @@ public class ScoresAdapter extends CursorAdapter {
                 .as(SVG.class)
                 .transcode(new SvgDrawableTranscoder(), PictureDrawable.class)
                 .sourceEncoder(new StreamEncoder())
-                .cacheDecoder(new FileToStreamDecoder<SVG>(new SvgDecoder()))
+                .cacheDecoder(new FileToStreamDecoder<>(new SvgDecoder()))
                 .decoder(new SvgDecoder())
                 .placeholder(R.drawable.image_loading)
                 .error(R.drawable.no_icon)
@@ -99,7 +98,7 @@ public class ScoresAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        Log.v(LOG_TAG, "newView, " + "context = [" + context + "], cursor = [" + cursor + "], parent = [" + parent + "]");
+//        Log.v(LOG_TAG, "newView, " + "context = [" + context + "], cursor = [" + cursor + "], parent = [" + parent + "]");
         View mItem = LayoutInflater.from(context).inflate(R.layout.scores_list_item, parent, false);
         ViewHolder mHolder = new ViewHolder(mItem);
         mItem.setTag(mHolder);
@@ -108,7 +107,7 @@ public class ScoresAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
-        Log.v(LOG_TAG, "bindView, " + "view = [" + view + "], context = [" + context + "], cursor = [" + cursor + "]");
+//        Log.v(LOG_TAG, "bindView, " + "view = [" + view + "], context = [" + context + "], cursor = [" + cursor + "]");
         final ViewHolder mHolder = (ViewHolder) view.getTag();
 
         final String hName = cursor.getString(INDEX_TEAM_HOME_NAME);
@@ -184,8 +183,8 @@ public class ScoresAdapter extends CursorAdapter {
         void onFound(int position);
     }
 
-    public Intent createShareForecastIntent(String text) {
-        Log.v(LOG_TAG, "createShareForecastIntent, " + "ShareText = [" + text + "]");
+    private Intent createShareForecastIntent(String text) {
+//        Log.v(LOG_TAG, "createShareForecastIntent, " + "ShareText = [" + text + "]");
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");

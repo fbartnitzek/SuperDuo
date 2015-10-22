@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import barqsoft.footballscores.MainActivity;
@@ -27,7 +26,7 @@ public class ListWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
-        Log.v(LOG_TAG, "onUpdate, " + "context = [" + context + "], appWidgetManager = [" + appWidgetManager + "], appWidgetIds = [" + appWidgetIds + "]");
+//        Log.v(LOG_TAG, "onUpdate, " + "context = [" + context + "], appWidgetManager = [" + appWidgetManager + "], appWidgetIds = [" + appWidgetIds + "]");
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_list);
 
@@ -57,9 +56,9 @@ public class ListWidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
-        Log.v(LOG_TAG, "onReceive, " + "context = [" + context + "], intent = [" + intent + "]");
+//        Log.v(LOG_TAG, "onReceive, " + "context = [" + context + "], intent = [" + intent + "]");
         // Service instead of adapter ...
         if (FetchService.ACTION_DATA_UPDATED.equals(intent.getAction())) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -76,7 +75,7 @@ public class ListWidgetProvider extends AppWidgetProvider {
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setRemoteAdapter(Context context, RemoteViews views) {
-        Log.v(LOG_TAG, "setRemoteAdapter, " + "context = [" + context + "], views = [" + views + "]");
+//        Log.v(LOG_TAG, "setRemoteAdapter, " + "context = [" + context + "], views = [" + views + "]");
         views.setRemoteAdapter(R.id.widget_list, new Intent(context, ListWidgetRemoteViewsService.class));
     }
 
@@ -87,7 +86,7 @@ public class ListWidgetProvider extends AppWidgetProvider {
      */
     @SuppressWarnings("deprecation")
     private void setRemoteAdapterV11(Context context, @NonNull final RemoteViews views) {
-        Log.v(LOG_TAG, "setRemoteAdapterV11, " + "context = [" + context + "], views = [" + views + "]");
+//        Log.v(LOG_TAG, "setRemoteAdapterV11, " + "context = [" + context + "], views = [" + views + "]");
         views.setRemoteAdapter(0, R.id.widget_list,
                 new Intent(context, ListWidgetRemoteViewsService.class));
     }

@@ -14,7 +14,7 @@ public class TestDb extends AndroidTestCase {
 
     private static final String LOG_TAG = TestDb.class.getName();
 
-    void deleteDb() {
+    private void deleteDb() {
         mContext.deleteDatabase(DatabaseHelper.DATABASE_NAME);
     }
 
@@ -24,7 +24,7 @@ public class TestDb extends AndroidTestCase {
     }
 
     public void testCreateDb(){
-        final HashSet<String> tableNameHashSet = new HashSet<String>();
+        final HashSet<String> tableNameHashSet = new HashSet<>();
         tableNameHashSet.add(DatabaseContract.ScoreEntry.TABLE_NAME);
 
         mContext.deleteDatabase(DatabaseHelper.DATABASE_NAME);
@@ -42,6 +42,7 @@ public class TestDb extends AndroidTestCase {
         do {
             tableNameHashSet.remove(c.getString(0));
         } while( c.moveToNext() );
+        c.close();
 
         // if this fails, it means that your database doesn't contain both the location entry
         // and weather entry tables
@@ -56,7 +57,7 @@ public class TestDb extends AndroidTestCase {
                 c.moveToFirst());
 
         // Build a HashSet of all of the column names we want to look for
-        final HashSet<String> locationColumnHashSet = new HashSet<String>();
+        final HashSet<String> locationColumnHashSet = new HashSet<>();
         locationColumnHashSet.add(DatabaseContract.ScoreEntry._ID);
         locationColumnHashSet.add(DatabaseContract.ScoreEntry.DATE_COL);
         locationColumnHashSet.add(DatabaseContract.ScoreEntry.TIME_COL);

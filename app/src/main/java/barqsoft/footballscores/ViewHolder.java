@@ -7,13 +7,13 @@ import android.widget.TextView;
 /**
  * Created by yehya khaled on 2/26/2015.
  */
-public class ViewHolder {
-    public TextView homeName;
-    public TextView awayName;
-    public TextView score;
-    public TextView date;
-    public ImageView homeCrest;
-    public ImageView awayCrest;
+class ViewHolder {
+    public final TextView homeName;
+    public final TextView awayName;
+    public final TextView score;
+    public final TextView date;
+    public final ImageView homeCrest;
+    public final ImageView awayCrest;
     public long matchId;
 
     public ViewHolder(View view) {

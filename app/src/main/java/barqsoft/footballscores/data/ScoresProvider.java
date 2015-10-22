@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.Map;
@@ -35,9 +36,9 @@ public class ScoresProvider extends ContentProvider {
     private static final int MATCHES_AND_TEAMS_WITH_ID = 301;
     private static final int MATCHES_AND_TEAMS_WITH_DATE = 303;
 
-    private UriMatcher mUriMatcher = buildUriMatcher();
+    private final UriMatcher mUriMatcher = buildUriMatcher();
 
-    static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         Log.v(LOG_TAG, "buildUriMatcher, " + "");
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = DatabaseContract.CONTENT_AUTHORITY;
@@ -72,8 +73,8 @@ public class ScoresProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        Log.v(LOG_TAG, "update, " + "uri = [" + uri + "], values = [" + values + "], selection = ["
-                + selection + "], selectionArgs = [" + selectionArgs + "]");
+//        Log.v(LOG_TAG, "update, " + "uri = [" + uri + "], values = [" + values + "], selection = ["
+//                + selection + "], selectionArgs = [" + selectionArgs + "]");
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         final int match = mUriMatcher.match(uri);
@@ -158,8 +159,8 @@ public class ScoresProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
         final int match = mUriMatcher.match(uri);
-        String date = null;
-        String[] whereArg = null;
+        String date;
+        String[] whereArg;
         switch (match) {
             case MATCHES:
                 cursor = db.query(ScoreEntry.TABLE_NAME,
@@ -265,7 +266,7 @@ public class ScoresProvider extends ContentProvider {
     }
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(mUriMatcher.match(uri)));
@@ -345,7 +346,7 @@ public class ScoresProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        Log.v(LOG_TAG, "delete, " + "uri = [" + uri + "], selection = [" + selection + "], selectionArgs = [" + selectionArgs + "]");
+//        Log.v(LOG_TAG, "delete, " + "uri = [" + uri + "], selection = [" + selection + "], selectionArgs = [" + selectionArgs + "]");
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
         final int match = mUriMatcher.match(uri);

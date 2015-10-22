@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.Html;
 import android.text.format.Time;
-import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,7 +21,7 @@ public class Utilities {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final SimpleDateFormat readableDayFormat = new SimpleDateFormat("EEEE");
 
-    private static ArrayList supportedLeagues = new ArrayList<>(Arrays.asList(
+    private static final ArrayList<Integer> supportedLeagues = new ArrayList<>(Arrays.asList(
             Constants.BUNDESLIGA1, Constants.BUNDESLIGA2, Constants.BUNDESLIGA3, Constants.CHAMPIONS_LEAGUE,
             Constants.PREMIER_LEAGUE));
 
@@ -35,7 +34,7 @@ public class Utilities {
     }
 
     public static String getLeague(int league_num, Context context) {
-        Log.v(LOG_TAG, "getLeague, " + "league_num = [" + league_num + "]");
+//        Log.v(LOG_TAG, "getLeague, " + "league_num = [" + league_num + "]");
         switch (league_num) {
             case Constants.SERIE_A:
                 return context.getString(R.string.league_seria_a);
@@ -57,7 +56,7 @@ public class Utilities {
     }
 
     public static String getMatchDay(int match_day, int league_num, Context context) {
-        Log.v(LOG_TAG, "getMatchDay, " + "match_day = [" + match_day + "], league_num = [" + league_num + "]");
+//        Log.v(LOG_TAG, "getMatchDay, " + "match_day = [" + match_day + "], league_num = [" + league_num + "]");
         if (league_num == Constants.CHAMPIONS_LEAGUE) {
             if (match_day <= 6) {
                 return context.getString(R.string.champions_league_group_stage);
@@ -76,7 +75,7 @@ public class Utilities {
     }
 
     public static String getScores(int home_goals, int awaygoals, Context ctx) {
-        Log.v(LOG_TAG, "getScores, " + "home_goals = [" + home_goals + "], awaygoals = [" + awaygoals + "]");
+//        Log.v(LOG_TAG, "getScores, " + "home_goals = [" + home_goals + "], awaygoals = [" + awaygoals + "]");
         if (home_goals < 0 || awaygoals < 0) {
             return ctx.getString(R.string.no_scores);
         } else {
@@ -111,9 +110,8 @@ public class Utilities {
     public static String decodeHtml(String text) {
         if (text.contains("&")){    // faster
             //        Log.v(LOG_TAG, "decodeHtml, " + "text = [" + text + "]");
-            String result = Html.fromHtml(text).toString();
             //        Log.v(LOG_TAG, "decodeHtml, " + "result = [" + result + "]");
-            return result;
+            return Html.fromHtml(text).toString();
         } else {
             return text;
         }
@@ -122,7 +120,7 @@ public class Utilities {
     public static String getReadableDayName(Context context, long dateInMillis, String dateString) {
         // If the date is today, return the localized version of "Today" instead of the actual
         // day name.
-        Log.v(LOG_TAG, "getDayName, " + "context = [" + context + "], dateInMillis = [" + dateInMillis + "]");
+//        Log.v(LOG_TAG, "getDayName, " + "context = [" + context + "], dateInMillis = [" + dateInMillis + "]");
         Time t = new Time();
         t.setToNow();
         int julianDay = 0;

@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by frank on 15.10.15.
  */
-public abstract class PollingCheck {
+abstract class PollingCheck {
     private static final long TIME_SLICE = 50;
     private long mTimeout = 3000;
 

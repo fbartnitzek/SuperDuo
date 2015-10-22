@@ -52,28 +52,28 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 
     };
     // these indices must match the projection
-    static final int INDEX_SCORE_ID = 0;
+    private static final int INDEX_SCORE_ID = 0;
     static final int INDEX_SCORE_LEAGUE = 1;
-    static final int INDEX_SCORE_HOME_GOALS= 2;
-    static final int INDEX_SCORE_AWAY_GOALS= 3;
-    static final int INDEX_SCORE_TIME= 4;
-    static final int INDEX_TEAM_HOME_NAME= 5;
+    private static final int INDEX_SCORE_HOME_GOALS= 2;
+    private static final int INDEX_SCORE_AWAY_GOALS= 3;
+    private static final int INDEX_SCORE_TIME= 4;
+    private static final int INDEX_TEAM_HOME_NAME= 5;
     static final int INDEX_TEAM_HOME_ICON= 6;
-    static final int INDEX_TEAM_AWAY_NAME= 7;
+    private static final int INDEX_TEAM_AWAY_NAME= 7;
     static final int INDEX_TEAM_AWAY_ICON= 8;
-    static final int INDEX_SCORE_MATCH_ID= 9;
-    static final int INDEX_SCORE_DATE= 10;
+    private static final int INDEX_SCORE_MATCH_ID= 9;
+    private static final int INDEX_SCORE_DATE= 10;
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new RemoteViewsFactory() {
-            private Context mContext = getApplicationContext();
+            private final Context mContext = getApplicationContext();
             private Cursor data = null;
             private String date = null;
 
             @Override
             public void onCreate() {
-                Log.v(LOG_TAG, "onCreate, " + "");
+//                Log.v(LOG_TAG, "onCreate, " + "");
             }
 
             @Override
@@ -94,7 +94,7 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
             }
 
             private void updateWidgetDate(String date, boolean filled) {
-                Log.v(LOG_TAG, "updateWidgetDate, " + "date = [" + date + "], filled: " + filled);
+//                Log.v(LOG_TAG, "updateWidgetDate, " + "date = [" + date + "], filled: " + filled);
 
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
                 int appWidgetIds[] = appWidgetManager.getAppWidgetIds(
@@ -128,7 +128,7 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                             null,
                             null);
 
-                    Log.v(LOG_TAG, "getNextMatchDay, " + "data: " + data.getCount());
+//                    Log.v(LOG_TAG, "getNextMatchDay, " + "data: " + data.getCount());
                     if (data != null && data.getCount()>0) {
                         date = Utilities.formatDate(new Date(System.currentTimeMillis() +
                                 i * Constants.DAY_IN_MILLIS));
@@ -154,13 +154,13 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
 
             @Override
             public int getCount() {
-                Log.v(LOG_TAG, "getCount, " + "");
+//                Log.v(LOG_TAG, "getCount, " + "");
                 return data == null ? 0 : data.getCount();
             }
 
             @Override
             public RemoteViews getViewAt(int position) {
-                Log.v(LOG_TAG, "getViewAt, " + "position = [" + position + "]");
+//                Log.v(LOG_TAG, "getViewAt, " + "position = [" + position + "]");
                 if (position == AdapterView.INVALID_POSITION || null == data
                         || !data.moveToPosition(position)) {
                     return null;
@@ -176,8 +176,9 @@ public class ListWidgetRemoteViewsService extends RemoteViewsService {
                 long matchId = data.getLong(INDEX_SCORE_MATCH_ID);
                 String date = data.getString(INDEX_SCORE_DATE);
 
-                String desc = time + ": " + home + " vs " + away + ", score: " + score;
-                Log.v(LOG_TAG, "getViewAt, " + "desc = [" + desc + "]");
+                String desc = mContext.getString(R.string.complete_description, date, time, home, away, score);
+
+//                Log.v(LOG_TAG, "getViewAt, " + "desc = [" + desc + "]");
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
 //                    setRemoteContentDescription(views, desc);
 //                }

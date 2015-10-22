@@ -19,7 +19,7 @@ import barqsoft.footballscores.data.DatabaseHelper;
 /**
  * Created by frank on 16.10.15.
  */
-public class JsonExtractor {
+class JsonExtractor {
 
     private static final String LOG_TAG = JsonExtractor.class.getName();
 
@@ -53,7 +53,6 @@ public class JsonExtractor {
 
             //ContentValues to be inserted
             values = new ArrayList<>(teams.length());
-//            values = new ContentValues[matches.length()];
             for (int i = 0; i < teams.length(); i++) {
 
                 JSONObject teamData = teams.getJSONObject(i);
@@ -88,7 +87,6 @@ public class JsonExtractor {
 
             //ContentValues to be inserted
             values = new ArrayList<>(matches.length());
-//            values = new ContentValues[matches.length()];
             for (int i = 0; i < matches.length(); i++) {
 
                 JSONObject matchData = matches.getJSONObject(i);
@@ -126,7 +124,6 @@ public class JsonExtractor {
                         date = date.substring(0, date.indexOf(":"));
 
                     } catch (Exception e) {
-                        Log.d(LOG_TAG, "error here!");
                         Log.e(LOG_TAG, e.getMessage());
                     }
 

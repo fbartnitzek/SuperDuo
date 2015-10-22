@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,27 +21,27 @@ import barqsoft.footballscores.data.DatabaseContract;
  */
 public class MainScreenFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,ScoresAdapter.ScoresAdapterScrollHandler {
-    public ScoresAdapter mAdapter;
-    public static final int SCORES_LOADER = 0;
+    private ScoresAdapter mAdapter;
+    private static final int SCORES_LOADER = 0;
     private String fragmentDate;
     private static final String LOG_TAG = MainScreenFragment.class.getName();
-    private int lastSelectedItem = -1;
-    ListView mScoreList = null;
+//    private int lastSelectedItem = -1;
+    private ListView mScoreList = null;
 
     public MainScreenFragment() {
-        Log.v(LOG_TAG, "MainScreenFragment, " + "");
+//        Log.v(LOG_TAG, "MainScreenFragment, " + "");
     }
 
     public void setFragmentDate(String date) {
-        Log.v(LOG_TAG, "setFragmentDate, " + "date = [" + date + "]");
+//        Log.v(LOG_TAG, "setFragmentDate, " + "date = [" + date + "]");
         fragmentDate = date;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
-        Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = ["
-                + container + "], savedInstanceState = [" + savedInstanceState + "]");
+//        Log.v(LOG_TAG, "onCreateView, " + "inflater = [" + inflater + "], container = ["
+//                + container + "], savedInstanceState = [" + savedInstanceState + "]");
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mScoreList = (ListView) rootView.findViewById(R.id.scores_list);
@@ -68,12 +67,12 @@ public class MainScreenFragment extends Fragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        Log.v(LOG_TAG, "onCreateLoader, " + "i = [" + i + "], bundle = [" + bundle + "]");
+//        Log.v(LOG_TAG, "onCreateLoader, " + "i = [" + i + "], bundle = [" + bundle + "]");
 
 //        Uri uri = DatabaseContract.ScoreEntry.buildScoreWithDate(fragmentDate);
         Uri uri = DatabaseContract.ScoreEntry.buildScoreAndTeamsUri(fragmentDate);
 
-        Log.v(LOG_TAG, "onCreateLoader, " + "i = [" + i + "], uri = [" + uri.toString()+ "]");
+//        Log.v(LOG_TAG, "onCreateLoader, " + "i = [" + i + "], uri = [" + uri.toString()+ "]");
         return new CursorLoader(getActivity(),
                 uri,
                 ScoresAdapter.SCORE_COLUMNS, null, null, null);
@@ -81,10 +80,10 @@ public class MainScreenFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        Log.v(LOG_TAG, "onLoadFinished, " + "cursorLoader = [" + cursorLoader + "], cursor = [" + cursor + "]");
+//        Log.v(LOG_TAG, "onLoadFinished, " + "cursorLoader = [" + cursorLoader + "], cursor = [" + cursor + "]");
 
         cursor.moveToFirst();
-        Log.v(LOG_TAG, "onLoadFinished, MainScreenFragmentInstance: " + this.hashCode() +", cursor-entries = [" + cursor.getCount() + "]");
+//        Log.v(LOG_TAG, "onLoadFinished, MainScreenFragmentInstance: " + this.hashCode() +", cursor-entries = [" + cursor.getCount() + "]");
         if (cursor.getCount() > 0) {
             getView().findViewById(R.id.scores_list).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.scores_list_empty).setVisibility(View.GONE);
@@ -117,14 +116,14 @@ public class MainScreenFragment extends Fragment implements
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        Log.v(LOG_TAG, "onLoaderReset, " + "cursorLoader = [" + cursorLoader + "]");
+//        Log.v(LOG_TAG, "onLoaderReset, " + "cursorLoader = [" + cursorLoader + "]");
         mAdapter.swapCursor(null);
     }
 
 
     @Override
     public void onFound(int position) {
-        Log.v(LOG_TAG, "onFound, " + "position = [" + position + "]");
+//        Log.v(LOG_TAG, "onFound, " + "position = [" + position + "]");
         mScoreList.smoothScrollToPosition(position);
     }
 }

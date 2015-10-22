@@ -45,6 +45,13 @@ public class FetchService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.v(LOG_TAG, "onHandleIntent, " + "intent = [" + intent + "]");
 
+        // TODO: better fetching & syncing strategy
+        // teams: once per season at first start of program
+        // matches:
+        //  just next day (last FUTURE_DAYS) at first sync of the day
+        //  current day: every 30min after a game started until 120min after last game started
+        // "intelligent syncAdapter ..."
+
         getMatchData("n" + Constants.FUTURE_DAYS);
         getMatchData("p" + Constants.PAST_DAYS);
         for (int league : Utilities.getSupportedLeagues()){
@@ -62,9 +69,8 @@ public class FetchService extends IntentService {
         // to many api-users - get jsonData with key:
         // frank ~ $ curl --header "X-Auth-Token: fb7b308235244d839b3996aa6494eebf" http://api.football-data.org/alpha/fixtures?timeFrame=n2 | python -m json.tool
 
-        URL url = null;
         try{
-            url = new URL(uri.toString());
+            URL url = new URL(uri.toString());
 
             //Opening Connection
             connection = (HttpURLConnection) url.openConnection();
@@ -74,7 +80,7 @@ public class FetchService extends IntentService {
 
             // Read the input stream into a String
             InputStream inputStream = connection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 // Nothing to do.
                 return null;
@@ -86,7 +92,7 @@ public class FetchService extends IntentService {
                 // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                 // But it does make debugging a *lot* easier if you print out the completed
                 // buffer for debugging.
-                buffer.append(line + "\n");
+                buffer.append(line).append("\n");
             }
             if (buffer.length() == 0) {
                 Log.w(LOG_TAG, "fetchJsonData, " + "empty buffer - no response from server");
@@ -133,7 +139,6 @@ public class FetchService extends IntentService {
         try {
             if (jsonData != null) {
                 //This bit is to check if the data contains any matches.
-                // If not, we call processJson on the dummy data
                 JSONArray matches = new JSONObject(jsonData).getJSONArray(JsonExtractor.TEAMS);
                 ArrayList<ContentValues> values;
                 if (matches.length() == 0) {
@@ -153,7 +158,7 @@ public class FetchService extends IntentService {
                         int insertedData = appContext.getContentResolver().bulkInsert(
                                 DatabaseContract.TeamEntry.CONTENT_URI, insertData);
 
-                        Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(insertedData));
+                        Log.v(LOG_TAG,"Successfully Inserted : " + String.valueOf(insertedData));
 
                         updateWidgets(appContext);
                     } else {
@@ -213,7 +218,7 @@ public class FetchService extends IntentService {
                         int insertedData = appContext.getContentResolver().bulkInsert(
                                 DatabaseContract.ScoreEntry.CONTENT_URI, insertData);
 
-                        Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(insertedData));
+                        Log.v(LOG_TAG,"Successfully Inserted : " + String.valueOf(insertedData));
 
                         updateWidgets(appContext);
                     } else {

@@ -9,6 +9,8 @@ import com.caverock.androidsvg.SVGParseException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import barqsoft.footballscores.Constants;
+
 /**
  * Decodes an SVG internal representation from an {@link InputStream}.
  */
@@ -16,9 +18,9 @@ public class SvgDecoder implements ResourceDecoder<InputStream, SVG> {
     public Resource<SVG> decode(InputStream source, int width, int height) throws IOException {
         try {
             SVG svg = SVG.getFromInputStream(source);
-            return new SimpleResource<SVG>(svg);
+            return new SimpleResource<>(svg);
         } catch (SVGParseException ex) {
-            throw new IOException("Cannot load SVG from stream", ex);
+            throw new IOException(Constants.SVG_ERROR, ex);
         }
     }
 

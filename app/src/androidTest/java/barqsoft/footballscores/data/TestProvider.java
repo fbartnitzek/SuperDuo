@@ -18,7 +18,7 @@ public class TestProvider extends AndroidTestCase {
 
     private static final String LOG_TAG = TestProvider.class.getName();
 
-    public void deleteAllRecordsFromProvider() {
+    private void deleteAllRecordsFromProvider() {
         mContext.getContentResolver().delete(ScoreEntry.CONTENT_URI, null, null);
         mContext.getContentResolver().delete(TeamEntry.CONTENT_URI, null, null);
 
@@ -33,7 +33,7 @@ public class TestProvider extends AndroidTestCase {
         cursor.close();
     }
 
-    public void deleteAllRecordsFromDB() {
+    private void deleteAllRecordsFromDB() {
         DatabaseHelper dbHelper = new DatabaseHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -90,6 +90,8 @@ public class TestProvider extends AndroidTestCase {
                 null,
                 null
         );
+        assertTrue(teamCursor.getCount()>0);
+        teamCursor.close();
 
         // Make sure we get the correct cursor out of the database
 //        TestUtils.validateCursor("testBasicTeamQuery", teamCursor, testValuesTeam);
@@ -111,6 +113,7 @@ public class TestProvider extends AndroidTestCase {
         );
 
         assertTrue(scoreCursor.getCount()>0);
+        scoreCursor.close();
         // Make sure we get the correct cursor out of the database
 //        TestUtils.validateCursor("testBasicScoreQuery", scoreCursor, testValuesScores);
     }
@@ -312,10 +315,10 @@ public class TestProvider extends AndroidTestCase {
 
         // and let's make sure they match the ones we created
         cursor.moveToFirst();
-        for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++, cursor.moveToNext() ) {
+//        for ( int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++, cursor.moveToNext() ) {
 //            TestUtils.validateCurrentRecord("testBulkInsert.  Error validating TeamEntry " + i,
 //                    cursor, bulkInsertContentValues[i]);
-        }
+//        }
         cursor.close();
 
 

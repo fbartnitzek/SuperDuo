@@ -25,7 +25,8 @@
                 android:layout_gravity="center"
                 android:paddingBottom="@dimen/list_item_vertical_padding"
                 android:paddingTop="@dimen/list_item_vertical_padding"
-                android:src="@drawable/no_icon" />
+                android:src="@drawable/no_icon"
+                android:contentDescription="@string/a11y_homename"/>
 
             <TextView
                 android:id="@+id/home_name"
@@ -36,7 +37,8 @@
                 android:text="@string/test_text"
                 android:paddingBottom="@dimen/list_item_vertical_padding"
                 android:paddingTop="@dimen/list_item_vertical_padding"
-                android:textSize="@dimen/TeamNames" />
+                android:textSize="@dimen/TeamNames"
+                android:contentDescription="@string/a11y_awayname"/>
         </LinearLayout>
 
         <LinearLayout
