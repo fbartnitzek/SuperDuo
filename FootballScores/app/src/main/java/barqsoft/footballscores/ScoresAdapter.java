@@ -159,7 +159,7 @@ public class ScoresAdapter extends CursorAdapter {
             league.setText(Utilities.getLeague(leagueNo, context));
             Button share_button = (Button) v.findViewById(R.id.share_button);
 
-            share_button.setContentDescription(context.getString(R.string.share_text));
+            share_button.setContentDescription(context.getString(R.string.a11y_share));
             share_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

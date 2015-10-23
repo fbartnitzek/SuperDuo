@@ -78,5 +78,6 @@
 
     <string name="empty_score_list_no_network" >No Score Information Available. The network is not available to fetch score data.</string>
     <string name="complete_description">%1$s %2$s: %3$s vs %4$s, score: %5$s</string>
+    <string name="a11y_share">share the score</string>
     <!--<string name="share_football_scores">#Football_Scores</string>-->
 </resources>
